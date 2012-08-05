@@ -7403,4 +7403,9 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="choose_font_VeryLarge">VeryLarge</string>
 
     <string name="turn_on_data_msg">Please turn on data</string>
+
+    <!-- Buttons - Enable navbar -->
+   <string name="disable_navkeys_title">Enable on-screen nav bar</string>
+   <string name="disable_navkeys_summary">Enable on-screen navigation bar and disable hardware buttons</string>
+
 </resources>

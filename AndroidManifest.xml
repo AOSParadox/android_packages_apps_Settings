@@ -2657,6 +2657,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".cyanogenmod.BootReceiver" android:enabled="true">
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name="com.android.settings.wificall.WifiCallingEnhancedSettings"
             android:label="@string/wifi_call_setting_title"
             android:configChanges="orientation">
