@@ -23,6 +23,12 @@
         android:summary="@string/swap_slider_order_summary"
         android:persistent="false" />
 
+    <CheckBoxPreference
+        android:key="disable_nav_keys"
+        android:title="@string/disable_navkeys_title"
+        android:summary="@string/disable_navkeys_summary"
+        android:defaultValue="false" />
+
  <PreferenceCategory
         android:key="home_key"
         android:title="@string/hardware_keys_home_key_title" >
