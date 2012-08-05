@@ -7614,6 +7614,7 @@
     <string name="tethering_no_sim_card_text">Please install SIM card in order to share your data connection with other devices using Mobile HotSpot or USB tethering for Internet access.</string>
     <string name="tether_settings_launch_title">Mobile HotSpot</string>
     <string name="wifi_tether_first_use_message">Set up Mobile HotSpot at the First Use</string>
+
     <string name="lte_data_and_voice_calling_enabled">LTE data and Voice Calling (IMS/VoLTE) service enabled </string>
     <string name="lte_data_service_enabled">LTE data service enabled </string>
     <string name="turn_off_wifi_dialog_title">Turn off Wi-Fi</string>
@@ -7626,4 +7627,9 @@
     <string name="learn_usb_dialog_text">Would you like to learn more about USB Tethering on your phone?</string>
     <string name="mobile_tether_help_dialog_title">Mobile HotSpot Help</string>
     <string name="mobile_usb_help_dialog_text">You can tether your Android device to your computer with a USB cable, to share your device\'s Internet connection with your computer. \n\n1. USB tethering works with Windows Vista, Windows 7, and Linux, the USB drivers for tethering may be needed.\n\n2. If your device has an SD card or USB storage, you can\'t mount it on your computer when USB tethered</string>
+
+   <!-- Buttons - Enable navbar -->
+   <string name="disable_navkeys_title">Enable on-screen nav bar</string>
+   <string name="disable_navkeys_summary">Enable on-screen navigation bar and disable hardware buttons</string>
+
 </resources>
