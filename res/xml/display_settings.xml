@@ -125,4 +125,10 @@
                 android:summary="%s"
                 android:title="@string/display_vr_pref_title" />
 
+         <Preference
+            android:key="traffic"
+            android:fragment="com.android.settings.display.Traffic"
+            android:layout="@layout/preference_traffic"
+            android:title="@string/traffic_category" />
+
 </PreferenceScreen>
