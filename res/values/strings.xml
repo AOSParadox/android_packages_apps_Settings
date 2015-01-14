@@ -7310,4 +7310,5 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="lte_data_and_voice_calling_enabled">LTE data and Voice Calling (IMS/VoLTE) service enabled </string>
     <string name="lte_data_service_enabled">LTE data service enabled </string>
     <string name="app_ops_permiss_name">App network access</string>
+    <string name="add_operator_account_label">iTelcel</string>
 </resources>
