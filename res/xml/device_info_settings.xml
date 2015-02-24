@@ -96,6 +96,18 @@
                         android:data="https://source.android.com/security/bulletin/" />
         </PreferenceScreen>
 
+        <!-- Device PAR version -->
+        <Preference android:key="par_version"
+                style="?android:preferenceInformationStyle"
+                android:title="@string/par_version"
+                android:summary="@string/par_version_default" />
+
+        <!-- Device CAF Branch version -->
+        <Preference android:key="par_branch"
+                style="?android:preferenceInformationStyle"
+                android:title="@string/par_branch"
+                android:summary="@string/par_branch_default" />
+
         <!-- Device FCC equipment id -->
         <com.android.settings.DividerPreference
                 android:key="fcc_equipment_id"
