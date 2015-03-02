@@ -140,6 +140,7 @@ public class Status extends PreferenceActivity {
     private static final int EVENT_UPDATE_STATS = 500;
 
     private static final int EVENT_UPDATE_CONNECTIVITY = 600;
+    private static final int IMEI_14_DIGIT = 14;
 
     private ConnectivityManager mCM;
     private TelephonyManager mTelephonyManager;
@@ -311,7 +312,8 @@ public class Status extends PreferenceActivity {
                 if (mPhone.getLteOnCdmaMode() == PhoneConstants.LTE_ON_CDMA_TRUE) {
                     // Show ICC ID and IMEI for LTE device
                     setSummaryText(KEY_ICC_ID, mPhone.getIccSerialNumber());
-                    setSummaryText(KEY_IMEI, mPhone.getImei());
+                    String imeiStr = mPhone.getImei();
+                    setIMEISummaryText(imeiStr);
                 } else {
                     // device is not GSM/UMTS, do not display GSM/UMTS features
                     // check Null in case no specified preference in overlay xml
@@ -319,8 +321,8 @@ public class Status extends PreferenceActivity {
                     removePreferenceFromScreen(KEY_ICC_ID);
                 }
             } else {
-                setSummaryText(KEY_IMEI, mPhone.getDeviceId());
-
+                String imeiStr = mPhone.getDeviceId();
+                setIMEISummaryText(imeiStr);
                 setSummaryText(KEY_IMEI_SV,
                         ((TelephonyManager) getSystemService(TELEPHONY_SERVICE))
                             .getDeviceSoftwareVersion());
@@ -407,6 +409,16 @@ public class Status extends PreferenceActivity {
             intent.putExtra(SelectSubscription.TARGET_CLASS,
                     "com.android.settings.deviceinfo.MSimSubscriptionStatus");
         }
+    }
+
+    private void setIMEISummaryText(String imeiStr) {
+        boolean enable14DigitImei = getResources().getBoolean(
+                com.android.internal.R.bool.config_enable_14digit_imei);
+        if (enable14DigitImei && imeiStr != null
+                && imeiStr.length() > IMEI_14_DIGIT) {
+            imeiStr = imeiStr.substring(0, IMEI_14_DIGIT);
+        }
+        setSummaryText(KEY_IMEI, imeiStr);
     }
 
     @Override
