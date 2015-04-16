@@ -275,23 +275,13 @@ public class SimStatus extends PreferenceActivity {
     }
 
     private void updateServiceState(ServiceState serviceState) {
-        final int state = serviceState.getState();
-        String display = mRes.getString(R.string.radioInfo_unknown);
+        int voiceState = serviceState.getState();
+        String voiceDisplay = Utils.getServiceStateString(voiceState, mRes);
 
-        switch (state) {
-            case ServiceState.STATE_IN_SERVICE:
-                display = mRes.getString(R.string.radioInfo_service_in);
-                break;
-            case ServiceState.STATE_OUT_OF_SERVICE:
-            case ServiceState.STATE_EMERGENCY_ONLY:
-                display = mRes.getString(R.string.radioInfo_service_out);
-                break;
-            case ServiceState.STATE_POWER_OFF:
-                display = mRes.getString(R.string.radioInfo_service_off);
-                break;
-        }
+        int dataState = serviceState.getDataRegState();
+        String dataDisplay = Utils.getServiceStateString(dataState, mRes);
 
-        setSummaryText(KEY_SERVICE_STATE, display);
+        setSummaryText(KEY_SERVICE_STATE, "Voice: " + voiceDisplay + " / Data: " + dataDisplay);
 
         if (serviceState.getRoaming()) {
             setSummaryText(KEY_ROAMING_STATE, mRes.getString(R.string.radioInfo_roaming_in));
