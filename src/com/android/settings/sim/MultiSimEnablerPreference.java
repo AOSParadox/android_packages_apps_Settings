@@ -43,6 +43,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
+import android.provider.BaseColumns;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubscriptionInfo;
@@ -312,7 +313,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
             SubscriptionManager.deactivateSubId(mSir.getSubscriptionId());
         }
 
-        mSubscriptionManager.addOnSubscriptionsChangedListener(mSubscriptionListener);
+        mContext.registerReceiver(mReceiver, mIntentFilter);
     }
 
     private void processSetUiccDone() {
@@ -389,7 +390,7 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
 
     private void unregisterReceiver() {
         try {
-            mSubscriptionManager.removeOnSubscriptionsChangedListener(mSubscriptionListener);
+            mContext.unregisterReceiver(mReceiver);
         } catch (Exception ex) {}
     }
 
@@ -416,16 +417,26 @@ public class MultiSimEnablerPreference extends Preference implements OnCheckedCh
                 }
             };
 
-    private final OnSubscriptionsChangedListener mSubscriptionListener =
-            new OnSubscriptionsChangedListener() {
-        public void onSubscriptionChanged() {
-            logd("Received onSubscriptionChanged");
-             SubscriptionInfo sir = Utils.findRecordBySubId(mContext, mSir.getSubscriptionId());
-             // When sir is not null, the sub state will be ACTIVE. 
-             if ((sir != null && mCurrentState == true) ||
-                     ( (sir == null) && mCurrentState == false)) {
-                 processSetUiccDone();
-             }
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (TelephonyIntents.ACTION_SUBINFO_CONTENT_CHANGE.equals(action)) {
+                int subId = intent.getIntExtra(BaseColumns._ID,
+                        SubscriptionManager.INVALID_SUBSCRIPTION_ID);
+                String column = intent.getStringExtra(TelephonyIntents.EXTRA_COLUMN_NAME);
+                int intValue = intent.getIntExtra(TelephonyIntents.EXTRA_INT_CONTENT, 0);
+                logd("Received ACTION_SUBINFO_CONTENT_CHANGE on subId: " + subId
+                        + "for " + column + " intValue: " + intValue);
+                if (mCmdInProgress && column != null
+                        && column.equals(SubscriptionManager.SUB_STATE)
+                        && mSir.getSubscriptionId() == subId) {
+                    if ((intValue == SubscriptionManager.ACTIVE && mCurrentState == true) ||
+                            (intValue == SubscriptionManager.INACTIVE && mCurrentState == false)) {
+                        processSetUiccDone();
+                    }
+                }
+            }
         }
     };
 
