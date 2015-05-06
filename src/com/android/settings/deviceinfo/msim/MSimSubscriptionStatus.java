@@ -356,25 +356,14 @@ public class MSimSubscriptionStatus extends PreferenceActivity {
     }
 
     private void updateServiceState() {
-        String display = mRes.getString(R.string.radioInfo_unknown);
-
         if (mServiceState != null) {
-            int state = mServiceState.getState();
+            int voiceState = mServiceState.getState();
+            String voiceDisplay = Utils.getServiceStateString(voiceState, mRes);
 
-            switch (state) {
-                case ServiceState.STATE_IN_SERVICE:
-                    display = mRes.getString(R.string.radioInfo_service_in);
-                    break;
-                case ServiceState.STATE_OUT_OF_SERVICE:
-                case ServiceState.STATE_EMERGENCY_ONLY:
-                    display = mRes.getString(R.string.radioInfo_service_out);
-                    break;
-                case ServiceState.STATE_POWER_OFF:
-                    display = mRes.getString(R.string.radioInfo_service_off);
-                    break;
-            }
+            int dataState = mServiceState.getDataRegState();
+            String dataDisplay = Utils.getServiceStateString(dataState, mRes);
 
-            setSummaryText(KEY_SERVICE_STATE, display);
+            setSummaryText(KEY_SERVICE_STATE, "Voice: " + voiceDisplay + " / Data: " + dataDisplay);
 
             if (mServiceState.getRoaming()) {
                 setSummaryText(KEY_ROAMING_STATE, mRes.getString(R.string.radioInfo_roaming_in));

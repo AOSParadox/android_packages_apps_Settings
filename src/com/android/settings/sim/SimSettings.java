@@ -613,7 +613,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                             displayName,
                             subId,
                             SubscriptionManager.NAME_SOURCE_USER_INPUT);
-                    findRecordBySubId(subId).setDisplayName(displayName);
+                    if (findRecordBySubId(subId) != null) {
+                        findRecordBySubId(subId).setDisplayName(displayName);
+                    }
 
                     updateAllOptions();
                     update();
