@@ -2047,12 +2047,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".sim.SimBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.android.settings.files"
