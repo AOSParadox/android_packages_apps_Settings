@@ -39,6 +39,8 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.telecom.PhoneAccount;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.telephony.CellInfo;
 import android.telephony.PhoneStateListener;
 import android.text.TextUtils;
@@ -107,6 +109,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     private boolean dataDisableToastDisplayed = false;
 
     private SubscriptionManager mSubscriptionManager;
+    private TelecomManager mTelecommMgr;
 
     public SimSettings() {
         super(DISALLOW_CONFIG_SIM);
@@ -120,6 +123,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         mSubscriptionManager = SubscriptionManager.from(getActivity());
         final TelephonyManager tm =
                     (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        mTelecommMgr = (TelecomManager)getActivity().getSystemService(Context.TELECOM_SERVICE);
 
         if (mSubInfoList == null) {
             mSubInfoList = mSubscriptionManager.getActiveSubscriptionInfoList();
@@ -515,6 +519,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                         if (mSubscriptionManager.getDefaultVoiceSubId() != subId) {
                             mSubscriptionManager.setDefaultVoiceSubId(subId);
                         }
+                        PhoneAccountHandle acc = findPhoneAccountHandleBySubId(subId);
+                        if (acc != null) {
+                            mTelecommMgr.setUserSelectedOutgoingPhoneAccount(acc);
+                        }
                     }
                 } else if (simPref.getKey().equals(KEY_SMS)) {
                     if (subId == 0) {
@@ -530,6 +538,26 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 return true;
             }
         });
+    }
+
+    private PhoneAccountHandle findPhoneAccountHandleBySubId(final int SubId) {
+        PhoneAccountHandle account = null;
+        int id = 0;
+        List<PhoneAccountHandle> handles = mTelecommMgr.getAllPhoneAccountHandles();
+        for (PhoneAccountHandle handle : handles) {
+            if (handle.getId() != null) {
+                try {
+                    id = Integer.parseInt(handle.getId());
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                if (id == SubId) {
+                    account = handle;
+                    break;
+                }
+            }
+        }
+        return account;
     }
 
     private void setActivity(Preference preference, SubscriptionInfo sir) {
