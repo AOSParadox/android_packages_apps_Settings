@@ -101,7 +101,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String ALLOW_MOCK_LOCATION = "allow_mock_location";
     private static final String HDCP_CHECKING_KEY = "hdcp_checking";
     private static final String HDCP_CHECKING_PROPERTY = "persist.sys.hdcp_checking";
-    private static final String ENABLE_QUICKBOOT= "enable_quickboot";
+    //private static final String ENABLE_QUICKBOOT= "enable_quickboot";
     private static final String LOCAL_BACKUP_PASSWORD = "local_backup_password";
     private static final String HARDWARE_UI_PROPERTY = "persist.sys.ui.hw";
     private static final String MSAA_PROPERTY = "debug.egl.force_msaa";
