@@ -192,7 +192,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private SwitchPreference mEnableOemUnlock;
     private SwitchPreference mAllowMockLocation;
     private SwitchPreference mDebugViewAttributes;
-    private SwitchPreference mQuickBoot;
+    //private SwitchPreference mQuickBoot;
 
     private PreferenceScreen mPassword;
     private String mDebugApp;
@@ -300,7 +300,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             removePreference(mEnableOemUnlock);
             mEnableOemUnlock = null;
         }
-        mQuickBoot= findAndInitSwitchPref(ENABLE_QUICKBOOT);
+        //mQuickBoot= findAndInitSwitchPref(ENABLE_QUICKBOOT);
         mAllowMockLocation = findAndInitSwitchPref(ALLOW_MOCK_LOCATION);
         mDebugViewAttributes = findAndInitSwitchPref(DEBUG_VIEW_ATTRIBUTES);
         mPassword = (PreferenceScreen) findPreference(LOCAL_BACKUP_PASSWORD);
@@ -526,7 +526,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 Settings.Secure.ALLOW_MOCK_LOCATION, 0) != 0);
         updateSwitchPreference(mDebugViewAttributes, Settings.Global.getInt(cr,
                 Settings.Global.DEBUG_VIEW_ATTRIBUTES, 0) != 0);
-        updateSwitchPreference(mQuickBoot, Settings.System.getInt(cr, ENABLE_QUICKBOOT, 0) != 0);
+        //updateSwitchPreference(mQuickBoot, Settings.System.getInt(cr, ENABLE_QUICKBOOT, 0) != 0);
         updateHdcpValues();
         updatePasswordSummary();
         updateDebuggerOptions();
@@ -1422,9 +1422,9 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             Settings.Global.putInt(getActivity().getContentResolver(),
                     Settings.Global.DEBUG_VIEW_ATTRIBUTES,
                     mDebugViewAttributes.isChecked() ? 1 : 0);
-        } else if (preference == mQuickBoot) {
-            Settings.System.putInt(getActivity().getContentResolver(), ENABLE_QUICKBOOT,
-                    mQuickBoot.isChecked() ? 1 : 0);
+//        } else if (preference == mQuickBoot) {
+//            Settings.System.putInt(getActivity().getContentResolver(), ENABLE_QUICKBOOT,
+//                    mQuickBoot.isChecked() ? 1 : 0);
         } else if (preference == mDebugAppPref) {
             startActivityForResult(new Intent(getActivity(), AppPicker.class), RESULT_DEBUG_APP);
         } else if (preference == mWaitForDebugger) {
