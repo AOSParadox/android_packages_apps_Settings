@@ -2877,4 +2877,8 @@
     <skip />
     <string name="write_settings_on" msgid="8230580416068832239">"允许"</string>
     <string name="write_settings_off" msgid="5156104383386336233">"不允许"</string>
+
+    <!-- support query sub network's mask and gateway -->
+    <string name="wifi_advanced_gateway">网关</string>
+    <string name="wifi_advanced_network_netmask">子网掩码</string>
 </resources>

@@ -6977,4 +6977,8 @@
     <string name="sub_activate_failed">Activation failed.</string>
     <string name="sub_deactivate_success">Successfully Deactivated.</string>
     <string name="sub_deactivate_failed">Deactivation failed.</string>
+
+    <!-- support query sub network's mask and gateway -->
+    <string name="wifi_advanced_gateway">Gateway</string>
+    <string name="wifi_advanced_network_netmask">Netmask</string>
 </resources>

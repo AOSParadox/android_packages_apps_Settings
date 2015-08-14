@@ -40,4 +40,7 @@
 
     <!-- Whether notify user that switch data service -->
     <bool name="confirm_to_switch_data_service">false</bool>
+
+    <!-- Whether enable get network info -->
+    <bool name="config_netinfo">false</bool>
 </resources>
