@@ -78,9 +78,28 @@
 
     <!-- Whether add storage cleanup menu in storage setting-->
     <bool name="enable_storage_cleanup">false</bool>
+
     <!-- Whether to enable system profiles -->
     <bool name="config_profiles_enabled">false</bool>
 
     <!-- Whether to enable the default option to ipv4/v6 for creating new APN -->
     <bool name="config_default_apn_for_new">false</bool>
+
+    <!-- Whether to show hotspot via the ap's classification -->
+    <bool name="set_wifi_priority">false</bool>
+
+    <!-- Whether to connect to wifi automatically -->
+    <bool name="config_auto_connect_wifi_enabled">false</bool>
+
+    <!-- Whether to switch cell to wifi -->
+    <bool name="cell_to_wifi">false</bool>
+
+    <!-- Whether notify user that current connected ap is CMCC -->
+    <bool name="connect_to_cmcc_notify">false</bool>
+
+    <!-- Whether notify user in cell to wlan feature -->
+    <bool name="cellular_to_wlan_hint">false</bool>
+
+    <!-- Whether to switch wifi to data -->
+    <bool name="wifi_to_cell">false</bool>
 </resources>

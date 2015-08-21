@@ -7097,6 +7097,7 @@
     <string name="label_global_roaming_settings">Roaming Settings</string>
 
     <string name="storage_menu_cleanup">Storage Cleanup</string>
+
     <string name="profiles_settings_title">System profiles</string>
     <string name="hotspot_settings_menu_help">Help</string>
     <string name="hotspot_settings_desc">WLAN hotspot can share this phone\u2019s data Internet connection with other PC/mobile devices via WLAN.</string>
@@ -7171,4 +7172,20 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="network_operator_display_title">Show Network Operator</string>
     <string name="keywords_network_name_display">network name displayed</string>
     <string name="network_name_displayed_summary">Show network name on status bar</string>
+
+    <!-- support wifi extended function -->
+    <string name="wifi_set_priority_settings_title">AP priority settings</string>
+    <string name="wifi_set_priority_settings_summary">Click to set priority of each access point</string>
+    <string name="cellular_to_wlan_title">Cellular->WLAN</string>
+    <string name="wifi_auto_connect_type_title">Auto connect type</string>
+    <string name="wifi_auto_connect_type_summary">Specify network connection type</string>
+    <string name="wifi_menu_disconnect">Disconnect from network</string>
+    <string name="cellular_to_wlan_hint_title">Cellular->WLAN hint</string>
+    <string name="cellular_to_wlan_hint_summary">Allow hint when choose manually or always ask in Cellular->WLAN</string>
+    <string name="cellular_to_wlan_hint_toast">Cellular->WLAN connection may be affected</string>
+    <string name="wlan_to_cellular_hint_title">WLAN->Cellular hint</string>
+    <string name="notify_connect">CMCC WLAN prompt</string>
+    <string name="notify_connect_summary">Prompt me when access to CMCC WLAN</string>
+    <string name="wifi_setting_connect_type_error">There was a problem setting the connect type.</string>
+
 </resources>

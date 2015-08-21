@@ -18,6 +18,46 @@
         android:title="@string/wifi_advanced_titlebar">
 
     <!-- android:dependency="enable_wifi" -->
+    <PreferenceScreen
+            android:key="wifi_priority_settings"
+            android:title="@string/wifi_set_priority_settings_title"
+            android:summary="@string/wifi_set_priority_settings_summary" >
+            <intent android:action="com.qti.wifi.priority"
+                    android:targetPackage="com.qti.extwifi" />
+    </PreferenceScreen>
+
+    <ListPreference
+            android:key="cellular_to_wlan"
+            android:title="@string/cellular_to_wlan_title"
+            android:persistent="false"
+            android:entries="@array/cellcular2wifi_entries"
+            android:entryValues="@array/cellcular2wifi_values" />
+
+    <CheckBoxPreference
+            android:key="auto_connect_type"
+            android:title="@string/wifi_auto_connect_type_title"
+            android:summary="@string/wifi_auto_connect_type_summary"
+            android:disableDependentsState="true"
+            android:persistent="false" />
+
+    <CheckBoxPreference
+            android:key="cellular_to_wlan_hint"
+            android:title="@string/cellular_to_wlan_hint_title"
+            android:summary="@string/cellular_to_wlan_hint_summary"
+            android:persistent="false"
+            android:dependency="auto_connect_type" />
+
+    <CheckBoxPreference
+            android:key="wlan_to_cellular_hint"
+            android:title="@string/wlan_to_cellular_hint_title"
+            android:persistent="false" />
+
+    <CheckBoxPreference
+            android:key="notify_ap_connected"
+            android:title="@string/notify_connect"
+            android:summary="@string/notify_connect_summary"
+            android:persistent="false"/>
+
     <SwitchPreference
             android:key="notify_open_networks"
             android:title="@string/wifi_notify_open_networks"
