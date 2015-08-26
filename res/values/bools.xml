@@ -52,4 +52,9 @@
     <!-- Whether to hide mms apn-->
     <bool name="config_hide_mms_enable">false</bool>
 
+    <!-- Whether to show hotspot settings -->
+    <bool name="show_wifi_hotspot_settings">false</bool>
+
+    <!-- Whether to hide wifi hotspot -->
+    <bool name="hide_wifi_hotspot">false</bool>
 </resources>
