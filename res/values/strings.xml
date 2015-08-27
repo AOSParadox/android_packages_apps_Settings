@@ -6981,4 +6981,6 @@
     <!-- support query sub network's mask and gateway -->
     <string name="wifi_advanced_gateway">Gateway</string>
     <string name="wifi_advanced_network_netmask">Netmask</string>
+    <string name="lte_4g_settings_title">Enable 4G</string>
+    <string name="lte_4g_switch_prompt">The phone will change from 3G/2G to 4G, some active task may be stopped</string>
 </resources>

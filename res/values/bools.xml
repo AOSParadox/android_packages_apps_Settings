@@ -57,4 +57,6 @@
 
     <!-- Whether to hide wifi hotspot -->
     <bool name="hide_wifi_hotspot">false</bool>
+    <!-- Whether to enable 4G settings -->
+    <bool name="config_4gsettings_enabled">true</bool>
 </resources>

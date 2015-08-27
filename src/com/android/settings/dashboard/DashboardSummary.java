@@ -26,6 +26,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,13 +37,17 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.settings.HelpUtils;
 import com.android.settings.InstrumentedFragment;
 import com.android.settings.R;
+import com.android.settings.Lte4GEnabler;
 import com.android.settings.SettingsActivity;
+import com.android.internal.telephony.PhoneConstants;
+import com.android.internal.telephony.TelephonyIntents;
 
 import java.util.List;
 
@@ -50,6 +56,8 @@ public class DashboardSummary extends InstrumentedFragment {
 
     private LayoutInflater mLayoutInflater;
     private ViewGroup mDashboard;
+
+    private Lte4GEnabler mLte4GEnabler;
 
     private static final int MSG_REBUILD_UI = 1;
     private Handler mHandler = new Handler() {
@@ -60,6 +68,18 @@ public class DashboardSummary extends InstrumentedFragment {
                     final Context context = getActivity();
                     rebuildUI(context);
                 } break;
+            }
+        }
+    };
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (TelephonyIntents.ACTION_SIM_STATE_CHANGED.equals(action)
+                    || Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
+                Log.d(LOG_TAG, "Received ACTION_SIM_STATE_CHANGED or ACTION_AIRPLANE_MODE_CHANGED");
+                sendRebuildUI();
             }
         }
     };
@@ -95,6 +115,8 @@ public class DashboardSummary extends InstrumentedFragment {
     public void onResume() {
         super.onResume();
 
+        mLte4GEnabler.resume();
+
         sendRebuildUI();
 
         final IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -103,13 +125,21 @@ public class DashboardSummary extends InstrumentedFragment {
         filter.addAction(Intent.ACTION_PACKAGE_REPLACED);
         filter.addDataScheme("package");
         getActivity().registerReceiver(mHomePackageReceiver, filter);
+
+        // Register for intent broadcasts
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        intentFilter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
+        getActivity().registerReceiver(mReceiver, intentFilter);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
+        mLte4GEnabler.pause();
+
         getActivity().unregisterReceiver(mHomePackageReceiver);
+        getActivity().unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -117,7 +147,7 @@ public class DashboardSummary extends InstrumentedFragment {
                              Bundle savedInstanceState) {
 
         mLayoutInflater = inflater;
-
+        mLte4GEnabler = new Lte4GEnabler(getActivity(), new Switch(getActivity()));
         final View rootView = inflater.inflate(R.layout.dashboard, container, false);
         mDashboard = (ViewGroup) rootView.findViewById(R.id.dashboard_container);
 
@@ -155,11 +185,32 @@ public class DashboardSummary extends InstrumentedFragment {
             final int tilesCount = category.getTilesCount();
             for (int i = 0; i < tilesCount; i++) {
                 DashboardTile tile = category.getTile(i);
+                DashboardTileView tileView;
+                if (tile.getTitle(res).equals(res.getString(R.string.lte_4g_settings_title))) {
+                    tileView = new DashboardTileView(context,true);
+                    mLte4GEnabler.setSwitch(tileView.getSwitch());
 
-                DashboardTileView tileView = new DashboardTileView(context);
-                updateTileView(context, res, tile, tileView.getImageView(),
-                        tileView.getTitleTextView(), tileView.getStatusTextView());
+                    int simState = TelephonyManager.getDefault().getSimState(PhoneConstants.SUB1);
+                    boolean enabled = (Settings.System.getInt(context.getContentResolver(),
+                            Settings.System.AIRPLANE_MODE_ON, 0) == 0)
+                            && (simState == TelephonyManager.SIM_STATE_READY);
+                    tileView.setEnabled(enabled);
+                    tileView.getTitleTextView().setEnabled(enabled);
+                    // update icons
+                    if (enabled) {
+                        tile.iconRes = R.drawable.ic_settings_4g;
+                    } else {
+                        tile.iconRes = R.drawable.ic_settings_4g_dis;
+                    }
 
+                    updateTileView(context, res, tile, tileView.getImageView(),
+                            tileView.getTitleTextView(), tileView.getSwitch());
+
+                } else {
+                    tileView = new DashboardTileView(context,false);
+                    updateTileView(context, res, tile, tileView.getImageView(),
+                            tileView.getTitleTextView(), tileView.getStatusTextView());
+                }
                 tileView.setTile(tile);
 
                 categoryContent.addView(tileView);
@@ -207,6 +258,19 @@ public class DashboardSummary extends InstrumentedFragment {
         } else {
             statusTextView.setVisibility(View.GONE);
         }
+    }
+
+    private void updateTileView(Context context, Resources res, DashboardTile tile,
+        ImageView tileIcon, TextView tileTextView, Switch mSwitch) {
+
+        if (tile.iconRes > 0) {
+            tileIcon.setImageResource(tile.iconRes);
+        } else {
+            tileIcon.setImageDrawable(null);
+            tileIcon.setBackground(null);
+        }
+
+        tileTextView.setText(tile.getTitle(res));
     }
 
     private void sendRebuildUI() {

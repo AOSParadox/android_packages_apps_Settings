@@ -1252,6 +1252,10 @@ public class SettingsActivity extends Activity
                     if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
                         removeTile = true;
                     }
+                } else if (id == R.id.lte_4g_settings) {
+                    if (!getResources().getBoolean(R.bool.config_4gsettings_enabled)) {
+                        removeTile = true;
+                    }
                 } else if (id == R.id.data_usage_settings) {
                     // Remove data usage when kernel module not enabled
                     if (!Utils.isBandwidthControlEnabled()) {
