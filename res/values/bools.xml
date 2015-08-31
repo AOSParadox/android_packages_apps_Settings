@@ -59,4 +59,6 @@
     <bool name="hide_wifi_hotspot">false</bool>
     <!-- Whether to enable 4G settings -->
     <bool name="config_4gsettings_enabled">true</bool>
+    <!-- Whether to enable data usage selection -->
+    <bool name="config_data_usage_selection">false</bool>
 </resources>

@@ -46,7 +46,6 @@ import static android.text.format.DateUtils.FORMAT_SHOW_DATE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.internal.util.Preconditions.checkNotNull;
 import static com.android.settings.Utils.prepareCustomPreferencesList;
-
 import android.animation.LayoutTransition;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -150,6 +149,7 @@ import libcore.util.Objects;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -207,6 +207,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
     private static final String PREF_FILE = "data_usage";
     private static final String PREF_SHOW_WIFI = "show_wifi";
+    private static final String PREF_SHOW_DATA_USAGE = "show_data_usage";
     private static final String PREF_SHOW_ETHERNET = "show_ethernet";
 
     private SharedPreferences mPrefs;
@@ -255,6 +256,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
     private Switch mAppRestrict;
     private View mAppRestrictView;
 
+    private static String mTabId;
+    private TextView mUsageSummary;
+    //used to save selected range.
+    private static long[] mSelectLeft = new long[3];
+    private static long[] mSelectRight = new long[3];
+    private boolean mShowDataUsage = false;
     private boolean mShowWifi = false;
     private boolean mShowEthernet = false;
 
@@ -272,6 +279,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
     private MenuItem mMenuRestrictBackground;
     private MenuItem mMenuShowWifi;
+    private MenuItem mMenuShowDataUsage;
     private MenuItem mMenuShowEthernet;
     private MenuItem mMenuSimCards;
     private MenuItem mMenuCellularNetworks;
@@ -335,6 +343,7 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         }
 
         mShowWifi = mPrefs.getBoolean(PREF_SHOW_WIFI, false);
+        mShowDataUsage = mPrefs.getBoolean(PREF_SHOW_DATA_USAGE, false);
         mShowEthernet = mPrefs.getBoolean(PREF_SHOW_ETHERNET, false);
 
         // override preferences when no mobile radio
@@ -455,6 +464,9 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
             mAppRestrictView.setOnClickListener(mAppRestrictListener);
             mAppSwitches.addView(mAppRestrictView);
         }
+
+        mUsageSummary = (TextView) mHeader.findViewById(R.id.usage_summary);
+        setSelectableDataUsageViewVisible(mShowDataUsage);
 
         mDisclaimer = mHeader.findViewById(R.id.disclaimer);
         mEmpty = (TextView) mHeader.findViewById(android.R.id.empty);
@@ -593,6 +605,11 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
             help.setVisible(false);
         }
 
+        boolean dataSelectionEnable = getResources().getBoolean(R.bool.config_data_usage_selection);
+        mMenuShowDataUsage = menu.findItem(R.id.data_usage_menu_show_time_range);
+        mMenuShowDataUsage.setVisible((hasWifiRadio(context) || hasReadyMobileRadio(context))
+                && !appDetailMode && dataSelectionEnable);
+
         updateMenuTitles();
     }
 
@@ -607,6 +624,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
             mMenuShowWifi.setTitle(R.string.data_usage_menu_hide_wifi);
         } else {
             mMenuShowWifi.setTitle(R.string.data_usage_menu_show_wifi);
+        }
+
+        if (mShowDataUsage) {
+            mMenuShowDataUsage.setTitle(R.string.data_usage_menu_hide_time_range);
+        } else {
+            mMenuShowDataUsage.setTitle(R.string.data_usage_menu_show_time_range);
         }
 
         if (mShowEthernet) {
@@ -634,6 +657,14 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
                 mPrefs.edit().putBoolean(PREF_SHOW_WIFI, mShowWifi).apply();
                 updateMenuTitles();
                 updateTabs();
+                return true;
+            }
+            case R.id.data_usage_menu_show_time_range: {
+                mShowDataUsage = !mShowDataUsage;
+                mPrefs.edit().putBoolean(PREF_SHOW_DATA_USAGE, mShowDataUsage).apply();
+                updateMenuTitles();
+                setSelectableDataUsageViewVisible(mShowDataUsage);
+                updateDetailData();
                 return true;
             }
             case R.id.data_usage_menu_show_ethernet: {
@@ -783,6 +814,13 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
     private OnTabChangeListener mTabListener = new OnTabChangeListener() {
         @Override
         public void onTabChanged(String tabId) {
+            Log.d(TAG, "onTabChanged() selected:" + tabId);
+            if (!tabId.equals(mCurrentTab) && isMobileTab(mCurrentTab)) {
+                final int tabIndex = mTabHost.getCurrentTab();
+                Log.d(TAG, "tabIndex ---- get in tab changing  " + tabIndex);
+                mChart.setVisibleRange(mChart.getInspectStart(), mChart.getInspectEnd(),
+                        mSelectLeft[tabIndex], mSelectRight[tabIndex]);
+            }
             // user changed tab; update body
             updateBody();
         }
@@ -1378,7 +1416,10 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
 
                 // update chart to show selected cycle, and update detail data
                 // to match updated sweep bounds.
-                mChart.setVisibleRange(cycle.start, cycle.end);
+                final int tabIndex = mTabHost.getCurrentTab();
+                Log.d(TAG, "tabIndex ---- get   " +tabIndex);
+                mChart.setVisibleRange(cycle.start, cycle.end, mSelectLeft[tabIndex],
+                        mSelectRight[tabIndex]);
 
                 updateDetailData();
             }
@@ -1398,9 +1439,21 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
      */
     private void updateDetailData() {
         if (LOGD) Log.d(TAG, "updateDetailData()");
-
-        final long start = mChart.getInspectStart();
-        final long end = mChart.getInspectEnd();
+        final long start;
+        final long end;
+        if (mShowDataUsage) {
+            start = mChart.getInspectLeft();
+            end = mChart.getInspectRight();
+            final int tabIndex = mTabHost.getCurrentTab();
+            Log.d(TAG, "set tabIndex--------" + tabIndex);
+            mSelectLeft[tabIndex] = mChart.getInspectLeft();
+            mSelectRight[tabIndex] = mChart.getInspectRight();
+            Log.d(TAG, "will get lefr and right data here:" + new Date(start).toString()+ "-->"
+                    + new Date(end).toString());
+        } else {
+            start = mChart.getInspectStart();
+            end = mChart.getInspectEnd();
+        }
         final long now = System.currentTimeMillis();
 
         final Context context = getActivity();
@@ -1432,7 +1485,9 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
                 entry = mChartData.network.getValues(start, end, now, null);
             }
 
-            mCycleSummary.setVisibility(View.VISIBLE);
+            if (!mShowDataUsage) {
+                mCycleSummary.setVisibility(View.VISIBLE);
+            }
 
             // kick off loader for detailed stats
             getLoaderManager().restartLoader(LOADER_SUMMARY,
@@ -1453,6 +1508,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         } else {
             mDisclaimer.setVisibility(View.GONE);
         }
+
+        final long left = mChart.getInspectLeft();
+        final long right = mChart.getInspectRight();
+        final int summaryRes = R.string.data_usage_total_during_range;
+        final String rangePhrase = formatDateRange(context, left, right);
+        mUsageSummary.setText(getString(summaryRes, totalPhrase, rangePhrase));
 
         // initial layout is finished above, ensure we have transitions
         ensureLayoutTransitions();
@@ -1533,6 +1594,11 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
     }
 
     private DataUsageChartListener mChartListener = new DataUsageChartListener() {
+        @Override
+        public void onInspectRangeChanged() {
+            updateDetailData();
+        }
+
         @Override
         public void onWarningChanged() {
             setPolicyWarningBytes(mChart.getWarningBytes());
@@ -2827,4 +2893,12 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         private boolean isMobileDataAvailable(int subId) {
             return mSubscriptionManager.getActiveSubscriptionInfo(subId) != null;
         }
+
+    private void setSelectableDataUsageViewVisible(boolean isVisible){
+        int visible = isVisible ? View.VISIBLE : View.GONE;
+        mChart.setDateSelectionSweepVisible(visible);
+        mUsageSummary.setVisibility(visible);
+        int revertVisible = isVisible ? View.GONE : View.VISIBLE;
+        mCycleSummary.setVisibility(revertVisible);
+    }
 }

@@ -22,6 +22,9 @@
         android:id="@+id/data_usage_menu_show_wifi"
         android:title="@string/data_usage_menu_show_wifi" />
     <item
+        android:id="@+id/data_usage_menu_show_time_range"
+        android:title="@string/data_usage_menu_show_time_range" />
+    <item
         android:id="@+id/data_usage_menu_show_ethernet"
         android:title="@string/data_usage_menu_show_ethernet" />
     <item
