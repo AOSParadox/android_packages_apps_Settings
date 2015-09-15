@@ -43,4 +43,13 @@
 
     <!-- Whether enable get network info -->
     <bool name="config_netinfo">false</bool>
+    <!-- Whether to hide dm apn for carrier -->
+    <bool name="config_hide_dm_enabled">true</bool>
+
+    <!-- Whether to hide SUPL apn for China Union -->
+    <bool name="config_hidesupl_enable">false</bool>
+
+    <!-- Whether to hide mms apn-->
+    <bool name="config_hide_mms_enable">false</bool>
+
 </resources>

@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.preference.Preference;
@@ -75,12 +76,15 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     public static final String MVNO_TYPE = "mvno_type";
     public static final String MVNO_MATCH_DATA = "mvno_match_data";
 
+    private static final String APN_NAME_DM = "CMCC DM";
+
     private static final int ID_INDEX = 0;
     private static final int NAME_INDEX = 1;
     private static final int APN_INDEX = 2;
     private static final int TYPES_INDEX = 3;
     private static final int MVNO_TYPE_INDEX = 4;
     private static final int MVNO_MATCH_DATA_INDEX = 5;
+    private static final int RO_INDEX = 6;
 
     private static final int MENU_NEW = Menu.FIRST;
     private static final int MENU_RESTORE = Menu.FIRST + 1;
@@ -104,6 +108,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     private String mMvnoMatchData;
 
     private UserManager mUm;
+    private int mSubId;
 
     private String mSelectedKey;
 
@@ -181,6 +186,9 @@ public class ApnSettings extends SettingsPreferenceFragment implements
             return;
         }
 
+        mSubId = getActivity().getIntent().getIntExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                SubscriptionManager.getDefaultDataSubId());
+
         addPreferencesFromResource(R.xml.apn_settings);
 
         getListView().setItemsCanFocus(true);
@@ -226,13 +234,51 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         final String mccmnc = mSubscriptionInfo == null ? ""
             : tm.getSimOperator(mSubscriptionInfo.getSubscriptionId());
         Log.d(TAG, "mccmnc = " + mccmnc);
-        final String where = "numeric=\""
+        String where = "numeric=\""
             + mccmnc
             + "\" AND NOT (type='ia' AND (apn=\"\" OR apn IS NULL))";
 
+        if (SystemProperties.getBoolean("persist.sys.hideapn", true)) {
+            Log.d(TAG, "hiden apn feature enable.");
+            // remove the filtered items, no need to show in UI
+            where += " and type <>\"" + PhoneConstants.APN_TYPE_IA + "\"";
+
+            // Filer fota and dm for specail carrier
+            if (getResources().getBoolean(R.bool.config_hide_dm_enabled)) {
+                for (String plmn : getResources().getStringArray(R.array.hidedm_plmn_list)) {
+                    if (plmn.equals(TelephonyManager.getDefault()
+                            .getSimOperator(mSubId))) {
+                        where += " and name <>\"" + APN_NAME_DM + "\"";
+                        break;
+                    }
+                }
+            }
+
+            if (getResources().getBoolean(R.bool.config_hidesupl_enable)) {
+                boolean needHideSupl = false;
+                for (String plmn : getResources().getStringArray(R.array.hidesupl_plmn_list)) {
+                    if (plmn.equals(TelephonyManager.getDefault()
+                            .getSimOperator(mSubId))) {
+                        needHideSupl = true;
+                        break;
+                    }
+                }
+
+                if (needHideSupl) {
+                    where += " and type <>\"" + PhoneConstants.APN_TYPE_SUPL + "\"";
+                }
+            }
+
+            // Hide mms if config is true
+            if (getResources().getBoolean(R.bool.config_hide_mms_enable)) {
+                where += " and type <>\"" + PhoneConstants.APN_TYPE_MMS + "\"";
+            }
+        }
+        Log.d(TAG, "where---" + where);
+
         Cursor cursor = getContentResolver().query(Telephony.Carriers.CONTENT_URI, new String[] {
-                "_id", "name", "apn", "type", "mvno_type", "mvno_match_data"}, where, null,
-                Telephony.Carriers.DEFAULT_SORT_ORDER);
+                "_id", "name", "apn", "type", "mvno_type", "mvno_match_data", "read_only"}, where,
+                null, Telephony.Carriers.DEFAULT_SORT_ORDER);
 
         if (cursor != null) {
             IccRecords r = null;
@@ -257,9 +303,11 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 String type = cursor.getString(TYPES_INDEX);
                 String mvnoType = cursor.getString(MVNO_TYPE_INDEX);
                 String mvnoMatchData = cursor.getString(MVNO_MATCH_DATA_INDEX);
+                boolean readOnly = (cursor.getInt(RO_INDEX) == 1);
 
                 ApnPreference pref = new ApnPreference(getActivity());
 
+                pref.setApnReadOnly(readOnly);
                 pref.setKey(key);
                 pref.setTitle(name);
                 pref.setSummary(apn);
