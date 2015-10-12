@@ -264,8 +264,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
             // Filer fota and dm for specail carrier
             if (getResources().getBoolean(R.bool.config_hide_dm_enabled)) {
                 for (String plmn : getResources().getStringArray(R.array.hidedm_plmn_list)) {
-                    if (plmn.equals(TelephonyManager.getDefault()
-                            .getSimOperator(mSubId))) {
+                    if (plmn.equals(mccmnc)) {
                         where.append(" and name <>\"" + APN_NAME_DM + "\"");
                         break;
                     }
@@ -275,8 +274,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
             if (getResources().getBoolean(R.bool.config_hidesupl_enable)) {
                 boolean needHideSupl = false;
                 for (String plmn : getResources().getStringArray(R.array.hidesupl_plmn_list)) {
-                    if (plmn.equals(TelephonyManager.getDefault()
-                            .getSimOperator(mSubId))) {
+                    if (plmn.equals(mccmnc)) {
                         needHideSupl = true;
                         break;
                     }
