@@ -42,6 +42,15 @@
             android:persistent="false"
             android:entries="@array/night_mode_entries"
             android:entryValues="@array/night_mode_values" /> -->
+			
+         <PreferenceScreen
+            android:key="offscreen_gestures"
+            android:title="@string/offscreen_gestures_title">
+            <intent
+                    android:action="android.intent.action.MAIN"
+                    android:targetClass="org.omnirom.device.DeviceSettings"
+                    android:targetPackage="org.omnirom.device" />
+        </PreferenceScreen>
 
         <PreferenceScreen
                 android:key="wallpaper"
