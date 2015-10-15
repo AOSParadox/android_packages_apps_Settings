@@ -251,7 +251,7 @@
 	<!-- Layers -->
         <dashboard-tile
                 android:id="@+id/bitsyko_layers"
-                android:icon="@drawable/ic_bitsyko_layers_tile"
+                android:icon="@drawable/ic_bitsyko_layers"
                 android:title="@string/bitsyko_layers">     
 		<intent
                 android:action="android.intent.action.MAIN"
