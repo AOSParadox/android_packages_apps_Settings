@@ -1998,6 +1998,8 @@
     <string name="auto_brightness_title">Adaptive brightness</string>
     <!-- Sound & display settings screen, setting option summary to enable adaptive brightness [CHAR LIMIT=100] -->
     <string name="auto_brightness_summary">Optimize brightness level for available light</string>
+    <!-- Sound & display settings screen, settings for off screen gestures-->
+    <string name="offscreen_gestures_title">Off screen gestures</string>
     <!-- Sound & display settings screen, setting option name to change the user interface theme [CHAR LIMIT=30] -->
     <string name="night_mode_title">Theme</string>
     <!-- Sound & display settings screen, setting option summary to change the user interface theme [CHAR LIMIT=100] -->
