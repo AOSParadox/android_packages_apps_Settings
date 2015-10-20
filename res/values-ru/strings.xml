@@ -839,6 +839,7 @@
     <string name="brightness_summary" msgid="838917350127550703">"Настроить яркость экрана"</string>
     <string name="auto_brightness_title" msgid="6341042882350279391">"Адаптивная регулировка"</string>
     <string name="auto_brightness_summary" msgid="1799041158760605375">"Настройка яркости с учетом уровня освещенности"</string>
+    <string name="offscreen_gestures_title">Жесты на выключенном экране</string>
     <string name="night_mode_title" msgid="6928425617491943384">"Тема"</string>
     <string name="night_mode_summary" msgid="9196605054622017193">"%s"</string>
     <string name="night_mode_no" msgid="7682792841791457238">"Светлая"</string>
