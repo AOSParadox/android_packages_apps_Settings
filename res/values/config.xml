@@ -43,5 +43,4 @@
 
     <!-- Config to enable/disable ppp number in APN editor -->
     <bool name="config_ppp_enabled">false</bool>
-
 </resources>

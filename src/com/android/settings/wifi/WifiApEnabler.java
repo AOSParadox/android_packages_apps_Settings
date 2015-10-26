@@ -23,9 +23,11 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 
+import com.android.settings.HotspotPreference;
 import com.android.settings.R;
 import com.android.settingslib.TetherUtil;
 
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 
 public class WifiApEnabler {
     private final Context mContext;
-    private final SwitchPreference mSwitch;
+    private final Preference mSwitch;
     private final CharSequence mOriginalSummary;
 
     private WifiManager mWifiManager;
@@ -77,11 +79,11 @@ public class WifiApEnabler {
         }
     };
 
-    public WifiApEnabler(Context context, SwitchPreference switchPreference) {
+    public WifiApEnabler(Context context, Preference preference) {
         mContext = context;
-        mSwitch = switchPreference;
-        mOriginalSummary = switchPreference.getSummary();
-        switchPreference.setPersistent(false);
+        mSwitch = preference;
+        mOriginalSummary = preference.getSummary();
+        preference.setPersistent(false);
 
         mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         mCm = (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -179,40 +181,82 @@ public class WifiApEnabler {
     }
 
     private void handleWifiApStateChanged(int state, int reason) {
-        switch (state) {
-            case WifiManager.WIFI_AP_STATE_ENABLING:
-                mSwitch.setSummary(R.string.wifi_tether_starting);
-                mSwitch.setEnabled(false);
-                break;
-            case WifiManager.WIFI_AP_STATE_ENABLED:
-                /**
-                 * Summary on enable is handled by tether
-                 * broadcast notice
-                 */
-                mSwitch.setChecked(true);
-                /* Doesnt need the airplane check */
-                mSwitch.setEnabled(true);
-                break;
-            case WifiManager.WIFI_AP_STATE_DISABLING:
-                mSwitch.setSummary(R.string.wifi_tether_stopping);
-                mSwitch.setChecked(false);
-                mSwitch.setEnabled(false);
-                break;
-            case WifiManager.WIFI_AP_STATE_DISABLED:
-                mSwitch.setChecked(false);
-                mSwitch.setSummary(mOriginalSummary);
-                if (mWaitForWifiStateChange == false) {
+        boolean enableWifiApSettingsExt = mContext.getResources().getBoolean(
+                R.bool.show_wifi_hotspot_settings);
+        if (enableWifiApSettingsExt) {
+            HotspotPreference hSwitch = (HotspotPreference) mSwitch;
+            switch (state) {
+                case WifiManager.WIFI_AP_STATE_ENABLING:
+                    hSwitch.setSummary(R.string.wifi_tether_starting);
+                    hSwitch.setEnabled(false);
+                    break;
+                case WifiManager.WIFI_AP_STATE_ENABLED:
+                    /**
+                     * Summary on enable is handled by tether
+                     * broadcast notice
+                     */
+                    hSwitch.setChecked(true);
+                    /* Doesnt need the airplane check */
+                    hSwitch.setEnabled(true);
+                    break;
+                case WifiManager.WIFI_AP_STATE_DISABLING:
+                    hSwitch.setSummary(R.string.wifi_tether_stopping);
+                    hSwitch.setChecked(false);
+                    hSwitch.setEnabled(false);
+                    break;
+                case WifiManager.WIFI_AP_STATE_DISABLED:
+                    hSwitch.setChecked(false);
+                    hSwitch.setSummary(mOriginalSummary);
+                    if (mWaitForWifiStateChange == false) {
+                        enableWifiSwitch();
+                    }
+                    break;
+                default:
+                    hSwitch.setChecked(false);
+                    if (reason == WifiManager.SAP_START_FAILURE_NO_CHANNEL) {
+                        hSwitch.setSummary(R.string.wifi_sap_no_channel_error);
+                    } else {
+                        hSwitch.setSummary(R.string.wifi_error);
+                    }
                     enableWifiSwitch();
-                }
-                break;
-            default:
-                mSwitch.setChecked(false);
-                if (reason == WifiManager.SAP_START_FAILURE_NO_CHANNEL) {
-                    mSwitch.setSummary(R.string.wifi_sap_no_channel_error);
-                } else {
-                    mSwitch.setSummary(R.string.wifi_error);
-                }
-                enableWifiSwitch();
+            }
+        } else {
+            SwitchPreference sSwitch = (SwitchPreference) mSwitch;
+            switch (state) {
+                case WifiManager.WIFI_AP_STATE_ENABLING:
+                    sSwitch.setSummary(R.string.wifi_tether_starting);
+                    sSwitch.setEnabled(false);
+                    break;
+                case WifiManager.WIFI_AP_STATE_ENABLED:
+                    /**
+                     * Summary on enable is handled by tether
+                     * broadcast notice
+                     */
+                    sSwitch.setChecked(true);
+                    /* Doesnt need the airplane check */
+                    sSwitch.setEnabled(true);
+                    break;
+                case WifiManager.WIFI_AP_STATE_DISABLING:
+                    sSwitch.setSummary(R.string.wifi_tether_stopping);
+                    sSwitch.setChecked(false);
+                    sSwitch.setEnabled(false);
+                    break;
+                case WifiManager.WIFI_AP_STATE_DISABLED:
+                    sSwitch.setChecked(false);
+                    sSwitch.setSummary(mOriginalSummary);
+                    if (mWaitForWifiStateChange == false) {
+                        enableWifiSwitch();
+                    }
+                    break;
+                default:
+                    sSwitch.setChecked(false);
+                    if (reason == WifiManager.SAP_START_FAILURE_NO_CHANNEL) {
+                        sSwitch.setSummary(R.string.wifi_sap_no_channel_error);
+                    } else {
+                        sSwitch.setSummary(R.string.wifi_error);
+                    }
+                    enableWifiSwitch();
+            }
         }
     }
 

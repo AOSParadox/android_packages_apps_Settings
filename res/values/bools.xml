@@ -40,4 +40,25 @@
 
     <!-- Whether notify user that switch data service -->
     <bool name="confirm_to_switch_data_service">false</bool>
+
+    <!-- Whether enable get network info -->
+    <bool name="config_netinfo">false</bool>
+    <!-- Whether to hide dm apn for carrier -->
+    <bool name="config_hide_dm_enabled">true</bool>
+
+    <!-- Whether to hide SUPL apn for China Union -->
+    <bool name="config_hidesupl_enable">false</bool>
+
+    <!-- Whether to hide mms apn-->
+    <bool name="config_hide_mms_enable">false</bool>
+
+    <!-- Whether to show hotspot settings -->
+    <bool name="show_wifi_hotspot_settings">false</bool>
+
+    <!-- Whether to hide wifi hotspot -->
+    <bool name="hide_wifi_hotspot">false</bool>
+    <!-- Whether to enable 4G settings -->
+    <bool name="config_4gsettings_enabled">true</bool>
+    <!-- Whether to enable data usage selection -->
+    <bool name="config_data_usage_selection">false</bool>
 </resources>
