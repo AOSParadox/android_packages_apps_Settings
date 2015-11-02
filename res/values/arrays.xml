@@ -3,6 +3,7 @@
 /*
 **
 ** Copyright 2007 The Android Open Source Project
+** Copyright 2017 The LineageOS Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -1172,4 +1173,26 @@
         <item>8</item>
     </string-array>
 
+    <!-- Network Traffic -->
+    <string-array name="network_traffic_mode_entries" translatable="false">
+        <item>@string/network_traffic_mode_disable</item>
+        <item>@string/network_traffic_mode_up</item>
+        <item>@string/network_traffic_mode_down</item>
+        <item>@string/network_traffic_mode_all</item>
+    </string-array>
+
+    <string-array name="network_traffic_mode_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <integer-array name="network_traffic_threshold_values">
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>100</item>
+        <item>200</item>
+    </integer-array>
 </resources>

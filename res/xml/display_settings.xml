@@ -125,4 +125,10 @@
                 android:summary="%s"
                 android:title="@string/display_vr_pref_title" />
 
+        <PreferenceScreen
+                android:fragment="com.android.settings.display.NetworkTrafficSettings"
+                android:key="network_traffic_settings"
+                android:title="@string/network_traffic_settings_title"
+                android:summary="@string/network_traffic_settings_summary" />
+
 </PreferenceScreen>
