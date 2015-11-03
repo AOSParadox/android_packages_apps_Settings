@@ -238,6 +238,13 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         String where = "numeric=\""
             + mccmnc
             + "\" AND NOT (type='ia' AND (apn=\"\" OR apn IS NULL))";
+        if(getActivity().getResources().getBoolean(
+                R.bool.config_regional_hide_ims_and_dun_apns)){
+            where += " OR numeric=\"" + mccmnc + "\" AND type <>\""
+                + PhoneConstants.APN_TYPE_DUN + "\"";
+            where += " OR numeric=\"" + mccmnc + "\" AND type <>\""
+                + PhoneConstants.APN_TYPE_IMS + "\"";
+        }
 
         if (SystemProperties.getBoolean("persist.sys.hideapn", true)) {
             Log.d(TAG, "hiden apn feature enable.");
