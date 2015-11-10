@@ -92,6 +92,10 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
 
     private PreferenceScreen mButtonWfc;
 
+    private static final String VOICE_OVER_LTE = "voice_over_lte";
+    private SwitchPreference mVoLtePreference;
+    private boolean mLteEnabled = false;
+
     /**
      * Invoked on each preference click in this hierarchy, overrides
      * PreferenceFragment's implementation.  Used to make sure we track the
@@ -109,6 +113,8 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
             return true;
         } else if (preference == findPreference(KEY_MANAGE_MOBILE_PLAN)) {
             onManageMobilePlanClick();
+        } else if (mLteEnabled && preference == mVoLtePreference) {
+            ImsManager.setEnhanced4gLteModeSetting(getActivity(), mVoLtePreference.isChecked());
         }
         // Let the intents be launched by the Preference manager
         return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -354,6 +360,15 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
             PreferenceScreen root = getPreferenceScreen();
             Preference ps = findPreference(KEY_CELL_BROADCAST_SETTINGS);
             if (ps != null) root.removePreference(ps);
+        }
+
+        mLteEnabled = getActivity().getResources().getBoolean(R.bool.config_voice_over_lte_enabled);
+        mVoLtePreference = (SwitchPreference) findPreference(VOICE_OVER_LTE);
+        if (mLteEnabled) {
+            mVoLtePreference.setChecked(
+                    ImsManager.isEnhanced4gLteModeSettingEnabledByUser(getActivity()));
+        } else {
+            getPreferenceScreen().removePreference(mVoLtePreference);
         }
     }
 

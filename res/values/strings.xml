@@ -7098,4 +7098,74 @@
 
     <string name="storage_menu_cleanup">Storage Cleanup</string>
     <string name="profiles_settings_title">System profiles</string>
+    <string name="hotspot_settings_menu_help">Help</string>
+    <string name="hotspot_settings_desc">WLAN hotspot can share this phone\u2019s data Internet connection with other PC/mobile devices via WLAN.</string>
+    <string name="hotspot_settings_indication">After the WLAN hotspot is turned on, other PC/mobile devices can connect to it and start using the internet by following steps:</string>
+    <string name="hotspot_settings_indication_step1">1. Turn on WLAN on PC/Mobile device.</string>
+    <string name="hotspot_settings_indication_step2">2. Find \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d in the list of WLAN networks.</string>
+    <string name="hotspot_settings_indication_step3_ssid">3. Select \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d.</string>
+    <string name="hotspot_settings_indication_step3_all">3. Select \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d and Enter \u201d<xliff:g id="ssid_pwd">%s</xliff:g>\u201d in the password field.</string>
+    <string name="hotspot_settings_indication_step4">4. Start using the Internet on PC/Mobile device.</string>
+    <!-- begin for portable wifi hotspot setting -->
+    <string name="hotspot_turn_on_hint">To use WLAN hotspot, turn it on.</string>
+    <string name="ap_device_name_default">Anonymous</string>
+    <string name="wifi_ap_list_category">Connected Devices</string>
+    <!-- begin for Maximum Connections -->
+    <string name="maximum_connections_button_text">Maximum Connections</string>
+    <string name="maximum_connections_dialog_title_text">Set Maximum Connections</string>
+    <string name="maximum_connections_dialog_positive_text">Yes</string>
+    <string name="maximum_connections_dialog_negative_text">No</string>
+    <!-- begin for Maximum Connections -->
+    <!-- begin for add allowed devices list -->
+    <string name="allowed_devices_title">Allowed Devices</string>
+    <string name="add_allowed_devices">Add</string>
+    <string name="add_device_dialog_title">Allowed Devices List</string>
+    <string name="add_device_dialog_title">Allowed Devices List</string>
+    <string name="add_device_btn_ok">OK</string>
+    <string name="delete_device">Delete</string>
+    <string name="add_device_name_text">Device Name:</string>
+    <string name="add_device_dialog_split">:</string>
+    <string name="add_devices_summary"> allowed</string>
+    <!-- end for add allowed devices list -->
+    <!-- select hotspot working mode begin -->
+    <string name="wifi_hotspot_mode_title">Keep WiFi Hotspot on</string>
+    <!-- select hotspot working mode end -->
+    <!-- end for portable wifi hotspot setting -->
+    <!-- hide SSID selectable begin -->
+    <string name="dialog_not_show_again">Do not show again</string>
+    <string name="ssid_broadcast_dialog_title">Your HotSpot is not visible now</string>
+    <string name="ssid_broadcast_dialog_text">If you switch the Broadcast Network Name (SSID) option off, your phone will not be visible to other devices and will not appear in the list of available Wi-Fi networks. Other devices can still connect to your HotSpot by entering its network name manually.</string>
+    <string name="wifi_ap_broadcast_ssid">Broadcast network name(SSID)</string>
+    <!-- hide SSID selectable end -->
+    <!-- Account check begin -->
+    <string name="account_check_msg">Please wait while we verify your account.</string>
+    <string name="service_upgrade_title">Service upgrade required</string>
+    <string name="service_upgrade">Upgrade</string>
+    <string name="service_msg">Your current rate plan does not support sharing your phone’s data con
+nection with other devices using Mobile Wi-Fi HotSpot for internet access. Do you want to add the Sm
+artphone Mobile HotSpot service to your rate plan now? You can add it later through MyAccount applic
+ation on your phone or online at https://my.t-mobile.com under Manage > Plans and Services.</string>
+    <string name="later">Later</string>
+    <string name="tethering_no_sim_alert_title">No SIM card</string>
+    <string name="tethering_no_sim_card_text">Please install SIM card in order to share your data connection with other devices using Mobile Wi-Fi HotSpot or USB tethering for Internet access.</string>
+    <string name="turn_off_wifi_dialog_title">Turn off wifi</string>
+    <string name="turn_off_wifi_dialog_text">Wi-Fi is turned off when Mobile HotSpot is active. To turn on Wi-Fi, please turn off Mobile HotSpot.</string>
+    <string name="wifi_tether_first_use_message">Set up Wi-Fi hotspot at the First Use</string>
+    <string name="tether_settings_launch_title">Mobile HotSpot</string>
+    <string name="learn_usb_dialog_title">USB tethering is activated</string>
+    <string name="learn_usb_dialog_text">Would you like to learn more about USB Tethering on your phone?</string>
+    <string name="hotspot_password_empty_title">Warning</string>
+    <string name="hotspot_password_empty_text">You should set the password in Mobile HotSpot configuration screen, otherwise you can not open HotSpot.</string>
+    <string name="learn_hotspot_dialog_title">wifi tethering is activated</string>
+    <string name="learn_hotspot_dialog_text">Would you like to learn more about wifi Tethering on your phone?</string>
+    <string name="mobile_tether_help_dialog_title">Mobile HotSpot Help</string>
+    <string name="mobile_usb_help_dialog_text">You can tether your Android device to your computer with a USB cable, to share your device\'s Internet connection with your computer. \n\n1. USB tethering works with Windows Vista, Windows 7, and Linux, the USB drivers for tethering may be needed.\n\n2. If your device has an SD card or USB storage, you can\'t mount it on your computer when USB tethered</string>
+    <string name="mobile_hotspot_help_dialog_text">You can turn your Android device into a portable Wi-Fi hotspot, to share your Android device\'s Internet connection with one or more computers or other devices. \n\n1.When your device is serving as a Wi-Fi hotspot, you can not use your device\'s applications to access the Internet via its Wi-Fi connection (but of course you remain connected to the Internet via your mobile data network). \n\n2.You configure the hotspot with the Wi-Fi hotspot settings</string>
+    <string name="tethering_help_dialog_title">Help</string>
+    <string name="tethering_help_dialog_text"><b>USB tethering</b> \n You can tether your Android device to your computer with a USB cable, to share your device\'s Internet connection with your computer. \n\n1.USB tethering works with Windows Vista, Windows 7, Windows 8, Windows 8.1 and Linux. \n\n2.If your device has an SD card or USB storage, you can\'t mount it on your computer when USB tethered. \n\n <b>Portable Wi-Fi hotspot</b> \n You can turn your Android device into a portable Wi-Fi hotspot, to share your Android device\'s Internet connection with one or more computers or other devices. \n\n1.When your device is serving as a Wi-Fi hotspot, you can\'t use your device\'s applications to access the Internet via its Wi-Fi connection (but of course you remain connected to the Internet via your mobile data network). \n\n2.You configure the hotspot with the Wi-Fi hotspot settings.</string>
+    <!-- Account check end -->
+    <!-- show security alert for open type begin -->
+    <string name="open_security_settings_note">With Open security, any device can connect to your Mobile HotSpot and use your mobile data connection.</string>
+    <!-- show security alert for open type end -->
+    <string name="voice_over_lte">Voice over LTE</string>
 </resources>

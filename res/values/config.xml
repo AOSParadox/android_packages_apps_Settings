@@ -58,4 +58,52 @@
     <bool name="config_dds_switch_alert_dialog_supported" translatable="false">false</bool>
     <bool name="config_regional_dataUsage_enable_default">false</bool>
     <bool name="config_regional_security_show_password_enable">false</bool>
+    <!-- use divided hotspot setting ui end -->
+    <bool name="config_regional_hotspot_show_maximum_connection_enable">false</bool>
+    <bool name="config_regional_hotspot_show_broadcast_ssid_checkbox">false</bool>
+    <!-- carrier tethering account check begin -->
+    <bool name="hotspot_accout_check_enable">false</bool>
+    <string name="hotspot_accout_check_server_url">
+        http://selfhelp.geo.t-mobile.com/myaccountservice/selfhelp/hastetheringoption
+    </string>
+    <string name="hotspot_accout_up_sell_url">
+        http://offers.t-mobile.com/tethering/upsell.do
+    </string>
+    <string-array translatable="false" name="carrier_operator_list">
+        <item>310160</item>
+        <item>310200</item>
+        <item>310210</item>
+        <item>310220</item>
+        <item>310230</item>
+        <item>310240</item>
+        <item>310250</item>
+        <item>310260</item>
+        <item>310270</item>
+        <item>310280</item>
+        <item>310330</item>
+        <item>310310</item>
+        <item>310580</item>
+        <item>310660</item>
+        <item>310800</item>
+        <item>310300</item>
+        <item>31031</item>
+    </string-array>
+    <!-- carrier tethering account check end -->
+    <!-- carrier tethering default ssid and password begin -->
+    <bool name="use_empty_password_default">false</bool>
+    <bool name="hotspot_default_ssid_with_imei_enable">false</bool>
+    <!-- carrier tethering default ssid and password end -->
+    <!-- show security alert for open type begin -->
+    <bool name="hotspot_show_alert_for_open_security">false</bool>
+    <!-- show security alert for open type end -->
+    <!-- show pop up notification for turn off wifi begin -->
+    <bool name="hotspot_show_turn_off_wifi_dialog">false</bool>
+    <!-- show pop up notification for turn off wifi end -->
+    <!-- show tethering help begin -->
+    <bool name="tethering_show_help_for_first_using">false</bool>
+    <bool name="tethering_show_help_menu">false</bool>
+    <!-- show tethering help end -->
+    <!-- Config voice over lte in wireless settings begin -->
+    <bool name="config_voice_over_lte_enabled">false</bool>
+    <!-- Config voice over lte in wireless settings end -->
 </resources>
