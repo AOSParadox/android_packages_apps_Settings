@@ -43,4 +43,10 @@
 
     <!-- Config to enable/disable ppp number in APN editor -->
     <bool name="config_ppp_enabled">false</bool>
+
+    <!-- Config to show/hide Factory and carrier reset Preference UI option -->
+    <bool name="config_factory_and_carrier_reset_enabled">false</bool>
+
+    <!-- Config to whether to show carrier switching after primary sim swapped -->
+    <bool name="config_show_carrier_switching_enabled">false</bool>
 </resources>

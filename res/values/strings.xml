@@ -2641,6 +2641,8 @@
     <string name="device_reset_title">Reset device</string>
     <!-- SD card & phone storage settings screen, setting option name under Internal phone storage heading -->
     <string name="master_clear_title">Factory data reset</string>
+    <!-- SD card & phone storage settings screen, setting option name under Internal phone storage heading -->
+    <string name="master_carrier_clear_title">Factory data &amp; carrier reset</string>
     <!-- SD card & phone storage settings screen, message on screen after user selects Factory data reset [CHAR LIMIT=NONE] -->
     <string name="master_clear_desc" product="tablet">"This will erase all data from your tablet\u2019s <b>internal storage</b>, including:\n\n<li>Your Google account</li>\n<li>System and app data and settings</li>\n<li>Downloaded apps</li>"</string>
     <!-- SD card & phone storage settings screen, message on screen after user selects Factory data reset [CHAR LIMIT=NONE] -->
@@ -5931,6 +5933,7 @@
     <string name="keywords_date_and_time">clock military</string>
     <string name="keywords_network_reset">reset restore factory</string>
     <string name="keywords_factory_data_reset">wipe delete restore clear remove</string>
+    <string name="keywords_factory_and_carrier_data_reset">wipe delete restore clear remove carrier</string>
     <string name="keywords_printing">printer</string>
     <string name="keywords_sounds_and_notifications">speaker beep</string>
     <string name="keywords_sounds_and_notifications_interruptions">dont don\u2019t disturb interrupt interruption break</string>

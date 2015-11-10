@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -51,6 +52,11 @@ import java.util.List;
 
 public class SimDialogActivity extends Activity {
     private static String TAG = "SimDialogActivity";
+
+    // For carrier specific
+    private static final String ACTION_CARRIER_PREFERRED_SIM_SWAPPED =
+            "com.qualcomm.qti.loadcarrier.preferred_sim_swapped";
+    private static final String CARRIER_TARGET_SLOT = "target_slot";
 
     public static String PREFERRED_SIM = "preferred_sim";
     public static String DIALOG_TYPE_KEY = "dialog_type";
@@ -139,6 +145,17 @@ public class SimDialogActivity extends Activity {
         telecomManager.setUserSelectedOutgoingPhoneAccount(phoneAccount);
     }
 
+    private static boolean carrierSwitchingEnabled(Context context) {
+        return context.getResources().getBoolean(R.bool.config_show_carrier_switching_enabled);
+    }
+
+    private static void showCarrierSwitching(Context context, int slotId) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_CARRIER_PREFERRED_SIM_SWAPPED);
+        intent.putExtra(CARRIER_TARGET_SLOT, slotId);
+        context.sendBroadcast(intent);
+    }
+
     private PhoneAccountHandle subscriptionIdToPhoneAccountHandle(final int subId) {
         final TelecomManager telecomManager = TelecomManager.from(this);
         final TelephonyManager telephonyManager = TelephonyManager.from(this);
@@ -175,6 +192,9 @@ public class SimDialogActivity extends Activity {
                             case DATA_PICK:
                                 sir = subInfoList.get(value);
                                 setDefaultDataSubId(context, sir.getSubscriptionId());
+                                if (carrierSwitchingEnabled(context)) {
+                                    showCarrierSwitching(context, sir.getSimSlotIndex());
+                                }
                                 break;
                             case CALLS_PICK:
                                 final TelecomManager telecomManager =
