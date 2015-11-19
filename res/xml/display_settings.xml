@@ -33,6 +33,13 @@
                 android:summary="@string/auto_brightness_summary"
                 android:persistent="false" />
 
+        <SwitchPreference
+                android:key="network_operator_display"
+                android:title="@string/network_operator_display_title"
+                settings:keywords="@string/keywords_network_name_display"
+                android:summary="@string/network_name_displayed_summary"
+                android:persistent="false" />
+
         <!-- Hide night mode for now
         <ListPreference
             android:key="night_mode"
