@@ -71,6 +71,8 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
     private static final String PROPERTY_SELINUX_STATUS = "ro.build.selinux";
     private static final String KEY_KERNEL_VERSION = "kernel_version";
     private static final String KEY_BUILD_NUMBER = "build_number";
+    private static final String KEY_QGP_VERSION = "qgp_version";
+    private static final String PROPERTY_QGP_VERSION = "persist.qgp.version";
     private static final String KEY_DEVICE_MODEL = "device_model";
     private static final String KEY_SELINUX_STATUS = "selinux_status";
     private static final String KEY_BASEBAND_VERSION = "baseband_version";
@@ -128,7 +130,12 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
         setStringSummary(KEY_DEVICE_MODEL, Build.MODEL);
         setStringSummary(KEY_BUILD_NUMBER, Build.DISPLAY);
         findPreference(KEY_BUILD_NUMBER).setEnabled(true);
+        setValueSummary(KEY_QGP_VERSION, PROPERTY_QGP_VERSION);
         findPreference(KEY_KERNEL_VERSION).setSummary(getFormattedKernelVersion());
+
+        // Remove QGP Version if property is not present
+        removePreferenceIfPropertyMissing(getPreferenceScreen(), KEY_QGP_VERSION,
+                PROPERTY_QGP_VERSION);
 
         if (!SELinux.isSELinuxEnabled()) {
             String status = getResources().getString(R.string.selinux_status_disabled);
