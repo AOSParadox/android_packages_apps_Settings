@@ -63,6 +63,9 @@ public class PrivacySettings extends SettingsPreferenceFragment implements Index
     private PreferenceScreen mConfigure;
     private boolean mEnabled;
 
+    // Carrier reset specific
+    private static final String FACTORY_AND_CARRIER_RESET = "factory_and_carrier_reset";
+
     @Override
     protected int getMetricsCategory() {
         return MetricsLogger.PRIVACY;
@@ -249,5 +252,12 @@ public class PrivacySettings extends SettingsPreferenceFragment implements Index
                 UserManager.DISALLOW_NETWORK_RESET)) {
             nonVisibleKeys.add(NETWORK_RESET);
         }
+        if (!factoryAndCarrierResetEnabled(context)) {
+            nonVisibleKeys.add(FACTORY_AND_CARRIER_RESET);
+        }
+    }
+
+    private static boolean factoryAndCarrierResetEnabled(Context context) {
+        return context.getResources().getBoolean(R.bool.config_factory_and_carrier_reset_enabled);
     }
 }

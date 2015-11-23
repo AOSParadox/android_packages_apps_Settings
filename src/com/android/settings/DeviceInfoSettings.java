@@ -83,6 +83,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
     private static final String KEY_SAFETY_LEGAL = "safetylegal";
 
     static final int TAPS_TO_BE_A_DEVELOPER = 7;
+    private static boolean mHideVersionName = false;
 
     long[] mHits = new long[3];
     int mDevHitCountdown;
@@ -101,7 +102,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
+        mHideVersionName = getResources().getBoolean(R.bool.def_hide_kernel_version_name);
         addPreferencesFromResource(R.xml.device_info_settings);
 
         setStringSummary(KEY_FIRMWARE_VERSION, Build.VERSION.RELEASE);
@@ -400,9 +401,14 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
                     + " groups");
             return "Unavailable";
         }
-        return m.group(1) + "\n" +                 // 3.0.31-g6fb96c9
-            m.group(2) + " " + m.group(3) + "\n" + // x@y.com #1
-            m.group(4);                            // Thu Jun 28 11:02:39 PDT 2012
+        if (mHideVersionName) {
+            return m.group(1)+ "\n" +
+                    m.group(4);
+        } else {
+            return m.group(1) + "\n" +                     // 3.0.31-g6fb96c9
+                    m.group(2) + " " + m.group(3) + "\n" + // x@y.com #1
+                    m.group(4);                            // Thu Jun 28 11:02:39 PDT 2012
+        }
     }
 
     /**
