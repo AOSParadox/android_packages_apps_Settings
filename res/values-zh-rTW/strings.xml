@@ -2872,4 +2872,7 @@
     <string name="write_settings_description" msgid="6868293938839954623">"這項權限允許應用程式修改系統設定。"</string>
     <string name="write_settings_on" msgid="8230580416068832239">"可"</string>
     <string name="write_settings_off" msgid="5156104383386336233">"否"</string>
+
+    <!--search function for application settings-->
+    <string name="show_search_function">搜索</string>
 </resources>

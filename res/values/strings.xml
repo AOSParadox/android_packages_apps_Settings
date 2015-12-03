@@ -6998,4 +6998,7 @@
     <string name="lte_4g_switch_prompt">The phone will change from 3G/2G to 4G, some active task may be stopped</string>
     <string name="data_usage_menu_show_time_range">Show time range</string>
     <string name="data_usage_menu_hide_time_range">Hide time range</string>
+
+    <!--search function for application settings-->
+    <string name="show_search_function">Search</string>
 </resources>

@@ -22,6 +22,10 @@
         android:showAsAction="collapseActionView|ifRoom" />
 
     <item
+        android:id="@+id/show_search_application"
+        android:title="@string/show_search_function"
+        android:showAsAction="never" />
+    <item
         android:id="@+id/show_system"
         android:title="@string/menu_show_system"
         android:showAsAction="never" />

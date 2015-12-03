@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -47,6 +48,14 @@ import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.EditText;
+import android.text.BidiFormatter;
+import android.text.Editable;
+import android.text.format.Formatter;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.settings.AppHeader;
@@ -79,6 +88,8 @@ import com.android.settingslib.applications.ApplicationsState.VolumeFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Activity to pick an application that will be used to display installation information and
@@ -221,6 +232,11 @@ public class ManageApplications extends InstrumentedFragment
     private ResetAppsHelper mResetAppsHelper;
     private String mVolumeUuid;
     private String mVolumeName;
+    private boolean mSearchappEnabled;
+
+    private LinearLayout mSearchView;
+    public EditText mTextView;
+    public TextView mSearchTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -277,6 +293,8 @@ public class ManageApplications extends InstrumentedFragment
         mInvalidSizeStr = getActivity().getText(R.string.invalid_size_value);
 
         mResetAppsHelper = new ResetAppsHelper(getActivity());
+        mSearchappEnabled = getActivity().getResources().getBoolean(
+                R.bool.config_searchapp_enabled);
     }
 
 
@@ -289,6 +307,26 @@ public class ManageApplications extends InstrumentedFragment
         mRootView = inflater.inflate(R.layout.manage_applications_apps, null);
         mLoadingContainer = mRootView.findViewById(R.id.loading_container);
         mLoadingContainer.setVisibility(View.VISIBLE);
+
+        mSearchView = (LinearLayout) mRootView.findViewById(R.id.search);
+        mTextView = (EditText) mRootView.findViewById(R.id.search_prefix);
+        mSearchTitle = (TextView) mRootView.findViewById(R.id.search_title);
+        mTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.i(TAG, "onTextChanged");
+                mApplications.setFilterPrefix(mTextView.getText().toString().trim());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         mListContainer = mRootView.findViewById(R.id.list_container);
         if (mListContainer != null) {
             // Create adapter and list view here
@@ -414,6 +452,10 @@ public class ManageApplications extends InstrumentedFragment
         updateView();
         updateOptionsMenu();
         if (mApplications != null) {
+            if (!TextUtils.isEmpty(mTextView.getText().toString())) {
+                mTextView.setText("");
+            }
+            mApplications.setFilterPrefix("");
             mApplications.resume(mSortOrder);
             mApplications.updateLoading();
         }
@@ -536,6 +578,8 @@ public class ManageApplications extends InstrumentedFragment
         if (mOptionsMenu == null) {
             return;
         }
+        mOptionsMenu.findItem(R.id.show_search_application).setVisible(mSearchappEnabled);
+
         mOptionsMenu.findItem(R.id.advanced).setVisible(mListType == LIST_TYPE_MAIN);
 
         mOptionsMenu.findItem(R.id.sort_order_alpha).setVisible(mListType == LIST_TYPE_STORAGE
@@ -573,6 +617,11 @@ public class ManageApplications extends InstrumentedFragment
                         AdvancedAppSettings.class.getName(), null, R.string.configure_apps,
                         null, this, ADVANCED_SETTINGS);
                 return true;
+            case R.id.show_search_application:
+                if (mSearchappEnabled) {
+                    showInputmethod();
+                }
+                break;
             default:
                 // Handle the home button
                 return false;
@@ -693,6 +742,23 @@ public class ManageApplications extends InstrumentedFragment
 
     }
 
+    // add for new feature for search applications
+    private void showInputmethod() {
+        if (mSearchView.getVisibility() != View.VISIBLE) {
+            mSearchView.setVisibility(View.VISIBLE);
+            mTextView.requestFocus();
+            //After the interface is loaded,the inputmethod can be shown
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                public void run() {
+                    InputMethodManager inputManager = (InputMethodManager) mTextView.getContext()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(mTextView, 0);
+                }
+            }, 150);
+        }
+    }
+
     /*
      * Custom adapter implementation for the ListView
      * This adapter maintains a map for each displayed application and its properties
@@ -742,6 +808,13 @@ public class ManageApplications extends InstrumentedFragment
                 notifyDataSetChanged();
             }
         };
+
+        public void setFilterPrefix(String prefix) {
+            mCurFilterPrefix = prefix;
+            rebuild(true);
+            notifyDataSetChanged();
+            //mTab.updateStorageUsage();
+        }
 
         public ApplicationsAdapter(ApplicationsState state, ManageApplications manageApplications,
                 int filterMode) {
@@ -897,13 +970,13 @@ public class ManageApplications extends InstrumentedFragment
                 return origEntries;
             } else {
                 String prefixStr = ApplicationsState.normalize(prefix.toString());
-                final String spacePrefixStr = " " + prefixStr;
+
                 ArrayList<ApplicationsState.AppEntry> newEntries
                         = new ArrayList<ApplicationsState.AppEntry>();
                 for (int i=0; i<origEntries.size(); i++) {
                     ApplicationsState.AppEntry entry = origEntries.get(i);
                     String nlabel = entry.getNormalizedLabel();
-                    if (nlabel.startsWith(prefixStr) || nlabel.indexOf(spacePrefixStr) != -1) {
+                    if (nlabel.startsWith(prefixStr) || nlabel.indexOf(prefixStr) != -1) {
                         newEntries.add(entry);
                     }
                 }

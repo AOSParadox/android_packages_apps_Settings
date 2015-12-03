@@ -2879,4 +2879,7 @@
     <string name="lte_4g_switch_prompt">"手机将从3G/2G切换成4G网络，某些活动任务将被终止。"</string>
     <string name="data_usage_menu_show_time_range">显示时间区间</string>
     <string name="data_usage_menu_hide_time_range">隐藏时间区间</string>
+
+    <!--search function for application settings-->
+    <string name="show_search_function">搜索</string>
 </resources>

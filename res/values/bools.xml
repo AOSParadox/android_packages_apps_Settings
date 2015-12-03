@@ -61,4 +61,7 @@
     <bool name="config_4gsettings_enabled">true</bool>
     <!-- Whether to enable data usage selection -->
     <bool name="config_data_usage_selection">false</bool>
+
+    <!-- Whether to add app search function in ManageApplications activity -->
+    <bool name="config_searchapp_enabled">false</bool>
 </resources>
