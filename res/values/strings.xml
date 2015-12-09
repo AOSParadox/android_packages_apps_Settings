@@ -7112,31 +7112,13 @@
     <string name="ap_device_name_default">Anonymous</string>
     <string name="wifi_ap_list_category">Connected Devices</string>
     <!-- begin for Maximum Connections -->
-    <string name="maximum_connections_button_text">Maximum Connections</string>
     <string name="maximum_connections_dialog_title_text">Set Maximum Connections</string>
     <string name="maximum_connections_dialog_positive_text">Yes</string>
     <string name="maximum_connections_dialog_negative_text">No</string>
     <!-- begin for Maximum Connections -->
-    <!-- begin for add allowed devices list -->
-    <string name="allowed_devices_title">Allowed Devices</string>
-    <string name="add_allowed_devices">Add</string>
-    <string name="add_device_dialog_title">Allowed Devices List</string>
-    <string name="add_device_dialog_title">Allowed Devices List</string>
-    <string name="add_device_btn_ok">OK</string>
-    <string name="delete_device">Delete</string>
-    <string name="add_device_name_text">Device Name:</string>
-    <string name="add_device_dialog_split">:</string>
-    <string name="add_devices_summary"> allowed</string>
-    <!-- end for add allowed devices list -->
-    <!-- select hotspot working mode begin -->
-    <string name="wifi_hotspot_mode_title">Keep WiFi Hotspot on</string>
-    <!-- select hotspot working mode end -->
-    <!-- end for portable wifi hotspot setting -->
     <!-- hide SSID selectable begin -->
-    <string name="dialog_not_show_again">Do not show again</string>
     <string name="ssid_broadcast_dialog_title">Your HotSpot is not visible now</string>
     <string name="ssid_broadcast_dialog_text">If you switch the Broadcast Network Name (SSID) option off, your phone will not be visible to other devices and will not appear in the list of available Wi-Fi networks. Other devices can still connect to your HotSpot by entering its network name manually.</string>
-    <string name="wifi_ap_broadcast_ssid">Broadcast network name(SSID)</string>
     <!-- hide SSID selectable end -->
     <!-- Account check begin -->
     <string name="account_check_msg">Please wait while we verify your account.</string>
@@ -7192,4 +7174,131 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="alert_ct_in_wrong_slot_title">ChinaTelecom card inserted in wrong slot</string>
     <!-- Message for the dialog alerting user CT card in wrong slot -->
     <string name="alert_ct_in_wrong_slot_message">Currently only slot 1 support ChinaTelecom card, if you insert ChinaTelecom card in slot 2, it may be out of service, please re-insert ChinaTelecom card in the right slot.</string>
+    <!-- end for portable wifi hotspot setting -->
+    <string name="wifi_calling_settings_title">Wifi Calling Settings</string>
+    <string name="wifi_calling_tutorial_title">Tutorial of Wi-Fi Calling</string>
+    <string name="wifi_calling_questions_title">Questions of Wi-Fi Calling</string>
+    <string name="question_what_is_wifi_calling"> What is Wi-Fi Calling?</string>
+    <string name="answer_question_what_is_wifi_calling">Wi-Fi Calling lets you make and receive voice calls and text/multimedia messages over Wi-Fi when your phone is connected to a Wi-Fi network and registered with the MetroPCS network for Wi-Fi Calling.</string>
+    <string name="question_how_enable_wifi">How do I enable Wi-Fi?</string>
+    <string name="answer_question_how_enable_wifi">To enable Wi-Fi,use the wireless control section of your Android settings menu.</string>
+    <string name="question_how_enable_wifi_calling">How do I enable Wi-Fi Calling?</string>
+    <string name="answer_question_how_enable_wifi_calling">Be default, your phone is enabled for Wi-Fi Calling as soon as you enable the Wi-Fi radio. Wi-Fi Calling can be controlled from the Wi-Fi Calling Settings.</string>
+    <string name="question_if_use_Wifi">How do I know when I am using Wi-Fi for my calls?</string>
+    <string name="answer_question_if_use_Wifi">When your phone associates with a Wi-Fi network,it will automatically try to register with the MetroPCS network for Wi-Fi Calling. Once the registration has successfully completed you will see the Wi-Fi Calling icon in the Status Bar.You will also see the Wi-Fi Calling icon displayed in the dialer(in place of your regular calling icon) and you will briefly see a message at the top of the screen saying,Calls will be made over Wi-Fi.</string>
+    <string name="question_charge_diff_about_wifi_call">Will calls or SMS/MMS over Wi-Fi be charged differently than my cellular calls?</string>
+    <string name="answer_question_charge_diff_about_wifi_call">The primary benefit of Wi-Fi Calling is to increase your coverage in locations with Wi-Fi.Calls and messages made over Wi-Fi will be charged like cellular calls for certain plans.</string>
+    <string name="question_what_happen_without_wifi_coverage">What happens if I lose Wi-Fi coverage?</string>
+    <string name="answer_question_what_happen_without_wifi_coverage">When the handset loses Wi-Fi coverage,any active calls will drop and the phone will connect to the cellular network if possible. You will receive a prompt if your call drops due to a loss of Wi-Fi coverage.</string>
+    <string name="wifi_call_setting_title">Wi-Fi Calling</string>
+    <string name="wifi_calling_registration_success_for_user">Registration Success</string>
+    <string name="wifi_calling_registration_success_cause">Registration Success</string>
+    <string name="wifi_calling_registration_unknow_error_for_user">Unknow error</string>
+    <string name="wifi_calling_registration_unknow_cause">Unknow error</string>
+    <string name="wifi_calling_registration_error02_for_user">DNS Error</string>
+    <string name="wifi_calling_registration_error_cause_02">Unable to receive response to NAPTR query</string>
+    <string name="wifi_calling_registration_error03_for_user">DNS Error</string>
+    <string name="wifi_calling_registration_error_cause_03">Unable to receive response to SRV query</string>
+    <string name="wifi_calling_registration_error04_for_user">DNS Error</string>
+    <string name="wifi_calling_registration_error_cause_04">Unable to receive response to A query</string>
+    <string name="wifi_calling_registration_error041_for_user">DNS Error</string>
+    <string name="wifi_calling_registration_error_cause_041">ePDG Wi-Fi calling- Device is unable to resolve FQDN for the ePDG to an IP Address</string>
+    <string name="wifi_calling_registration_error05_for_user">Invalid SIM card</string>
+    <string name="wifi_calling_registration_error_cause_05">Incorrect SIM card used (ex: no UICC with GBA support being used)he error will be displayed when the SIM card inserted is not GBA capable or is not a TMO SIM card</string>
+    <string name="wifi_calling_registration_error07_for_user">Unable to connect</string>
+    <string name="wifi_calling_registration_error_cause_07">Error shown when the device experiences a Null pointer Exception error or an error local to the device before registration attempts are made</string>
+    <string name="wifi_calling_registration_error081_for_user">Unable to connect</string>
+    <string name="wifi_calling_registration_error_cause_081">Device is not able to connect to ePDG or experiences a Null pointer error or an error local to the device before registration attempts are made</string>
+    <string name="wifi_calling_registration_error082_for_user">Unable to connect</string>
+    <string name="wifi_calling_registration_error_cause_082">Device is unable to establish an IP sec tunnel with the ePDG for any reason other than timeout or certificate validation</string>
+    <string name="wifi_calling_registration_error08_for_user">Unable to connect</string>
+    <string name="wifi_calling_registration_error_cause_08">Device is unable to establish a TLS connection for reasons other than certificate verifications failures. This includes timeout to TCP connection</string>
+    <string name="wifi_calling_registration_error10_for_user">Invalid Certificate</string>
+    <string name="wifi_calling_registration_error_cause_10">Unable to validate the server certificate (this would happen if the URL for certificate revocation cannot be resolved to IP or the server cannot be reached in case of a firewall or captive portal)</string>
+    <string name="wifi_calling_registration_error101_for_user">Invalid Certificate</string>
+    <string name="wifi_calling_registration_error_cause_101">Unable to validate the server certificate for IP sec tunnel establishment</string>
+    <string name="wifi_calling_registration_error011_for_user">Invalid Certificate</string>
+    <string name="wifi_calling_registration_error_cause_011">The certificate is invalid: certificate is revoked, certificate expired</string>
+    <string name="wifi_calling_registration_error111_for_user">Invalid Certificate</string>
+    <string name="wifi_calling_registration_error_cause_111">The certificate during IP sec tunnel establishment is invalid: certificate is revoked or has expired</string>
+    <string name="wifi_calling_registration_reg91_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg91_cause">Error 500: Internal server error</string>
+    <string name="wifi_calling_registration_reg09_for_user">Missing 911 Address</string>
+    <string name="wifi_calling_registration_reg09_cause">No 911 address on file</string>
+    <string name="wifi_calling_registration_reg99_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg99_cause">All other failures</string>
+    <string name="wifi_calling_registration_reg901_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg901_cause">This will happen in case of SIM card does not exist (e.g. already deleted) from HLR/HSS</string>
+    <string name="wifi_calling_registration_reg902_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg902_cause">Non-TMO SIM in the phone or For future use, if MVNO were not allowed on our IMS network</string>
+    <string name="wifi_calling_registration_reg903_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg903_cause">IMPI and IMPU do not match or OTA to the SIM did not happen or MSISDN change in HSS will be needed</string>
+    <string name="wifi_calling_registration_reg904_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg904_cause">Error would happen if username and password used instead of SIM based authentication or Unlikely scenario, but potentially happen with tablets</string>
+    <string name="wifi_calling_registration_reg905_for_user">Unable to Connect</string>
+    <string name="wifi_calling_registration_reg905_cause">Based on EEIR check, handset is blacklisted</string>
+    <string name="wifi_calling_wizard_title">Tutorial of Wi-Fi Calling</string>
+    <string name="wifi_calling_wizard_learn_more">Learn more</string>
+    <string name="wifi_calling_help_wizard_title">Learn all about Wi-Fi Calling</string>
+    <string name="wifi_calling_wizard_content_step_1">This is tutorial of wi-fi calling. \n \"Skip\" will skip the wizard this time. \n \"Learn more\" will show more info about it</string>
+    <string name="wifi_calling_wizard_content_step_2">Wi-Fi calling lets you say goodbye to spotty coverage. With Wi-Fi calling you can send and receive calls and messages over a Wi-Fi network using your existing T-Mobile plan.  \n  There\'s no special setup needed for Wi-Fi calling.  From the Settings menu,go to Wireless and Networks and connects to a Wi-Fi networks to get started.</string>
+    <string name="wifi_calling_wizard_content_step_3">Once you see the Wi-Fi Calling icon in the status bar,your phone is ready for Wi-Fi Calling. </string>
+    <string name="wifi_calling_wizard_content_step_4">To stay on a Wi-Fi Call,remain in the range of the Wi-Fi network.You\'ll get an audible beep and a screen message letting you know when a call has dropped because you have moved out of range.</string>
+    <string name="wifi_calling_notification_title">Calls will be made over Wi-Fi</string>
+    <string name="wifi_calling_notification_subtitle">Tap here to access preferences</string>
+    <string name="ims_set_wifi_calling_preference_failed">Failed to set wifi calling preference</string>
+    <string name="wifi_call_status_disabled">Disabled</string>
+    <string name="wifi_call_status_enabling">Enabling...</string>
+    <string name="wifi_call_status_poor_wifi_signal">Poor Wi-Fi signal</string>
+    <string name="wifi_call_status_cellular_preferred">Cellular Preferred is your Connection Preference</string>
+    <string name="wifi_call_status_ready">Ready for Calls</string>
+    <string name="wifi_call_status_not_connected_wifi">Not Connected to Wi-Fi</string>
+    <string name="wifi_call_status_wifi_off">Wi-Fi Turned Off</string>
+    <string name="wifi_call_status_error_unknown">Wi-Fi Call Not Ready</string>
+
+    <string name="wifi_call_setting">Wifi Call Settings</string>
+    <string name="wifi_calling_title">Wifi Calling</string>
+    <string name="wifi_calling_summary">Enable Wifi Calling and Select Wifi Preference for Wifi Calling</string>
+    <string name="wifi_calling_preference_title">Wifi Calling Preference</string>
+    <string name="wifi_calling_preference_dialog_title">Wifi Calling Preference</string>
+    <string name="wifi_calling_preference_summary">Change the wifi calling preference</string>
+    <string name="ims_set_wifi_calling_preference_failed">Failed to set wifi calling preference</string>
+    <string name="wifi_pref_none">No Preference Selected</string>
+    <string name="wifi_preferred">Wifi Preferred</string>
+    <string name="wifi_only">Wifi Only</string>
+    <string name="cellular_preferred">Cellular Preferred</string>
+    <string name="cellular_only">Cellular Only</string>
+    <string name="wifi_help_option_tutorial">Tutorial</string>
+    <string name="wifi_help_option_top_questions">Top questions</string>
+    <string name="wifi_help_title">Help</string>
+    <string-array name="wifi_calling_preference_choices">
+        <item>@string/wifi_preferred</item>
+        <item>@string/wifi_only</item>
+        <item>@string/cellular_preferred</item>
+        <item>@string/cellular_only</item>
+    </string-array>
+    <string-array name="wifi_calling_preference_values" translatable="false">
+        <item>"1"</item>
+        <item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+    </string-array>
+    <string name="wifi_call_preferrd_setting_title">Wi-Fi Calling Preferences</string>
+    <string-array name="wifi_call_preferences_entries_title">
+        <item>Wi-Fi Preferred</item>
+        <item>Cellular Network Preferred</item>
+        <item>Never use Cellular Network</item>
+    </string-array>
+    <string-array name="wifi_call_preferences_entries_summary">
+        <item>Use Wi-Fi for calls. If Wi-Fi is unavailable, use Cellular Network. (Default)</item>
+        <item>Use Cellular Network for calls. If Cellular Network is unavailable, use Wi-Fi.</item>
+        <item>Use only Wi-Fi for calls.</item>
+    </string-array>
+    <string-array name="wifi_call_preferences_entries">
+        <item>1</item>
+        <item>3</item>
+        <item>2</item>
+    </string-array>
+    <string name="wifi_calling_settings_menu_help">Help</string>
+    <string name="wifi_calling_connection_pref_title">Connection preferences</string>
 </resources>

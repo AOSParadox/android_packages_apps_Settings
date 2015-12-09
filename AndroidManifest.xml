@@ -2581,5 +2581,47 @@
                 android:value="com.android.settings.applications.WriteSettingsDetails" />
         </activity>
 
+        <activity-alias
+            android:name=".wifi.HotspotSettings"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:clearTaskOnLaunch="true"
+            android:exported="true"
+            android:label="@string/wifi_tether_checkbox_text"
+            android:targetActivity="Settings$TetherSettingsActivity" >
+        </activity-alias>
+        <service android:name=".wifi.HotspotService" >
+            <intent-filter>
+                <action android:name="com.android.settings.wifi.HotspotService" />
+            </intent-filter>
+        </service>
+
+        <activity android:name="com.android.settings.wificall.WifiCallingWizardActivity"
+                android:label="@string/wifi_calling_wizard_title"
+                android:excludeFromRecents="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="com.android.settings.wificall.WifiCallingStatusControl">
+            <intent-filter>
+                <action android:name="com.android.wificall.TURNON"></action>
+                <action android:name="com.android.wificall.TURNOFF"></action>
+                <action android:name="com.android.wificall.ERRORCODE"></action>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"></action>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
+                <action android:name="com.android.imscontection.DISCONNECTED"></action>
+                <action android:name="android.net.wifi.RSSI_CHANGED"></action>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.android.settings.wificall.WifiCallingEnhancedSettings"
+            android:label="@string/wifi_call_setting_title">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
