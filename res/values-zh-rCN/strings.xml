@@ -2882,4 +2882,6 @@
 
     <!--search function for application settings-->
     <string name="show_search_function">搜索</string>
+    <!-- Roaming Data Settings -->
+    <string name="label_global_roaming_settings">国际漫游设置</string>
 </resources>
