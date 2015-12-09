@@ -106,4 +106,9 @@
     <!-- Config voice over lte in wireless settings begin -->
     <bool name="config_voice_over_lte_enabled">false</bool>
     <!-- Config voice over lte in wireless settings end -->
+
+    <bool name="config_regional_display_icc_id_enable">false</bool>
+    <!-- Config to enable/disable wifi call notification -->
+    <bool name="config_regional_wifi_calling_notificaion_enable">true</bool>
+    <bool name="wifi_call_enhanced_setting">true</bool>
 </resources>
