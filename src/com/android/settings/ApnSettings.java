@@ -119,6 +119,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     private boolean mUnavailable;
 
     private boolean mHideImsApn;
+    private boolean mAllowAddingApns;
 
     private final BroadcastReceiver mMobileStateReceiver = new BroadcastReceiver() {
         @Override
@@ -176,6 +177,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 getSystemService(Context.CARRIER_CONFIG_SERVICE);
         PersistableBundle b = configManager.getConfig();
         mHideImsApn = b.getBoolean(CarrierConfigManager.KEY_HIDE_IMS_APN_BOOL);
+        mAllowAddingApns = b.getBoolean(CarrierConfigManager.KEY_ALLOW_ADDING_APNS_BOOL);
     }
 
     @Override
@@ -244,24 +246,24 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         final String mccmnc = mSubscriptionInfo == null ? ""
             : tm.getIccOperatorNumericForData(mSubscriptionInfo.getSubscriptionId());
         Log.d(TAG, "mccmnc = " + mccmnc);
-        String where = "numeric=\""
-            + mccmnc
-            + "\" AND NOT (type='ia' AND (apn=\"\" OR apn IS NULL))";
+        StringBuilder where = new StringBuilder("numeric=\"" + mccmnc +
+                "\" AND NOT (type='ia' AND (apn=\"\" OR apn IS NULL)) AND user_visible!=0");
+
         if (mHideImsApn) {
-            where = where + " AND NOT (type='ims')";
+            where.append(" AND NOT (type='ims')");
         }
 
         if (SystemProperties.getBoolean("persist.sys.hideapn", true)) {
             Log.d(TAG, "hiden apn feature enable.");
             // remove the filtered items, no need to show in UI
-            where += " and type <>\"" + PhoneConstants.APN_TYPE_IA + "\"";
+            where.append(" and type <>\"" + PhoneConstants.APN_TYPE_IA + "\"");
 
             // Filer fota and dm for specail carrier
             if (getResources().getBoolean(R.bool.config_hide_dm_enabled)) {
                 for (String plmn : getResources().getStringArray(R.array.hidedm_plmn_list)) {
                     if (plmn.equals(TelephonyManager.getDefault()
                             .getSimOperator(mSubId))) {
-                        where += " and name <>\"" + APN_NAME_DM + "\"";
+                        where.append(" and name <>\"" + APN_NAME_DM + "\"");
                         break;
                     }
                 }
@@ -278,19 +280,19 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 }
 
                 if (needHideSupl) {
-                    where += " and type <>\"" + PhoneConstants.APN_TYPE_SUPL + "\"";
+                    where.append(" and type <>\"" + PhoneConstants.APN_TYPE_SUPL + "\"");
                 }
             }
 
             // Hide mms if config is true
             if (getResources().getBoolean(R.bool.config_hide_mms_enable)) {
-                where += " and type <>\"" + PhoneConstants.APN_TYPE_MMS + "\"";
+                  where.append( " and type <>\"" + PhoneConstants.APN_TYPE_MMS + "\"");
             }
         }
         Log.d(TAG, "where---" + where);
 
         Cursor cursor = getContentResolver().query(Telephony.Carriers.CONTENT_URI, new String[] {
-                "_id", "name", "apn", "type", "mvno_type", "mvno_match_data", "read_only"}, where,
+                "_id", "name", "apn", "type", "mvno_type", "mvno_match_data", "read_only"}, where.toString(),
                 null, Telephony.Carriers.DEFAULT_SORT_ORDER);
 
         if (cursor != null) {
@@ -386,10 +388,12 @@ public class ApnSettings extends SettingsPreferenceFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (!mUnavailable) {
-            menu.add(0, MENU_NEW, 0,
-                    getResources().getString(R.string.menu_new))
-                    .setIcon(android.R.drawable.ic_menu_add)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            if (mAllowAddingApns) {
+                menu.add(0, MENU_NEW, 0,
+                        getResources().getString(R.string.menu_new))
+                        .setIcon(android.R.drawable.ic_menu_add)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
             menu.add(0, MENU_RESTORE, 0,
                     getResources().getString(R.string.menu_restore))
                     .setIcon(android.R.drawable.ic_menu_upload);
