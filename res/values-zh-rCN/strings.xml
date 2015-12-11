@@ -1082,6 +1082,18 @@
     <string name="apn_protocol" msgid="3272222921649348640">"APN 协议"</string>
     <string name="apn_roaming_protocol" msgid="3386954381510788422">"APN 漫游协议"</string>
     <string name="apn_ppp_number">"PPP 拨叫号码""</string>
+    <!-- apn names for carriers -->
+    <string name="APN_NAME_CMNET">中国移动NET</string>
+    <string name="APN_NAME_CMWAP">中国移动WAP</string>
+    <string name="APN_NAME_CMMMS">中国移动彩信设置</string>
+    <string name="APN_NAME_CUWAP">沃3G手机上网</string>
+    <string name="APN_NAME_CUNET">沃3G连接互联网</string>
+    <string name="APN_NAME_CUMMS">联通彩信</string>
+    <string name="APN_NAME_CUSUPL">联通AGPS</string>
+    <string name="APN_NAME_CTNET">中国电信互联网设置 CTNET</string>
+    <string name="APN_NAME_CTWAP">中国电信WAP设置 CTWAP</string>
+    <string name="APN_NAME_CTLTE">中国电信互联网设置 ctlte</string>
+    <string name="APN_NAME_CTMMS">中国电信彩信设置 CTWAP</string>
     <string name="carrier_enabled" msgid="407655861175280806">"APN 启用/停用"</string>
     <string name="carrier_enabled_summaryOn" msgid="6338915271908057531">"APN 已启用"</string>
     <string name="carrier_enabled_summaryOff" msgid="4300790190221203756">"未启用 APN"</string>
@@ -2885,6 +2897,22 @@
     <string name="write_settings_description" msgid="6868293938839954623">"此权限允许应用修改系统设置。"</string>
     <string name="write_settings_on" msgid="8230580416068832239">"允许"</string>
     <string name="write_settings_off" msgid="5156104383386336233">"不允许"</string>
+
+    <string name="sub_deactivate_success">"禁用成功。"</string>
+    <string name="sim_enabler_summary">%1$s</string>
+    <string name="sub_deactivate_failed">"禁用失败。"</string>
+    <string name="sim_enabler_need_switch_data_service">禁用SIM卡并切换到卡<xliff:g id="slotid">%1$s</xliff:g>进行数据业务，确定？</string>
+    <string name="sub_activate_success">"启用成功。"</string>
+    <string name="sub_activate_failed">启动失败</string>
+    <string name="sim_enabler_enabling">"启用中......"</string>
+    <string name="sim_enabler_will_disable_sim_title">注意</string>
+    <string name="sim_enabler_disabling">"禁用中......"</string>
+    <string name="sim_enabler_need_disable_sim">禁用当前SIM卡，确定？</string>
+    <string name="sim_enabler_need_enable_sim">激活当前SIM卡，确定？</string>
+    <string name="sim_enabled">已启用</string>
+    <string name="sim_disabled">已禁用</string>
+    <string name="sim_missing">丢失或者错误</string>
+    <string name="sim_enabler_both_inactive">不能同时禁用两张SIM卡！</string>
 
     <string name="primary_sub_select_title">默认4G/3G SIM卡</string>
 
