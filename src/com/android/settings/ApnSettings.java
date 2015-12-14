@@ -118,7 +118,6 @@ public class ApnSettings extends SettingsPreferenceFragment implements
 
     private boolean mUnavailable;
 
-    private boolean mHideImsApn;
     private boolean mAllowAddingApns;
 
     private final BroadcastReceiver mMobileStateReceiver = new BroadcastReceiver() {
@@ -176,7 +175,6 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         CarrierConfigManager configManager = (CarrierConfigManager)
                 getSystemService(Context.CARRIER_CONFIG_SERVICE);
         PersistableBundle b = configManager.getConfig();
-        mHideImsApn = b.getBoolean(CarrierConfigManager.KEY_HIDE_IMS_APN_BOOL);
         mAllowAddingApns = b.getBoolean(CarrierConfigManager.KEY_ALLOW_ADDING_APNS_BOOL);
     }
 
@@ -246,17 +244,22 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         final String mccmnc = mSubscriptionInfo == null ? ""
             : tm.getIccOperatorNumericForData(mSubscriptionInfo.getSubscriptionId());
         Log.d(TAG, "mccmnc = " + mccmnc);
-        StringBuilder where = new StringBuilder("numeric=\"" + mccmnc +
-                "\" AND NOT (type='ia' AND (apn=\"\" OR apn IS NULL)) AND user_visible!=0");
 
-        if (mHideImsApn) {
-            where.append(" AND NOT (type='ims')");
-        }
+        StringBuilder where = new StringBuilder("numeric=\"" + mccmnc +
+                "\" AND user_visible!=0");
 
         if (SystemProperties.getBoolean("persist.sys.hideapn", true)) {
             Log.d(TAG, "hiden apn feature enable.");
             // remove the filtered items, no need to show in UI
-            where.append(" and type <>\"" + PhoneConstants.APN_TYPE_IA + "\"");
+            where.append(" AND NOT (type=<>\""
+                    + PhoneConstants.APN_TYPE_IA + "\" AND (apn=\"\" OR apn IS NULL))");
+
+            if(getResources().getBoolean(R.bool.config_regional_hide_ims_and_dun_apns)){
+                where.append(" OR numeric=\"" + mccmnc + "\" AND type <>\""
+                    + PhoneConstants.APN_TYPE_DUN + "\"");
+                where.append(" OR numeric=\"" + mccmnc + "\" AND type <>\""
+                    + PhoneConstants.APN_TYPE_IMS + "\"");
+            }
 
             // Filer fota and dm for specail carrier
             if (getResources().getBoolean(R.bool.config_hide_dm_enabled)) {

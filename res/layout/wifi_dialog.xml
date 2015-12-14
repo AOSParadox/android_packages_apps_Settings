@@ -235,7 +235,8 @@
                         android:layout_height="wrap_content"
                         style="@style/wifi_item_edit_content"
                         android:singleLine="true"
-                        android:password="true" />
+                        android:password="true"
+                        android:textAlignment="viewStart" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/show_password_layout"
@@ -358,6 +359,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             style="@style/wifi_item_edit_content"
+                            android:textAlignment="viewStart"
                             android:hint="@string/proxy_hostname_hint"
                             android:inputType="textNoSuggestions"
                             android:singleLine="true" />

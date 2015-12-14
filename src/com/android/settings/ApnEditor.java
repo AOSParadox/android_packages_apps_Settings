@@ -484,6 +484,11 @@ public class ApnEditor extends InstrumentedPreferenceActivity
                     mMvnoMatchData.setText(numeric + "x");
                 } else if (values[mvnoIndex].equals("GID")) {
                     mMvnoMatchData.setText(mTelephonyManager.getGroupIdLevel1());
+                } else if (values[mvnoIndex].equals("ICCID")) {
+                    if (mMvnoMatchDataStr != null) {
+                        Log.d(TAG, "mMvnoMatchDataStr: " + mMvnoMatchDataStr);
+                        mMvnoMatchData.setText(mMvnoMatchDataStr);
+                    }
                 }
             }
 

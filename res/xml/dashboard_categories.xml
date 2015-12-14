@@ -85,6 +85,14 @@
             android:key="@string/category_key_device"
             android:title="@string/header_category_device" >
 
+        <!-- Global roaming settings - if RoamingSettings installed. -->
+        <dashboard-tile
+            android:id="@+id/global_roaming_settings"
+            android:icon="@drawable/ic_settings_roaming"
+            android:title="@string/label_global_roaming_settings">
+            <intent android:action="com.android.action.roamingsettings"/>
+        </dashboard-tile>
+
         <!-- Home -->
         <dashboard-tile
                 android:id="@+id/home_settings"

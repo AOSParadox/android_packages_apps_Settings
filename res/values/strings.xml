@@ -7075,4 +7075,9 @@
 
     <!-- Description of feature to change color setting for the display [CHAR LIMIT=NONE] -->
     <string name="picture_color_mode_desc">Use sRGB</string>
+
+    <!--search function for application settings-->
+    <string name="show_search_function">Search</string>
+    <!-- Roaming Data Settings -->
+    <string name="label_global_roaming_settings">Roaming Settings</string>
 </resources>
