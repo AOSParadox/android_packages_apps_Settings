@@ -72,4 +72,7 @@
     <bool name="config_searchapp_enabled">false</bool>
     <!-- Whether to enable roaming settings -->
     <bool name="config_roamingsettings_enabled">false</bool>
+
+    <!-- Whether to disable the default option for USB mode selection dialog-->
+    <bool name="config_disable_usb_default_option">false</bool>
 </resources>

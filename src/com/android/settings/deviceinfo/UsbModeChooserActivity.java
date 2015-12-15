@@ -100,7 +100,9 @@ public class UsbModeChooserActivity extends Activity {
                 finish();
             }
         });
-        ((Checkable) v).setChecked(selected);
+        if (!getResources().getBoolean(R.bool.config_disable_usb_default_option)) {
+            ((Checkable) v).setChecked(selected);
+        }
         container.addView(v);
     }
 
