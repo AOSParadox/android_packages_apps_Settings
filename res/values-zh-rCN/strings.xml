@@ -2917,6 +2917,6 @@
     <string name="show_search_function">搜索</string>
     <!-- Roaming Data Settings -->
     <string name="label_global_roaming_settings">国际漫游设置</string>
-
     <string name="storage_menu_cleanup">垃圾清理</string>
+    <string name="profiles_settings_title">情景模式</string>
 </resources>

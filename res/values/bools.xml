@@ -78,4 +78,6 @@
 
     <!-- Whether add storage cleanup menu in storage setting-->
     <bool name="enable_storage_cleanup">false</bool>
+    <!-- Whether to enable system profiles -->
+    <bool name="config_profiles_enabled">false</bool>
 </resources>
