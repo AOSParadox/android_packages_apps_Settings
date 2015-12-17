@@ -251,14 +251,12 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         if (SystemProperties.getBoolean("persist.sys.hideapn", true)) {
             Log.d(TAG, "hiden apn feature enable.");
             // remove the filtered items, no need to show in UI
-            where.append(" AND NOT (type=<>\""
+            where.append(" AND NOT (type=\""
                     + PhoneConstants.APN_TYPE_IA + "\" AND (apn=\"\" OR apn IS NULL))");
 
             if(getResources().getBoolean(R.bool.config_regional_hide_ims_and_dun_apns)){
-                where.append(" OR numeric=\"" + mccmnc + "\" AND type <>\""
-                    + PhoneConstants.APN_TYPE_DUN + "\"");
-                where.append(" OR numeric=\"" + mccmnc + "\" AND type <>\""
-                    + PhoneConstants.APN_TYPE_IMS + "\"");
+                where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_DUN + "\"");
+                where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_IMS + "\"");
             }
 
             // Filer fota and dm for specail carrier
