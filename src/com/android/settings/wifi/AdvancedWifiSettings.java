@@ -61,6 +61,7 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
     private static final String KEY_CURRENT_IP_ADDRESS = "current_ip_address";
     private static final String KEY_FREQUENCY_BAND = "frequency_band";
     private static final String KEY_NOTIFY_OPEN_NETWORKS = "notify_open_networks";
+    private static final String KEY_ENABLE_HS2 = "enable_hs2";
     private static final String KEY_SLEEP_POLICY = "sleep_policy";
     private static final String KEY_INSTALL_CREDENTIALS = "install_credentials";
     private static final String KEY_WIFI_ASSISTANT = "wifi_assistant";
@@ -70,6 +71,8 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
 
     private static final String KEY_CURRENT_GATEWAY = "current_gateway";
     private static final String KEY_CURRENT_NETMASK = "current_netmask";
+    private static final int WIFI_HS2_ENABLED = 1;
+    private static final int WIFI_HS2_DISABLED = 0;
 
     private static final String KEY_PRIORITY_SETTINGS = "wifi_priority_settings";
 
@@ -159,6 +162,17 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
         notifyOpenNetworks.setChecked(Settings.Global.getInt(getContentResolver(),
                 Settings.Global.WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON, 0) == 1);
         notifyOpenNetworks.setEnabled(mWifiManager.isWifiEnabled());
+
+        SwitchPreference enableHs2 =
+            (SwitchPreference) findPreference(KEY_ENABLE_HS2);
+        if (getResources().getBoolean(
+            com.android.internal.R.bool.config_passpoint_setting_on)) {
+            enableHs2.setChecked(Settings.Global.getInt(
+                getContentResolver(),
+                Settings.Global.WIFI_HOTSPOT2_ENABLED, WIFI_HS2_DISABLED) == WIFI_HS2_ENABLED);
+        } else {
+            getPreferenceScreen().removePreference(enableHs2);
+        }
 
         Intent intent = new Intent(Credentials.INSTALL_AS_USER_ACTION);
         intent.setClassName("com.android.certinstaller",
@@ -399,6 +413,10 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
         if (KEY_NOTIFY_OPEN_NETWORKS.equals(key)) {
             Global.putInt(getContentResolver(),
                     Settings.Global.WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON,
+                    ((SwitchPreference) preference).isChecked() ? 1 : 0);
+        } else if (KEY_ENABLE_HS2.equals(key)) {
+            Global.putInt(getContentResolver(),
+                    Settings.Global.WIFI_HOTSPOT2_ENABLED,
                     ((SwitchPreference) preference).isChecked() ? 1 : 0);
         } else {
             return super.onPreferenceTreeClick(screen, preference);
