@@ -42,7 +42,8 @@ public class UsbModeChooserActivity extends Activity {
         UsbBackend.MODE_POWER_SOURCE | UsbBackend.MODE_DATA_NONE,
         UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MTP,
         UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_PTP,
-        UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MIDI
+        UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MIDI,
+        UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_TETHERING
     };
 
     private UsbBackend mBackend;
@@ -77,9 +78,13 @@ public class UsbModeChooserActivity extends Activity {
 
         mBackend = new UsbBackend(this);
         int current = mBackend.getCurrentMode();
+        int dataTetherMode = UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_TETHERING;
         for (int i = 0; i < DEFAULT_MODES.length; i++) {
             if (mBackend.isModeSupported(DEFAULT_MODES[i])) {
-                inflateOption(DEFAULT_MODES[i], current == DEFAULT_MODES[i], container);
+               if (getResources().getBoolean(
+                        R.bool.config_regional_usb_tethering_quick_start_enable)
+                        || (dataTetherMode != DEFAULT_MODES[i]))
+                    inflateOption(DEFAULT_MODES[i], current == DEFAULT_MODES[i], container);
             }
         }
     }
@@ -118,6 +123,8 @@ public class UsbModeChooserActivity extends Activity {
                 return R.string.usb_use_photo_transfers_desc;
             case UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MIDI:
                 return R.string.usb_use_MIDI_desc;
+            case UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_TETHERING:
+                return R.string.usb_tethering_desc;
         }
         return 0;
     }
@@ -134,6 +141,8 @@ public class UsbModeChooserActivity extends Activity {
                 return R.string.usb_use_photo_transfers;
             case UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MIDI:
                 return R.string.usb_use_MIDI;
+            case UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_TETHERING:
+                return R.string.usb_tethering_title;
         }
         return 0;
     }

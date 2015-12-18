@@ -23,17 +23,21 @@ import android.hardware.usb.UsbPort;
 import android.hardware.usb.UsbPortStatus;
 import android.os.UserManager;
 
+import com.android.settings.R;
+import com.android.settings.TetherSettings;
+
 public class UsbBackend {
 
     private static final int MODE_POWER_MASK  = 0x01;
     public static final int MODE_POWER_SINK   = 0x00;
     public static final int MODE_POWER_SOURCE = 0x01;
 
-    private static final int MODE_DATA_MASK  = 0x03 << 1;
+    private static final int MODE_DATA_MASK  = 0x07 << 1;
     public static final int MODE_DATA_NONE   = 0x00 << 1;
     public static final int MODE_DATA_MTP    = 0x01 << 1;
     public static final int MODE_DATA_PTP    = 0x02 << 1;
     public static final int MODE_DATA_MIDI   = 0x03 << 1;
+    public static final int MODE_DATA_TETHERING   = 0x04 << 1;
 
     private final boolean mRestricted;
 
@@ -43,8 +47,11 @@ public class UsbBackend {
     private UsbPortStatus mPortStatus;
 
     private boolean mIsUnlocked;
+    private boolean mTetheringEnabled;
+    private Context mContext;
 
     public UsbBackend(Context context) {
+        mContext = context;
         Intent intent = context.registerReceiver(null,
                 new IntentFilter(UsbManager.ACTION_USB_STATE));
         mIsUnlocked = intent.getBooleanExtra(UsbManager.USB_DATA_UNLOCKED, false);
@@ -52,6 +59,8 @@ public class UsbBackend {
         mUserManager = UserManager.get(context);
         mUsbManager = context.getSystemService(UsbManager.class);
 
+        mTetheringEnabled = context.getResources().getBoolean(
+                R.bool.config_regional_usb_tethering_quick_start_enable);
         mRestricted = mUserManager.hasUserRestriction(UserManager.DISALLOW_USB_FILE_TRANSFER);
         UsbPort[] ports = mUsbManager.getPorts();
         // For now look for a connected port, in the future we should identify port in the
@@ -77,6 +86,10 @@ public class UsbBackend {
     }
 
     public int getUsbDataMode() {
+        if (mTetheringEnabled
+                && mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_RNDIS)) {
+            return MODE_DATA_TETHERING;
+        }
         if (!mIsUnlocked) {
             return MODE_DATA_NONE;
         } else if (mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_MTP)) {
@@ -102,6 +115,11 @@ public class UsbBackend {
             case MODE_DATA_MIDI:
                 mUsbManager.setCurrentFunction(UsbManager.USB_FUNCTION_MIDI);
                 mUsbManager.setUsbDataUnlocked(true);
+                break;
+            case MODE_DATA_TETHERING:
+                Intent intent = new Intent();
+                intent.setClass(mContext, TetherSettings.class);
+                mContext.startActivity(intent);
                 break;
             default:
                 mUsbManager.setCurrentFunction(null);
