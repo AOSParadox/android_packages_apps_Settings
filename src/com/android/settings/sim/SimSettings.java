@@ -227,7 +227,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         log("[updateSmsValues] isSMSPrompt: " + isSMSPrompt);
         if (isSMSPrompt || sir == null) {
             simPref.setSummary(mContext.getResources().getString(
-                    R.string.sim_sms_ask_first_prefs_title));
+                    R.string.sim_calls_ask_first_prefs_title));
         } else {
             simPref.setSummary(sir.getDisplayName());
         }
