@@ -7285,18 +7285,18 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     </string-array>
     <string name="wifi_call_preferrd_setting_title">Wi-Fi Calling Preferences</string>
     <string-array name="wifi_call_preferences_entries_title">
-        <item>Wi-Fi Preferred</item>
-        <item>Cellular Network Preferred</item>
         <item>Never use Cellular Network</item>
+        <item>Cellular Network Preferred</item>
+        <item>Wi-Fi Preferred</item>
     </string-array>
     <string-array name="wifi_call_preferences_entries_summary">
-        <item>Use Wi-Fi for calls. If Wi-Fi is unavailable, use Cellular Network. (Default)</item>
-        <item>Use Cellular Network for calls. If Cellular Network is unavailable, use Wi-Fi.</item>
         <item>Use only Wi-Fi for calls.</item>
+        <item>Use Cellular Network for calls. If Cellular Network is unavailable, use Wi-Fi.</item>
+        <item>Use Wi-Fi for calls. If Wi-Fi is unavailable, use Cellular Network. (Default)</item>
     </string-array>
     <string-array name="wifi_call_preferences_entries">
+        <item>0</item>
         <item>1</item>
-        <item>3</item>
         <item>2</item>
     </string-array>
     <string name="wifi_calling_settings_menu_help">Help</string>
