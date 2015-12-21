@@ -405,6 +405,7 @@ public class WifiCallSwitchPreference extends SwitchPreference {
          if (wificallEnabled) {
              if(DEBUG) Log.d(TAG, "Config default setting when first time use wificall");
              mState = WifiCallingStatusControl.WifiCallingValueConstants.ON;
+             wifiCallingStatus = mState;
              mPreference = WifiCallingStatusControl.WifiCallingPreference.WIFI_PREFERRED;
              syncUserSetting2Modem(mState, mPreference);
          } else {
