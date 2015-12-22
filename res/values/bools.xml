@@ -99,4 +99,6 @@
 
     <!-- Whether to switch wifi to data -->
     <bool name="wifi_to_cell">false</bool>
+    <!-- Whether to enable app network access control -->
+    <bool name="config_app_network_access_enabled">false</bool>
 </resources>

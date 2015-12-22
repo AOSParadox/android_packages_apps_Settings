@@ -2968,4 +2968,5 @@
     <string name="alert_ct_in_wrong_slot_message">当前仅卡槽一支持中国电信卡，如果中国电信卡插入卡槽二可能会无服务，请重新插入正确的卡槽。</string>
     <string name="qtifeedback_settings_title">硬件反馈</string>
     <string name="qtifeedback_settings_subtitle">Qualcomm Technologies 报告</string>
+    <string name="app_ops_permiss_name">应用联网限制</string>
 </resources>
