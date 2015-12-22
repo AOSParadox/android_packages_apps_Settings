@@ -40,6 +40,10 @@ import android.text.format.Formatter;
 import android.text.format.Formatter.BytesResult;
 import android.util.Log;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.content.ActivityNotFoundException;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.settings.R;
@@ -62,9 +66,13 @@ public class StorageSettings extends SettingsPreferenceFragment implements Index
 
     private static final String TAG_VOLUME_UNMOUNTED = "volume_unmounted";
     private static final String TAG_DISK_INIT = "disk_init";
+    private static final String STORAGE_CLEANUP_PACKAGE = "com.qti.storagecleaner";
+    private static final String STORAGE_CLENUP_CLASS = "com.qti.storagecleaner.CleanerActivity";
 
     static final int COLOR_PUBLIC = Color.parseColor("#ff9e9e9e");
     static final int COLOR_WARNING = Color.parseColor("#fff4511e");
+
+    private final int MENU_STORAGE_CLEANUP = Menu.FIRST;
 
     static final int[] COLOR_PRIVATE = new int[] {
             Color.parseColor("#ff26a69a"),
@@ -280,6 +288,35 @@ public class StorageSettings extends SettingsPreferenceFragment implements Index
         }
 
         return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (getResources().getBoolean(R.bool.enable_storage_cleanup)) {
+            menu.add(0, MENU_STORAGE_CLEANUP, 0, R.string.storage_menu_cleanup)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.storage_cleanup:
+                startStorageCleanupActivity();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startStorageCleanupActivity() {
+        try {
+            Intent i = new Intent();
+            i.setClassName(STORAGE_CLEANUP_PACKAGE, STORAGE_CLENUP_CLASS);
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Can't start storage cleanup activity");
+        }
     }
 
     public static class MountTask extends AsyncTask<Void, Void, Exception> {

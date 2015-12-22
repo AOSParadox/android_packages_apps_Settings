@@ -85,6 +85,8 @@ public class PrivateVolumeSettings extends SettingsPreferenceFragment {
     private static final String TAG_CONFIRM_CLEAR_CACHE = "confirmClearCache";
 
     private static final String AUTHORITY_MEDIA = "com.android.providers.media.documents";
+    private static final String STORAGE_CLEANUP_PACKAGE = "com.qti.storagecleaner";
+    private static final String STORAGE_CLENUP_CLASS = "com.qti.storagecleaner.CleanerActivity";
 
     private static final int[] ITEMS_NO_SHOW_SHARED = new int[] {
             R.string.storage_detail_apps,
@@ -327,6 +329,9 @@ public class PrivateVolumeSettings extends SettingsPreferenceFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        final MenuItem cleanup = menu.findItem(R.id.storage_cleanup);
+        cleanup.setVisible(getResources().getBoolean(R.bool.enable_storage_cleanup));
+
         if (!isVolumeValid()) return;
 
         final MenuItem rename = menu.findItem(R.id.storage_rename);
@@ -385,8 +390,21 @@ public class PrivateVolumeSettings extends SettingsPreferenceFragment {
                 intent.putExtra(VolumeInfo.EXTRA_VOLUME_ID, mVolume.getId());
                 startActivity(intent);
                 return true;
+            case R.id.storage_cleanup:
+                startStorageCleanupActivity();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startStorageCleanupActivity() {
+        try {
+            Intent i = new Intent();
+            i.setClassName(STORAGE_CLEANUP_PACKAGE, STORAGE_CLENUP_CLASS);
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "Can't start storage cleanup activity");
+        }
     }
 
     @Override
