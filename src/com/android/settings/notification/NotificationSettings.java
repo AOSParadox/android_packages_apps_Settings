@@ -75,7 +75,6 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
     private static final String KEY_RING_VOLUME = "ring_volume";
     private static final String KEY_NOTIFICATION_VOLUME = "notification_volume";
     private static final String KEY_PHONE_RINGTONE = "ringtone";
-    private static final String KEY_MULTISIM_RINGTONE = "multisim_ringtone";
     private static final String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
     private static final String KEY_VIBRATE_WHEN_RINGING = "vibrate_when_ringing";
     private static final String KEY_WIFI_DISPLAY = "wifi_display";
@@ -303,15 +302,6 @@ public class NotificationSettings extends SettingsPreferenceFragment implements 
 
     private void initRingtones(PreferenceCategory root) {
         mPhoneRingtonePreference = root.findPreference(KEY_PHONE_RINGTONE);
-        Preference mMultiSimRingtonePreference
-            = root.findPreference(KEY_MULTISIM_RINGTONE);
-        if (TelephonyManager.getDefault().isMultiSimEnabled()) {
-            root.removePreference(mPhoneRingtonePreference);
-            mPhoneRingtonePreference = mMultiSimRingtonePreference;
-        } else {
-            root.removePreference(mMultiSimRingtonePreference);
-            mMultiSimRingtonePreference = null;
-        }
 
         if (mPhoneRingtonePreference != null && !mVoiceCapable) {
             root.removePreference(mPhoneRingtonePreference);
