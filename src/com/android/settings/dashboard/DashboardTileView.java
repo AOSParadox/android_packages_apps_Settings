@@ -18,6 +18,7 @@ package com.android.settings.dashboard;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,6 +125,12 @@ public class DashboardTileView extends FrameLayout implements View.OnClickListen
             if (null != mSwitch) {
                 mSwitch.setChecked(!mSwitch.isChecked());
             }
+        } else if (mTile.getTitle(getResources()).equals(
+                getResources().getString(R.string.profiles_settings_title))) {
+            Intent i = new Intent();
+            i.setAction("com.codeaurora.STARTPROFILE");
+            i.setPackage("com.android.profile");
+            getContext().startActivity(i);
         }
     }
 }

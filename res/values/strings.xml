@@ -7080,4 +7080,5 @@
     <string name="label_global_roaming_settings">Roaming Settings</string>
 
     <string name="storage_menu_cleanup">Storage Cleanup</string>
+    <string name="profiles_settings_title">System profiles</string>
 </resources>

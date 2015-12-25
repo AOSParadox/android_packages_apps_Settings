@@ -1256,6 +1256,11 @@ public class SettingsActivity extends Activity
                     if (!getResources().getBoolean(R.bool.config_4gsettings_enabled)) {
                         removeTile = true;
                     }
+                }
+                else if (id == R.id.profile_settings) {
+                    if (!getResources().getBoolean(R.bool.config_profiles_enabled)) {
+                        removeTile = true;
+                    }
                 } else if (id == R.id.data_usage_settings) {
                     // Remove data usage when kernel module not enabled
                     if (!Utils.isBandwidthControlEnabled()) {
