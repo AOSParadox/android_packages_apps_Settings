@@ -50,6 +50,10 @@
     <!-- Config to whether to show carrier switching after primary sim swapped -->
     <bool name="config_show_carrier_switching_enabled">false</bool>
 
+
     <!-- Whether to hide IMS and DUN Apns -->
     <bool name="config_regional_hide_ims_and_dun_apns">false</bool>
+
+    <!-- DDS Switch setting -->
+    <bool name="config_dds_switch_alert_dialog_supported" translatable="false">false</bool>
 </resources>
