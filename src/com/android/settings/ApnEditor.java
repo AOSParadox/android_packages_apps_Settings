@@ -157,6 +157,7 @@ public class ApnEditor extends InstrumentedPreferenceActivity
     private static final int MVNO_MATCH_DATA_INDEX = 22;
     private static final int PPP_NUMBER_INDEX = 23;
 
+    private static final int DEFAULT_IPV4V6_INDEX = 2;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -309,7 +310,11 @@ public class ApnEditor extends InstrumentedPreferenceActivity
                 mAuthType.setValue(null);
             }
 
-            mProtocol.setValue(mCursor.getString(PROTOCOL_INDEX));
+            if (mNewApn && getResources().getBoolean(R.bool.config_default_apn_for_new)) {
+                mProtocol.setValueIndex(DEFAULT_IPV4V6_INDEX);
+            } else {
+                mProtocol.setValue(mCursor.getString(PROTOCOL_INDEX));
+            }
             mRoamingProtocol.setValue(mCursor.getString(ROAMING_PROTOCOL_INDEX));
             mCarrierEnabled.setChecked(mCursor.getInt(CARRIER_ENABLED_INDEX)==1);
             mBearerInitialVal = mCursor.getInt(BEARER_INDEX);

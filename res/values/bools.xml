@@ -80,4 +80,7 @@
     <bool name="enable_storage_cleanup">false</bool>
     <!-- Whether to enable system profiles -->
     <bool name="config_profiles_enabled">false</bool>
+
+    <!-- Whether to enable the default option to ipv4/v6 for creating new APN -->
+    <bool name="config_default_apn_for_new">false</bool>
 </resources>
