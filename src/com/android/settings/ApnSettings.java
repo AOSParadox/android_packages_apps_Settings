@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -318,6 +319,10 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 String mvnoType = cursor.getString(MVNO_TYPE_INDEX);
                 String mvnoMatchData = cursor.getString(MVNO_MATCH_DATA_INDEX);
                 boolean readOnly = (cursor.getInt(RO_INDEX) == 1);
+                String localizedName = getLocalizedName(getActivity(), cursor, NAME_INDEX);
+                if (!TextUtils.isEmpty(localizedName)) {
+                    name = localizedName;
+                }
 
                 ApnPreference pref = new ApnPreference(getActivity());
 
@@ -367,6 +372,23 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 apnList.addPreference(preference);
             }
         }
+    }
+
+    public static String getLocalizedName(Context context, Cursor cursor, int index) {
+        // If can find a localized name, replace the APN name with it
+        String resName = cursor.getString(index);
+        String localizedName = null;
+        if (resName != null && !resName.isEmpty()) {
+            int resId = context.getResources().getIdentifier(resName, "string",
+                    context.getPackageName());
+            try {
+                localizedName = context.getResources().getString(resId);
+                Log.d(TAG, "Replaced apn name with localized name");
+            } catch (NotFoundException e) {
+                Log.e(TAG, "Got execption while getting the localized apn name.", e);
+            }
+        }
+        return localizedName;
     }
 
     private void addApnToList(ApnPreference pref, ArrayList<ApnPreference> mnoList,
