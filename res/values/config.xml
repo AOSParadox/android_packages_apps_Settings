@@ -62,13 +62,10 @@
     <bool name="config_regional_hotspot_show_maximum_connection_enable">false</bool>
     <bool name="config_regional_hotspot_show_broadcast_ssid_checkbox">false</bool>
     <!-- carrier tethering account check begin -->
+    <bool name="edit_hotspot_timeout_enable">false</bool>
     <bool name="hotspot_accout_check_enable">false</bool>
-    <string name="hotspot_accout_check_server_url">
-        http://selfhelp.geo.t-mobile.com/myaccountservice/selfhelp/hastetheringoption
-    </string>
-    <string name="hotspot_accout_up_sell_url">
-        http://offers.t-mobile.com/tethering/upsell.do
-    </string>
+    <string name="hotspot_accout_check_server_url"></string>
+    <string name="hotspot_accout_up_sell_url"></string>
     <string-array translatable="false" name="carrier_operator_list">
         <item>310160</item>
         <item>310200</item>
