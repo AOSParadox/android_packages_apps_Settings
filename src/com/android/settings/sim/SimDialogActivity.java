@@ -66,6 +66,8 @@ public class SimDialogActivity extends Activity {
     private IExtTelephony mExtTelephony = IExtTelephony.Stub.
             asInterface(ServiceManager.getService("extphone"));
 
+    private static final String SETTING_USER_PREF_DATA_SUB = "user_preferred_data_sub";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +109,7 @@ public class SimDialogActivity extends Activity {
                     PhoneAccountHandle phoneAccountHandle =
                             subscriptionIdToPhoneAccountHandle(subId);
                     setDefaultDataSubId(context, subId);
+                    setUserPrefDataSubIdInDb(subId);
                     setDefaultSmsSubId(context, subId);
                     setUserSelectedOutgoingPhoneAccount(phoneAccountHandle);
                     finish();
@@ -130,6 +133,12 @@ public class SimDialogActivity extends Activity {
         final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         subscriptionManager.setDefaultDataSubId(subId);
         Toast.makeText(context, R.string.data_switch_started, Toast.LENGTH_LONG).show();
+    }
+
+    private void setUserPrefDataSubIdInDb(int subId) {
+        android.provider.Settings.Global.putInt(getContentResolver(),
+                SETTING_USER_PREF_DATA_SUB, subId);
+        Log.d(TAG, "updating data subId: " + subId + " in DB");
     }
 
     private static void setDefaultSmsSubId(final Context context, final int subId) {
@@ -184,6 +193,7 @@ public class SimDialogActivity extends Activity {
                                            preferredSubID, defaultDataSubId);
                                     if (ddsalertDisplayed == false) {
                                         setDefaultDataSubId(context, preferredSubID);
+                                        setUserPrefDataSubIdInDb(preferredSubID);
                                     }
                                 }
                                 break;
@@ -446,6 +456,7 @@ public class SimDialogActivity extends Activity {
                 public void onClick(DialogInterface dialog, int id) {
                     Log.d(TAG, "Switch DDS to subId: " + subId );
                     subscriptionManager.setDefaultDataSubId(subId);
+                    setUserPrefDataSubIdInDb(subId);
                     Toast.makeText(context, R.string.data_switch_started, Toast.LENGTH_LONG)
                             .show();
                     finish();
