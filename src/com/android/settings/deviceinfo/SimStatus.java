@@ -100,7 +100,8 @@ public class SimStatus extends InstrumentedPreferenceActivity {
     private Resources mRes;
     private Preference mSignalStrength;
     private SubscriptionInfo mSir;
-    private boolean mShowLatestAreaInfo;
+    private boolean mShowLatestAreaInfo = true; //Correct value updated at updatePreference()
+    private Preference mCbAreaInfoPref;
 
     // Default summary for items
     private String mDefaultText;
@@ -111,7 +112,7 @@ public class SimStatus extends InstrumentedPreferenceActivity {
     private List<SubscriptionInfo> mSelectableSubInfos;
 
     private PhoneStateListener mPhoneStateListener;
-    private BroadcastReceiver mAreaInfoReceiver = new BroadcastReceiver() {
+    private class AreaInfoReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -129,7 +130,8 @@ public class SimStatus extends InstrumentedPreferenceActivity {
                 }
             }
         }
-    };
+    }
+    AreaInfoReceiver mAreaInfoReceiver = null;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -144,6 +146,7 @@ public class SimStatus extends InstrumentedPreferenceActivity {
         mDefaultText = mRes.getString(R.string.device_info_default);
         // Note - missing in zaku build, be careful later...
         mSignalStrength = findPreference(KEY_SIGNAL_STRENGTH);
+        mCbAreaInfoPref = findPreference(KEY_LATEST_AREA_INFO);
 
         if (mSelectableSubInfos == null) {
             mSir = null;
@@ -188,16 +191,7 @@ public class SimStatus extends InstrumentedPreferenceActivity {
                     PhoneStateListener.LISTEN_DATA_CONNECTION_STATE
                     | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS
                     | PhoneStateListener.LISTEN_SERVICE_STATE);
-            if (mShowLatestAreaInfo) {
-                registerReceiver(mAreaInfoReceiver, new IntentFilter(CB_AREA_INFO_RECEIVED_ACTION),
-                        CB_AREA_INFO_SENDER_PERMISSION, null);
-                // Ask CellBroadcastReceiver to broadcast the latest area info received
-                Intent getLatestIntent = new Intent(GET_LATEST_CB_AREA_INFO_ACTION);
-                getLatestIntent.putExtra(PhoneConstants.SUBSCRIPTION_KEY,
-                        mSir.getSubscriptionId());
-                sendBroadcastAsUser(getLatestIntent, UserHandle.ALL,
-                        CB_AREA_INFO_SENDER_PERMISSION);
-            }
+            queryCbAreaInfoIfneeded();
         }
     }
 
@@ -209,8 +203,26 @@ public class SimStatus extends InstrumentedPreferenceActivity {
             mTelephonyManager.listen(mPhoneStateListener,
                     PhoneStateListener.LISTEN_NONE);
         }
-        if (mShowLatestAreaInfo) {
+        if (mAreaInfoReceiver != null) {
             unregisterReceiver(mAreaInfoReceiver);
+            mAreaInfoReceiver = null;
+        }
+    }
+
+    private void queryCbAreaInfoIfneeded() {
+        if (mShowLatestAreaInfo) {
+            Log.d(TAG, "querying area info");
+            if (mAreaInfoReceiver == null) {
+                mAreaInfoReceiver = new AreaInfoReceiver();
+                registerReceiver(mAreaInfoReceiver, new IntentFilter(CB_AREA_INFO_RECEIVED_ACTION),
+                        CB_AREA_INFO_SENDER_PERMISSION, null);
+            }
+            // Ask CellBroadcastReceiver to broadcast the latest area info received
+            Intent getLatestIntent = new Intent(GET_LATEST_CB_AREA_INFO_ACTION);
+            getLatestIntent.putExtra(PhoneConstants.SUBSCRIPTION_KEY,
+                    mSir.getSubscriptionId());
+            sendBroadcastAsUser(getLatestIntent, UserHandle.ALL,
+                    CB_AREA_INFO_SENDER_PERMISSION);
         }
     }
 
@@ -356,11 +368,12 @@ public class SimStatus extends InstrumentedPreferenceActivity {
     }
 
     private void updatePreference() {
+        boolean showLatestAreaInfo = false;
         if (mPhone.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
             // only show area info when SIM country is Brazil
             if (COUNTRY_ABBREVIATION_BRAZIL.equals(mTelephonyManager.getSimCountryIso(
                             mSir.getSubscriptionId()))) {
-                mShowLatestAreaInfo = true;
+                showLatestAreaInfo = true;
             }
         }
 
@@ -376,8 +389,13 @@ public class SimStatus extends InstrumentedPreferenceActivity {
 
         setSummaryText(KEY_IMEI_SV, mPhone.getDeviceSvn());
 
-        if (!mShowLatestAreaInfo) {
-            removePreferenceFromScreen(KEY_LATEST_AREA_INFO);
+        if (showLatestAreaInfo != mShowLatestAreaInfo && mCbAreaInfoPref != null) {
+            if (showLatestAreaInfo) {
+                getPreferenceScreen().addPreference(mCbAreaInfoPref);
+            } else {
+                getPreferenceScreen().removePreference(mCbAreaInfoPref);
+            }
+            mShowLatestAreaInfo = showLatestAreaInfo;
         }
     }
 
@@ -437,6 +455,7 @@ public class SimStatus extends InstrumentedPreferenceActivity {
             updateDataState();
             updateNetworkType();
             updatePreference();
+            queryCbAreaInfoIfneeded();
         }
     };
 
