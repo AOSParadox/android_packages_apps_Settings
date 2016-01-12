@@ -53,6 +53,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.telephony.OperatorSimInfo;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.settings.RestrictedSettingsFragment;
 import com.android.settings.Utils;
@@ -303,9 +304,15 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         if (preference instanceof SimPreference) {
-            Intent newIntent = new Intent(context, SimPreferenceDialog.class);
-            newIntent.putExtra(EXTRA_SLOT_ID, ((SimPreference)preference).getSlotId());
-            startActivity(newIntent);
+            //Sim Icon Customisation feature change
+            OperatorSimInfo operatorSimInfo = new OperatorSimInfo(context);
+            boolean isCustomSimFeatureEnabled = operatorSimInfo.
+                    isOperatorFeatureEnabled();
+            if (!isCustomSimFeatureEnabled) {
+                Intent newIntent = new Intent(context, SimPreferenceDialog.class);
+                newIntent.putExtra(EXTRA_SLOT_ID, ((SimPreference)preference).getSlotId());
+                startActivity(newIntent);
+            }
         } else if (findPreference(KEY_CELLULAR_DATA) == preference) {
             intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.DATA_PICK);
             context.startActivity(intent);
