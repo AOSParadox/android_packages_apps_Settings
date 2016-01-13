@@ -7308,4 +7308,6 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="wifi_calling_connection_pref_title">Connection preferences</string>
     <string name="qtifeedback_settings_title">Hardware Feedback</string>
     <string name="qtifeedback_settings_subtitle">Qualcomm Technologies Reporting</string>
+    <string name="lte_data_and_voice_calling_enabled">LTE data and Voice Calling (IMS/VoLTE) service enabled </string>
+    <string name="lte_data_service_enabled">LTE data service enabled </string>
 </resources>
