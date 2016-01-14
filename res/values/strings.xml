@@ -7188,4 +7188,8 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="notify_connect_summary">Prompt me when access to CMCC WLAN</string>
     <string name="wifi_setting_connect_type_error">There was a problem setting the connect type.</string>
 
+    <!-- Title for the dialog alerting user CT card in wrong slot -->
+    <string name="alert_ct_in_wrong_slot_title">ChinaTelecom card inserted in wrong slot</string>
+    <!-- Message for the dialog alerting user CT card in wrong slot -->
+    <string name="alert_ct_in_wrong_slot_message">Currently only slot 1 support ChinaTelecom card, if you insert ChinaTelecom card in slot 2, it may be out of service, please re-insert ChinaTelecom card in the right slot.</string>
 </resources>

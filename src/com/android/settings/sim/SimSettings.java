@@ -85,6 +85,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     public static final String EXTRA_SLOT_ID = "slot_id";
     private static final String SIM_ACTIVITIES_CATEGORY = "sim_activities";
     private static final String KEY_PRIMARY_SUB_SELECT = "select_primary_sub";
+    private static final String CARRIER_MODE_CT_CLASS_A = "ct_class_a";
 
     private IExtTelephony mExtTelephony = IExtTelephony.Stub.
             asInterface(ServiceManager.getService("extphone"));
@@ -111,6 +112,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     private Preference mPrimarySubSelect = null;
     private int[] mCallState = new int[mPhoneCount];
     private PhoneStateListener[] mPhoneStateListener = new PhoneStateListener[mPhoneCount];
+    // check current carrier is CT class A, C or not set
+    private String mCarrierMode = SystemProperties.get("persist.carrier.mode", "default");
+    private boolean mIsCTClassA = mCarrierMode.equals(CARRIER_MODE_CT_CLASS_A);
 
     private static final String ACTION_UICC_MANUAL_PROVISION_STATUS_CHANGED =
             "org.codeaurora.intent.action.ACTION_UICC_MANUAL_PROVISION_STATUS_CHANGED";
@@ -191,6 +195,45 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             }
         }
         updateAllOptions();
+
+        // in CT class A only slot 0 support CT card, alert user if CT card in slot 1
+        if (mIsCTClassA && isCTCardForSimSlotIndex(PhoneConstants.SUB2)) {
+            alertRestrictCTCardDialog();
+        }
+    }
+
+    private boolean isCTCardForSimSlotIndex(int slotIdx) {
+        String simOperator = TelephonyManager.getDefault().getSimOperatorNumericForPhone(slotIdx);
+        boolean isCTCard = false;
+        if(!TextUtils.isEmpty(simOperator)) {
+            if (simOperator.equals("46003") || simOperator.equals("46011") ||
+                    simOperator.equals("46012") || simOperator.equals("20404") ||
+                    simOperator.equals("45502") || simOperator.equals("45507") ||
+                    simOperator.equals("45403") || simOperator.equals("45404")) {
+                isCTCard = true;
+            }
+        }
+        log(" simOperator " + simOperator + ", isCTCard " + isCTCard);
+        return isCTCard;
+    }
+
+    private void alertRestrictCTCardDialog() {
+        // Confirm only one AlertDialog instance to show.
+        dismissDialog(sAlertDialog);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        alertDialogBuilder.setTitle(R.string.alert_ct_in_wrong_slot_title);
+        alertDialogBuilder.setMessage(R.string.alert_ct_in_wrong_slot_message);
+        alertDialogBuilder.setNeutralButton(android.R.string.ok, null);
+
+        sAlertDialog = alertDialogBuilder.create();
+        sAlertDialog.show();
+    }
+
+    private void dismissDialog(Dialog dialog) {
+        if((dialog != null) && (dialog.isShowing())) {
+            dialog.dismiss();
+            dialog = null;
+        }
     }
 
     private void updateAllOptions() {
@@ -965,7 +1008,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 CONFIG_DISABLE_DDS_PREFERENCE, 0) == 1;
 
         log(" config disable dds =  " + disableDds);
-        return disableDds;
+        // in CT class A disable DDS option in UI
+        return disableDds || mIsCTClassA;
     }
 
     private void listen() {
