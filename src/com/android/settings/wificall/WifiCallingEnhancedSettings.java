@@ -85,7 +85,7 @@ public class WifiCallingEnhancedSettings extends PreferenceActivity
     private static final String INTENT_EXTRA = "triggeredFromHelp";
     private static final int WIFI_CALLING_STATE_ON = 2;
     private static final int WIFI_CALLING_STATE_OFF = 1;
-    private static final int DEFAULT_INDEX = 0;
+    private static final int DEFAULT_INDEX = 2;
     private static int mStatus = WIFI_CALLING_STATE_OFF;
     private Preference mWifiCallingHelp;
     private Preference mWifiCallingConnectPre;

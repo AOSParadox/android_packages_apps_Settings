@@ -2616,7 +2616,8 @@
         </receiver>
 
         <activity android:name="com.android.settings.wificall.WifiCallingEnhancedSettings"
-            android:label="@string/wifi_call_setting_title">
+            android:label="@string/wifi_call_setting_title"
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
