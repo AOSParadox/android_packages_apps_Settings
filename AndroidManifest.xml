@@ -2612,6 +2612,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
                 <action android:name="com.android.imscontection.DISCONNECTED"></action>
                 <action android:name="android.net.wifi.RSSI_CHANGED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 

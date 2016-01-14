@@ -45,9 +45,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.android.ims.ImsConfig;
+import com.android.ims.ImsManager;
 import com.android.ims.ImsReasonInfo;
 import com.android.settings.R;
+
 import java.util.List;
 
 public class WifiCallingStatusControl extends BroadcastReceiver {
@@ -65,6 +68,8 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
     public static final String SYSTEM_PROPERTY_WIFI_CALL_STATUS_MSG =
             "persist.sys.wificall.status.msg";
     public static final String SYSTEM_PROPERTY_WIFI_CALL_TURNON = "persist.sys.wificall.turnon";
+    private static final String SHAREDPREFERENCES_FILE_NAME = "MY_PERFS";
+    private static final String SHAREDPREFERENCES_WIFI_CALL_SET = "is_first_set_wfc";
     private static final String SHAREDPREFERENCES_NAME = "MY_PERFS";
     private static final String WIFI_CALLING_PREFERENCE = "currentWifiCallingPreference";
     private static final String WIFI_CALLING_STATE = "currentWifiCallingStatus";
@@ -418,16 +423,44 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
         }
     }
 
+    private boolean setWifiCallingPreference(boolean state, int preference) {
+        if(DEBUG) Log.d(TAG, "setWifiCallingPreference:" + state + " pre : " + preference);
+        ImsManager.setWfcSetting(mContext, state);
+        ImsManager.setWfcMode(mContext,preference);
+        return true;
+    }
+
+    private boolean isFirstBoot(){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                SHAREDPREFERENCES_FILE_NAME, mContext.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(
+                SHAREDPREFERENCES_WIFI_CALL_SET, true);
+    }
+
+    private void disableFirstBoot(){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(
+                SHAREDPREFERENCES_FILE_NAME, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SHAREDPREFERENCES_WIFI_CALL_SET, false);
+        editor.commit();
+        return;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-
         if (!WifiCallingNotification.getWifiCallingNotifiEnable(context)) {
             if (DEBUG) Log.d(TAG, "getIntent : " + intent.getAction() + " flag : false");
             return;
         }
-
         mContext = context;
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action) && isFirstBoot()) {
+            if (DEBUG) Log.d(TAG, "getIntent : " + intent.getAction());
+            readPreference();
+            setWifiCallingPreference(mWifiCallTurnOn, mWifiCallPreferred);
+            disableFirstBoot();
+            return;
+        }
         if (mWifiManager == null) {
             mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         }
