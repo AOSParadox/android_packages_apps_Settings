@@ -187,6 +187,7 @@ public class ManageApplications extends InstrumentedFragment
 
     // whether showing system apps.
     private boolean mShowSystem;
+    private boolean isCurrentLoading;
 
     private ApplicationsState mApplicationsState;
 
@@ -242,6 +243,7 @@ public class ManageApplications extends InstrumentedFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        isCurrentLoading = true;
         mApplicationsState = ApplicationsState.getInstance(getActivity().getApplication());
 
         Intent intent = getActivity().getIntent();
@@ -455,9 +457,11 @@ public class ManageApplications extends InstrumentedFragment
             if (!TextUtils.isEmpty(mTextView.getText().toString())) {
                 mTextView.setText("");
             }
+            if (isCurrentLoading) {
             mApplications.setFilterPrefix("");
             mApplications.resume(mSortOrder);
             mApplications.updateLoading();
+            }
         }
     }
 
