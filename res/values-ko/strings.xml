@@ -2900,4 +2900,6 @@
   </string-array>
     <string name="picture_color_mode" msgid="4560755008730283695">"사진 색상 모드"</string>
     <string name="picture_color_mode_desc" msgid="1141891467675548590">"sRGB 사용"</string>
+    <string name="qtifeedback_settings_title">하드웨어 피드백</string>
+    <string name="qtifeedback_settings_subtitle">Qualcomm Technologies 보고</string>
 </resources>

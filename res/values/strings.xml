@@ -7306,4 +7306,6 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     </string-array>
     <string name="wifi_calling_settings_menu_help">Help</string>
     <string name="wifi_calling_connection_pref_title">Connection preferences</string>
+    <string name="qtifeedback_settings_title">Hardware Feedback</string>
+    <string name="qtifeedback_settings_subtitle">Qualcomm Technologies Reporting</string>
 </resources>
