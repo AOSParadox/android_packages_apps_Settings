@@ -174,7 +174,16 @@ public class AppStorageSettings extends AppInfoWithHeader
             if (mClearCacheObserver == null) {
                 mClearCacheObserver = new ClearCacheObserver();
             }
-            mPm.deleteApplicationCacheFiles(mPackageName, mClearCacheObserver);
+
+        new AlertDialog.Builder(getActivity())
+            .setMessage(getActivity().getText(R.string.memory_clear_cache_title))
+            .setPositiveButton(R.string.dlg_ok,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    mPm.deleteApplicationCacheFiles(mPackageName, mClearCacheObserver);
+                }
+            })
+            .setNegativeButton(R.string.dlg_cancel, null)
+            .create().show();
         } else if (v == mClearDataButton) {
             if (mAppEntry.info.manageSpaceActivityName != null) {
                 if (!Utils.isMonkeyRunning()) {
