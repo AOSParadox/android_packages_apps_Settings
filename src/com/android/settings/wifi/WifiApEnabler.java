@@ -26,10 +26,12 @@ import android.net.wifi.WifiManager;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
+import android.os.UserHandle;
 
 import com.android.settings.HotspotPreference;
 import com.android.settings.R;
 import com.android.settingslib.TetherUtil;
+import static com.android.settingslib.TetherUtil.TETHERING_WIFI;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,9 @@ public class WifiApEnabler {
     private String[] mWifiRegexs;
     /* Indicates if we have to wait for WIFI_STATE_CHANGED intent */
     private boolean mWaitForWifiStateChange = false;
+    private boolean mEnabling = false;
+    private static final String ACTION_HOTSPOT_POST_CONFIGURE = "Hotspot_PostConfigure";
+    private static final String ACTION_EXTRA = "choice";
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -116,6 +121,10 @@ public class WifiApEnabler {
         }
     }
 
+    public void setChecked(boolean Checked) {
+            ((HotspotPreference)mSwitch).setChecked(Checked);
+    }
+
     public void setSoftapEnabled(boolean enable) {
         int wifiSavedState = 0;
          /**
@@ -144,7 +153,7 @@ public class WifiApEnabler {
         } else {
             mSwitch.setSummary(R.string.wifi_error);
         }
-
+        mEnabling = enable;
     }
 
     public void updateConfigSummary(WifiConfiguration wifiConfig) {
@@ -195,6 +204,7 @@ public class WifiApEnabler {
                      * Summary on enable is handled by tether
                      * broadcast notice
                      */
+                    postTurnOn(mContext,TETHERING_WIFI);
                     hSwitch.setChecked(true);
                     /* Doesnt need the airplane check */
                     hSwitch.setEnabled(true);
@@ -269,5 +279,15 @@ public class WifiApEnabler {
                 break;
             default:
         }
+    }
+    private boolean postTurnOn(Context ctx, int choice) {
+        if (mEnabling && ctx.getResources().
+                getBoolean(R.bool.tethering_show_help_for_first_using)) {
+            Intent hotspot_postConfigure_intent = new Intent(ACTION_HOTSPOT_POST_CONFIGURE);
+            hotspot_postConfigure_intent.putExtra(ACTION_EXTRA, choice);
+            ctx.startActivity(hotspot_postConfigure_intent);
+            mEnabling = false;
+        }
+        return true;
     }
 }

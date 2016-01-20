@@ -98,4 +98,15 @@
     <SwitchPreference
         android:key="voice_over_lte"
         android:title="@string/voice_over_lte"/>
+    <com.android.settings.wificall.WifiCallSwitchPreference
+        android:key="wifi_call_enhanced_settings"
+        android:title="@string/wifi_call_setting_title"
+        android:summaryOff="@null"
+        android:summaryOn="@null"
+        android:persistent="false">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.android.settings"
+            android:targetClass="com.android.settings.wificall.WifiCallingEnhancedSettings" />
+    </com.android.settings.wificall.WifiCallSwitchPreference>
 </PreferenceScreen>

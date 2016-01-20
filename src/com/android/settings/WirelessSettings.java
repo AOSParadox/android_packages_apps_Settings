@@ -52,6 +52,7 @@ import com.android.internal.telephony.TelephonyProperties;
 import com.android.settings.nfc.NfcEnabler;
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settings.search.Indexable;
+import com.android.settings.wificall.WifiCallSwitchPreference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +60,7 @@ import java.util.List;
 
 public class WirelessSettings extends SettingsPreferenceFragment implements Indexable {
     private static final String TAG = "WirelessSettings";
+    private static final boolean DEBUG = true;
 
     private static final String KEY_TOGGLE_AIRPLANE = "toggle_airplane";
     private static final String KEY_TOGGLE_NFC = "toggle_nfc";
@@ -72,6 +74,7 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
     private static final String KEY_TOGGLE_NSD = "toggle_nsd"; //network service discovery
     private static final String KEY_CELL_BROADCAST_SETTINGS = "cell_broadcast_settings";
     private static final String KEY_WFC_SETTINGS = "wifi_calling_settings";
+    private static final String KEY_WIFI_CALL_SETTINGS = "wifi_call_enhanced_settings";
 
     public static final String EXIT_ECM_RESULT = "exit_ecm_result";
     public static final int REQUEST_CODE_EXIT_ECM = 1;
@@ -95,6 +98,7 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
     private static final String VOICE_OVER_LTE = "voice_over_lte";
     private SwitchPreference mVoLtePreference;
     private boolean mLteEnabled = false;
+    private boolean mWifiCallSettingsEnabled = false;
 
     /**
      * Invoked on each preference click in this hierarchy, overrides
@@ -370,6 +374,11 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
         } else {
             getPreferenceScreen().removePreference(mVoLtePreference);
         }
+        mWifiCallSettingsEnabled =
+                getActivity().getResources().getBoolean(R.bool.wifi_call_enhanced_setting);
+        if (mWifiCallSettingsEnabled) {
+            updateEnhancedWFCSettings();
+        }
     }
 
     @Override
@@ -384,15 +393,19 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
             mNsdEnabler.resume();
         }
 
-        // update WFC setting
-        final Context context = getActivity();
-        if (ImsManager.isWfcEnabledByPlatform(context)) {
-            getPreferenceScreen().addPreference(mButtonWfc);
-
-            mButtonWfc.setSummary(WifiCallingSettings.getWfcModeSummary(
-                    context, ImsManager.getWfcMode(context)));
+        if (mWifiCallSettingsEnabled) {
+            registerWFCListener();
         } else {
-            removePreference(KEY_WFC_SETTINGS);
+            // update WFC setting
+            final Context context = getActivity();
+            if (ImsManager.isWfcEnabledByPlatform(context)) {
+                getPreferenceScreen().addPreference(mButtonWfc);
+
+                mButtonWfc.setSummary(WifiCallingSettings.getWfcModeSummary(
+                        context, ImsManager.getWfcMode(context)));
+            } else {
+                removePreference(KEY_WFC_SETTINGS);
+            }
         }
     }
 
@@ -415,6 +428,9 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
         }
         if (mNsdEnabler != null) {
             mNsdEnabler.pause();
+        }
+        if (mWifiCallSettingsEnabled) {
+            unRegisterWFCListener();
         }
     }
 
@@ -534,4 +550,41 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
                 return result;
             }
         };
+
+    private void updateEnhancedWFCSettings() {
+        Context ctx = getActivity();
+        boolean isSupportWFC = ImsManager.isWfcEnabledByPlatform(ctx);
+        if(DEBUG) Log.d(TAG, "updateEnhancedWFCSettings, isSupportWFC = " +
+                isSupportWFC);
+        if(!isSupportWFC) {
+            getPreferenceScreen().removePreference(
+                    findPreference(KEY_WIFI_CALL_SETTINGS));
+            getPreferenceScreen().removePreference(findPreference(KEY_WFC_SETTINGS));
+            return;
+        }
+        if (!mWifiCallSettingsEnabled) {
+            getPreferenceScreen().removePreference(
+                    findPreference(KEY_WIFI_CALL_SETTINGS));
+            mButtonWfc.setSummary(WifiCallingSettings.getWfcModeSummary(
+                    ctx, ImsManager.getWfcMode(ctx)));
+        } else {
+            getPreferenceScreen().removePreference(findPreference(KEY_WFC_SETTINGS));
+        }
+    }
+
+    private void registerWFCListener() {
+        Preference wifiCall = findPreference(KEY_WIFI_CALL_SETTINGS);
+        if (wifiCall != null && wifiCall instanceof WifiCallSwitchPreference) {
+            ((WifiCallSwitchPreference)wifiCall).setParentActivity(getActivity());
+            ((WifiCallSwitchPreference)wifiCall).registerReciever();
+            ((WifiCallSwitchPreference)wifiCall).getWifiCallingPreference();
+        }
+    }
+
+    private void unRegisterWFCListener() {
+        Preference wifiCall = findPreference(KEY_WIFI_CALL_SETTINGS);
+        if (wifiCall != null && wifiCall instanceof WifiCallSwitchPreference) {
+           ((WifiCallSwitchPreference)wifiCall).unRegisterReciever();
+        }
+    }
 }
