@@ -102,8 +102,10 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
     private static boolean mWifiCallReady = false;
     private static NetworkInfo mWifiNetwork = null;
     private static String mWifiCallStatusMsg = "Not Ready";
+    private static String mOldWifiCallStatusMsg = "Not Ready";
     private static String mExtraMsg = "";
     private static int mOldErrorCode = -1;
+    private static boolean mOldWifiCallReady = false;
     private static int mRegState = WIFI_CALLING_STATE_NOT_REGISTERED;
     private static String mOldErrorMessage = "";
     private WifiManager mWifiManager = null;
@@ -417,9 +419,12 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
 
     private void broadcastWifiCallErrorCode() {
         if (mWifiCallTurnOn) {
-            Intent intent = new Intent(ACTION_WIFI_CALL_ERROR_CODE);
-            intent.putExtra(ACTION_WIFI_CALL_ERROR_CODE_EXTRA, mWifiCallStatusMsg);
-            mContext.sendBroadcast(intent);
+            if (mOldWifiCallStatusMsg.compareTo(mWifiCallStatusMsg) != 0) {
+                mOldWifiCallStatusMsg = mWifiCallStatusMsg;
+                Intent intent = new Intent(ACTION_WIFI_CALL_ERROR_CODE);
+                intent.putExtra(ACTION_WIFI_CALL_ERROR_CODE_EXTRA, mWifiCallStatusMsg);
+                mContext.sendBroadcast(intent);
+            }
         }
     }
 
@@ -449,6 +454,7 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        boolean WifiCallStatusChanged = false;
         if (!WifiCallingNotification.getWifiCallingNotifiEnable(context)) {
             if (DEBUG) Log.d(TAG, "getIntent : " + intent.getAction() + " flag : false");
             return;
@@ -464,12 +470,18 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
         if (mWifiManager == null) {
             mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         }
+        if (mWifiCallReady != mOldWifiCallReady) {
+            mOldWifiCallReady = mWifiCallReady;
+            WifiCallStatusChanged = true;
+        }
         if (mWifiCallPreferred == WIFI_CALL_PREFERRED_DISENABLED) {
             readPreference();
             getWifiStatus();
-            SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
-                    (mWifiCallReady ? WIFI_CALLING_ENABLED : WIFI_CALLING_DISABLED));
-            broadcastWifiCallReadyStatus();
+            if (WifiCallStatusChanged) {
+                SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
+                        (mWifiCallReady ? WIFI_CALLING_ENABLED : WIFI_CALLING_DISABLED));
+                broadcastWifiCallReadyStatus();
+            }
         }
 
         if (DEBUG) Log.d(TAG, "WifiCallingStatusContral, onReceive, action = " + action);
@@ -487,9 +499,11 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
             mWifiCallReady = wifiCallState;
             updateWFCReadyIcon();
             updateWFCInCallIcon();
-            SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
+            if (WifiCallStatusChanged) {
+                SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
                     (mWifiCallReady ? WIFI_CALLING_ENABLED : WIFI_CALLING_DISABLED));
-            broadcastWifiCallReadyStatus();
+                broadcastWifiCallReadyStatus();
+            }
         }
 
         handleWFCErrorMsg();
