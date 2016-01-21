@@ -2900,4 +2900,6 @@
   </string-array>
     <string name="picture_color_mode" msgid="4560755008730283695">"Pildi värvirežiim"</string>
     <string name="picture_color_mode_desc" msgid="1141891467675548590">"sRGB kasutamine"</string>
+    <string name="qtifeedback_settings_title">Tagasiside</string>
+    <string name="qtifeedback_settings_subtitle">Qualcomm Technologies riistvara kohta</string>
 </resources>
