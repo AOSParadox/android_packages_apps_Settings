@@ -73,9 +73,6 @@
     <!-- Whether to enable roaming settings -->
     <bool name="config_roamingsettings_enabled">false</bool>
 
-    <!-- Whether to disable the default option for USB mode selection dialog-->
-    <bool name="config_disable_usb_default_option">false</bool>
-
     <!-- Whether add storage cleanup menu in storage setting-->
     <bool name="enable_storage_cleanup">false</bool>
 

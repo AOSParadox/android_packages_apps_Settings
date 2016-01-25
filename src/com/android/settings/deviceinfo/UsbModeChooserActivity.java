@@ -22,6 +22,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -90,6 +91,13 @@ public class UsbModeChooserActivity extends Activity {
     }
 
     private void inflateOption(final int mode, boolean selected, LinearLayout container) {
+        boolean isSimCardInserted = SystemProperties.getBoolean(
+            "persist.sys.sim.activate", false);
+        boolean isUsbSecurityEnable = SystemProperties.getBoolean(
+            "persist.sys.usb.security", false);
+        if(!isSimCardInserted && isUsbSecurityEnable) {
+            return;
+        }
         View v = mLayoutInflater.inflate(R.layout.radio_with_summary, container, false);
 
         ((TextView) v.findViewById(android.R.id.title)).setText(getTitle(mode));
@@ -105,9 +113,7 @@ public class UsbModeChooserActivity extends Activity {
                 finish();
             }
         });
-        if (!getResources().getBoolean(R.bool.config_disable_usb_default_option)) {
-            ((Checkable) v).setChecked(selected);
-        }
+        ((Checkable) v).setChecked(selected);
         container.addView(v);
     }
 
