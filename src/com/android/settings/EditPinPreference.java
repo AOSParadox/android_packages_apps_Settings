@@ -23,6 +23,7 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.text.Editable;
 
 /**
  * TODO: Add a soft dialpad for PIN entry.
@@ -56,6 +57,8 @@ class EditPinPreference extends EditTextPreference {
         if (editText != null) {
             editText.setInputType(InputType.TYPE_CLASS_NUMBER |
                 InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+            Editable etable = editText.getText();
+            editText.setSelection(etable.length());
         }
     }
 
