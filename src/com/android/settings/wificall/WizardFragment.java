@@ -93,8 +93,8 @@ public class WizardFragment extends Fragment implements OnClickListener{
             case FIRST_WIZARD:
                 if(v.getId() == R.id.leftbutton){
                    mParent.handleFramework(false);
+                   break;
                 }
-                break;
             /* for second screen of this wizard */
             case SECOUND_WIZARD:
                 changeWizard(++mWizardIndex);
