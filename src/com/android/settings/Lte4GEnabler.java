@@ -52,6 +52,7 @@ import com.android.internal.telephony.PhoneConstants;
 public class Lte4GEnabler {
     private static final String TAG = "Lte4GEnabler";
     private final Context mContext;
+    private AlertDialog mAlertDialog;
     private Switch mSwitch;
     private boolean mDialogClicked = false;
     private static MyHandler mHandler;
@@ -110,6 +111,10 @@ public class Lte4GEnabler {
             isLTEMode = false;
         }
 
+        if(mAlertDialog != null && mAlertDialog.isShowing()) {
+            isLTEMode = true;
+        }
+
         mSwitch.setChecked(isLTEMode);
         int simState = TelephonyManager.getDefault().getSimState(PhoneConstants.SUB1);
         mSwitch.setEnabled((Settings.System.getInt(mContext.getContentResolver(),
@@ -118,7 +123,7 @@ public class Lte4GEnabler {
     }
 
     private void promptUser() {
-        AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+        mAlertDialog = new AlertDialog.Builder(mContext)
                 .setMessage(mContext.getString(R.string.lte_4g_switch_prompt))
                 .setNeutralButton(R.string.no,
                         new DialogInterface.OnClickListener() {
@@ -137,14 +142,16 @@ public class Lte4GEnabler {
                                 mDialogClicked = true;
                             }
                         }).create();
-        alertDialog.setOnDismissListener(
+        mAlertDialog.setOnDismissListener(
                 new DialogInterface.OnDismissListener() {
                     public void onDismiss(DialogInterface dialog) {
                         if (!mDialogClicked)
                             mSwitch.setChecked(false);
                     }
                 });
-        alertDialog.show();
+        if(!mAlertDialog.isShowing()) {
+            mAlertDialog.show();
+        }
     }
 
     private boolean isPrefTDDDataOnly(int subscription) {
