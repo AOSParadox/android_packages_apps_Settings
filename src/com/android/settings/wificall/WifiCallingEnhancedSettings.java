@@ -260,7 +260,7 @@ public class WifiCallingEnhancedSettings extends PreferenceActivity
             builder.setItems(options, new DialogInterface.OnClickListener() {
                 @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        intent.putExtra(INTENT_EXTRA,which == DEFAULT_INDEX);
+                        intent.putExtra(INTENT_EXTRA,which == 0);
                         startActivity(intent);
                     }
                 }
