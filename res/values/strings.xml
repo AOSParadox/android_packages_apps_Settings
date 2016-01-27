@@ -7064,9 +7064,4 @@
 
     <!-- Description of feature to change color setting for the display [CHAR LIMIT=NONE] -->
     <string name="picture_color_mode_desc">Use sRGB</string>
-
-    <!-- Buttons - Enable navbar -->
-    <string name="disable_navkeys_title">Enable on-screen nav bar</string>
-    <string name="disable_navkeys_summary">Enable on-screen navigation bar and disable hardware buttons</string>
-
 </resources>
