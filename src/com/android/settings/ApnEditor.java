@@ -359,6 +359,12 @@ public class ApnEditor extends InstrumentedPreferenceActivity
                     getPreferenceScreen().removePreference(mPppNumber);
                 }
             }
+
+            String localizedName = ApnSettings.getLocalizedName(this, mCursor,NAME_INDEX);
+            if (!TextUtils.isEmpty(localizedName)) {
+                mName.setText(localizedName);
+            }
+
         }
 
         mName.setSummary(checkNull(mName.getText()));
