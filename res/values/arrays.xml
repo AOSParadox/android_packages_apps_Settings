@@ -534,11 +534,11 @@
 
     <string-array translatable="false" name="apn_protocol_values">
         <!-- Do not translate. -->
-        <item>IPv4</item>
+        <item>IP</item>
         <!-- Do not translate. -->
-        <item>IPv6</item>
+        <item>IPV6</item>
         <!-- Do not translate. -->
-        <item>IPv4/IPv6</item>
+        <item>IPV4V6</item>
     </string-array>
 
     <!-- Bearer Info used in APN editor -->
