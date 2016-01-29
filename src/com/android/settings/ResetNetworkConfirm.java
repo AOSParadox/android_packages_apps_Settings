@@ -53,6 +53,7 @@ import java.util.List;
 public class ResetNetworkConfirm extends InstrumentedFragment {
 
     private View mContentView;
+    private Button mButton;
     private int mSubId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
 
     /**
@@ -66,6 +67,7 @@ public class ResetNetworkConfirm extends InstrumentedFragment {
             if (Utils.isMonkeyRunning()) {
                 return;
             }
+            mButton.setEnabled(false);
             // TODO maybe show a progress dialog if this ends up taking a while
             Context context = getActivity();
 
@@ -102,6 +104,7 @@ public class ResetNetworkConfirm extends InstrumentedFragment {
 
             Toast.makeText(context, R.string.reset_network_complete_toast, Toast.LENGTH_SHORT)
                     .show();
+            mButton.setEnabled(true);
         }
     };
 
@@ -109,8 +112,8 @@ public class ResetNetworkConfirm extends InstrumentedFragment {
      * Configure the UI for the final confirmation interaction
      */
     private void establishFinalConfirmationState() {
-        mContentView.findViewById(R.id.execute_reset_network)
-                .setOnClickListener(mFinalClickListener);
+        mButton = (Button) mContentView.findViewById(R.id.execute_reset_network);
+        mButton.setOnClickListener(mFinalClickListener);
     }
 
     @Override
