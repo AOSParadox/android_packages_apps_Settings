@@ -30,7 +30,6 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,16 +179,6 @@ public class SimPreferenceDialog extends Activity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
                 finish();
-            }
-        });
-
-        mBuilder.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    finish();
-                }
-                return true;
             }
         });
 
