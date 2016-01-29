@@ -46,7 +46,6 @@ import com.android.settings.R;
 public class WizardFragment extends Fragment implements OnClickListener{
 
     private static final boolean DEBUG = true;
-    private int mWizardIndex = FIRST_WIZARD;
     private Button mLeftButton;
     private Button mRightButton;
     private TextView mContentText;
@@ -56,6 +55,7 @@ public class WizardFragment extends Fragment implements OnClickListener{
     private static final int FIRST_WIZARD = 1;
     private static final int SECOUND_WIZARD = 2;
     private static final int THIRD_WIZARD = 3;
+    private static int mWizardIndex = FIRST_WIZARD;
     private WifiCallingWizardActivity mParent = null;
     public WizardFragment(WifiCallingWizardActivity pParent) {
         mParent = pParent;
@@ -64,6 +64,9 @@ public class WizardFragment extends Fragment implements OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    public WizardFragment() {
     }
 
     @Override
@@ -82,6 +85,9 @@ public class WizardFragment extends Fragment implements OnClickListener{
             mStepText.setVisibility(View.INVISIBLE);
             mLeftButton.setOnClickListener(this);
             mRightButton.setOnClickListener(this);
+            if (mWizardIndex == SECOUND_WIZARD || mWizardIndex == THIRD_WIZARD) {
+                changeWizard(mWizardIndex);
+            }
         }
         return view;
     }
@@ -101,6 +107,7 @@ public class WizardFragment extends Fragment implements OnClickListener{
                 break;
             case THIRD_WIZARD:
                 mParent.handleFramework(true);
+                mWizardIndex = FIRST_WIZARD;
                 break;
             default:
                 if (DEBUG) Log.i(TAG, "unknow current wizard index");
