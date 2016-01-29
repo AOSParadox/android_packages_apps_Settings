@@ -54,6 +54,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -614,6 +615,14 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
         mMenuShowDataUsage.setVisible((hasWifiRadio(context) || hasReadyMobileRadio(context))
                 && !appDetailMode && dataSelectionEnable);
 
+        final MenuItem networkaccess = menu
+                .findItem(R.id.data_usage_menu_app_network_access);
+        if (context.getResources().getBoolean(R.bool.config_app_network_access_enabled)) {
+            networkaccess.setVisible(true);
+        } else {
+            networkaccess.setVisible(false);
+        }
+
         updateMenuTitles();
     }
 
@@ -693,6 +702,19 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
                 final SettingsActivity sa = (SettingsActivity) getActivity();
                 sa.startPreferencePanel(DataUsageMeteredSettings.class.getCanonicalName(), null,
                         R.string.data_usage_metered_title, null, this, 0);
+                return true;
+            }
+            case R.id.data_usage_menu_app_network_access: {
+                try {
+                    Intent intent = new Intent();
+                    intent.setClassName(
+                            "com.qualcomm.qti.appnetaccess",
+                            "com.qualcomm.qti.appnetaccess.NetworkControl");
+                    intent.setAction("android.intent.networkcontrol");
+                    startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    Log.d(TAG, "activity NetworkControl not found");
+                }
                 return true;
             }
         }
