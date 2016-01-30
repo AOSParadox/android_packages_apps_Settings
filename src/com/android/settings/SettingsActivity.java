@@ -833,7 +833,11 @@ public class SettingsActivity extends Activity
 
         registerReceiver(mBatteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        mDynamicIndexableContentMonitor.register(this);
+        try {
+            mDynamicIndexableContentMonitor.register(this);
+        } catch (IllegalStateException e) {
+
+        }
 
         if(mDisplaySearch && !TextUtils.isEmpty(mSearchQuery)) {
             onQueryTextSubmit(mSearchQuery);
@@ -847,7 +851,11 @@ public class SettingsActivity extends Activity
             MetricsLogger.hidden(this, MetricsLogger.MAIN_SETTINGS);
         }
         unregisterReceiver(mBatteryInfoReceiver);
-        mDynamicIndexableContentMonitor.unregister();
+        try {
+            mDynamicIndexableContentMonitor.unregister();
+        } catch (IllegalStateException e) {
+
+        }
     }
 
     @Override
