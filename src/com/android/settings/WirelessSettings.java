@@ -396,6 +396,7 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
         if (mWifiCallSettingsEnabled) {
             registerWFCListener();
         } else {
+            removePreference(KEY_WIFI_CALL_SETTINGS);
             // update WFC setting
             final Context context = getActivity();
             if (ImsManager.isWfcEnabledByPlatform(context)) {
