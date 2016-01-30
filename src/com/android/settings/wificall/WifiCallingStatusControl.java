@@ -408,9 +408,8 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
         }
         boolean isRadioPowerOn = cellularNetworkIsAvailable();
         if (DEBUG) Log.d(TAG, "isRadioPowerOn = " + isRadioPowerOn);
-        if (mWifiCallPreferred == WifiCallingPreference.WIFI_ONLY) {
-            if (isRadioPowerOn && mWifiCallTurnOn
-                    && !isAirplaneModeOn() && cellularNetworkIsAvailable()) {
+        if (mWifiCallPreferred == WifiCallingPreference.WIFI_ONLY && mWifiCallTurnOn) {
+            if (isRadioPowerOn && !isAirplaneModeOn() && cellularNetworkIsAvailable()) {
                 getTelephonyManager().setRadioPower(false);
                 if (DEBUG) Log.d(TAG, "updateRadioStatus, turn radio off");
             }
