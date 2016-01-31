@@ -312,10 +312,11 @@ public class ApnEditor extends InstrumentedPreferenceActivity
 
             if (mNewApn && getResources().getBoolean(R.bool.config_default_apn_for_new)) {
                 mProtocol.setValueIndex(DEFAULT_IPV4V6_INDEX);
+                mRoamingProtocol.setValueIndex(DEFAULT_IPV4V6_INDEX);
             } else {
                 mProtocol.setValue(mCursor.getString(PROTOCOL_INDEX));
+                mRoamingProtocol.setValue(mCursor.getString(ROAMING_PROTOCOL_INDEX));
             }
-            mRoamingProtocol.setValue(mCursor.getString(ROAMING_PROTOCOL_INDEX));
             mCarrierEnabled.setChecked(mCursor.getInt(CARRIER_ENABLED_INDEX)==1);
             mBearerInitialVal = mCursor.getInt(BEARER_INDEX);
 
