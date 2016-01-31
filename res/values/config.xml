@@ -110,4 +110,5 @@
     <bool name="wifi_call_enhanced_setting">false</bool>
 
     <bool name="config_regional_usb_tethering_quick_start_enable">false</bool>
+    <bool name="config_regional_hotspot_tether_help_enable">false</bool>
 </resources>
