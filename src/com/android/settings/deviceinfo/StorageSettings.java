@@ -204,7 +204,7 @@ public class StorageSettings extends SettingsPreferenceFragment implements Index
         final BytesResult result = Formatter.formatBytes(getResources(), privateUsedBytes, 0);
         mInternalSummary.setTitle(TextUtils.expandTemplate(getText(R.string.storage_size_large),
                 result.value, result.units));
-        mInternalSummary.setSummary(getString(R.string.storage_volume_used_total,
+        mInternalSummary.setSummary(getString(R.string.storage_volume_used,
                 Formatter.formatFileSize(context, privateTotalBytes)));
 
         if (mInternalCategory.getPreferenceCount() > 0) {
