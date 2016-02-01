@@ -515,13 +515,13 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
 
         boolean wifiCallState = mWifiCallTurnOn &&
                     mWifiConnected && mImsRegisted && !mIsWifiSignalWeak;
+        SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
+                    (wifiCallState ? WIFI_CALLING_ENABLED : WIFI_CALLING_DISABLED));
         if (mWifiCallReady != wifiCallState) {
             mWifiCallReady = wifiCallState;
             updateWFCReadyIcon();
             updateWFCInCallIcon();
             if (WifiCallStatusChanged) {
-                SystemProperties.set(SYSTEM_PROPERTY_WIFI_CALL_READY,
-                    (mWifiCallReady ? WIFI_CALLING_ENABLED : WIFI_CALLING_DISABLED));
                 broadcastWifiCallReadyStatus();
             }
         }
