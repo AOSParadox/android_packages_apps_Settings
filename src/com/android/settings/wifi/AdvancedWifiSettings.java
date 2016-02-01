@@ -165,13 +165,15 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
 
         SwitchPreference enableHs2 =
             (SwitchPreference) findPreference(KEY_ENABLE_HS2);
-        if (getResources().getBoolean(
-            com.android.internal.R.bool.config_passpoint_setting_on)) {
-            enableHs2.setChecked(Settings.Global.getInt(
-                getContentResolver(),
-                Settings.Global.WIFI_HOTSPOT2_ENABLED, WIFI_HS2_DISABLED) == WIFI_HS2_ENABLED);
-        } else {
-            getPreferenceScreen().removePreference(enableHs2);
+        if (enableHs2 != null) {
+            if (getResources().getBoolean(
+                com.android.internal.R.bool.config_passpoint_setting_on)) {
+                enableHs2.setChecked(Settings.Global.getInt(
+                    getContentResolver(),
+                    Settings.Global.WIFI_HOTSPOT2_ENABLED, WIFI_HS2_DISABLED) == WIFI_HS2_ENABLED);
+            } else {
+                getPreferenceScreen().removePreference(enableHs2);
+            }
         }
 
         Intent intent = new Intent(Credentials.INSTALL_AS_USER_ACTION);
