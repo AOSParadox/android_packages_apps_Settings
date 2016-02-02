@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.wifi.WifiConfiguration;
 import android.os.Looper;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.preference.Preference;
 import android.text.TextUtils;
@@ -106,6 +107,7 @@ public class AccessPointPreference extends Preference {
             // Attach to the end of the title view
             mTitleView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mBadge, null);
             mTitleView.setCompoundDrawablePadding(mBadgePadding);
+            mTitleView.setSingleLine(!"cmcc".equals(SystemProperties.get("persist.carrier.mode")));
         }
         view.setContentDescription(mContentDescription);
     }
