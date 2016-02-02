@@ -239,6 +239,8 @@ public class ManageApplications extends InstrumentedFragment
     public EditText mTextView;
     public TextView mSearchTitle;
 
+    private static boolean isManageApps;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -254,6 +256,7 @@ public class ManageApplications extends InstrumentedFragment
         }
         if (className.equals(AllApplicationsActivity.class.getName())) {
             mShowSystem = true;
+            isManageApps = true;
         } else if (className.equals(NotificationAppListActivity.class.getName())) {
             mListType = LIST_TYPE_NOTIFICATION;
             mNotifBackend = new NotificationBackend();
@@ -496,6 +499,7 @@ public class ManageApplications extends InstrumentedFragment
             mApplications.release();
         }
         mRootView = null;
+        isManageApps = false;
     }
 
     @Override
@@ -1053,7 +1057,7 @@ public class ManageApplications extends InstrumentedFragment
 
         @Override
         public void onLauncherInfoChanged() {
-            if (!mManageApplications.mShowSystem) {
+            if (isManageApps || !mManageApplications.mShowSystem) {
                 rebuild(false);
             }
         }
