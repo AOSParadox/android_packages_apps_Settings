@@ -95,9 +95,7 @@ public class UsbModeChooserActivity extends Activity {
             "persist.sys.sim.activate", false);
         boolean isUsbSecurityEnable = SystemProperties.getBoolean(
             "persist.sys.usb.security", false);
-        if(!isSimCardInserted && isUsbSecurityEnable) {
-            return;
-        }
+
         View v = mLayoutInflater.inflate(R.layout.radio_with_summary, container, false);
 
         ((TextView) v.findViewById(android.R.id.title)).setText(getTitle(mode));
@@ -114,6 +112,10 @@ public class UsbModeChooserActivity extends Activity {
             }
         });
         ((Checkable) v).setChecked(selected);
+        if( !isSimCardInserted && isUsbSecurityEnable )
+        {
+            v.setEnabled(selected);
+        }
         container.addView(v);
     }
 
