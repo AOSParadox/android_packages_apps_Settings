@@ -244,7 +244,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         boolean isSelectedKeyMatch = false;
         final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         final String mccmnc = mSubscriptionInfo == null ? ""
-            : tm.getIccOperatorNumericForData(mSubscriptionInfo.getSubscriptionId());
+                : tm.getIccOperatorNumericForData(mSubscriptionInfo.getSubscriptionId());
         Log.d(TAG, "mccmnc = " + mccmnc);
 
         StringBuilder where = new StringBuilder("numeric=\"" + mccmnc +
@@ -258,6 +258,10 @@ public class ApnSettings extends SettingsPreferenceFragment implements
 
             if(getResources().getBoolean(R.bool.config_regional_hide_ims_and_dun_apns)){
                 where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_DUN + "\"");
+                where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_IMS + "\"");
+            }
+
+            if(getResources().getBoolean(R.bool.config_hide_ims_apns)){
                 where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_IMS + "\"");
             }
 
