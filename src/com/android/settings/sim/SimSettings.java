@@ -43,6 +43,7 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.telecom.PhoneAccountHandle;
+import android.telecom.PhoneAccount;
 import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -312,9 +313,19 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             telecomManager.getCallCapablePhoneAccounts();
 
         simPref.setTitle(R.string.calls_title);
-        simPref.setSummary(phoneAccount == null
-                ? mContext.getResources().getString(R.string.sim_calls_ask_first_prefs_title)
-                : (String)telecomManager.getPhoneAccount(phoneAccount).getLabel());
+        if (phoneAccount == null) {
+            simPref.setSummary(mContext.getResources().getString(
+                    R.string.sim_calls_ask_first_prefs_title));
+        } else {
+            PhoneAccount phoneaccount = telecomManager
+                    .getPhoneAccount(phoneAccount);
+            if (phoneaccount != null) {
+                simPref.setSummary((String) phoneaccount.getLabel());
+            } else {
+                simPref.setSummary(mContext.getResources().getString(
+                        R.string.sim_calls_ask_first_prefs_title));
+            }
+        }
         simPref.setEnabled(allPhoneAccounts.size() > 1);
     }
 
