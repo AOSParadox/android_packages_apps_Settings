@@ -53,8 +53,8 @@ public class WifiCallingNotification {
     private static WifiCallingNotification mWifiCallNoti;
     private static Builder mBuilder;
     private static int mCallState = TelephonyManager.CALL_STATE_IDLE;
-    private static final String PACKAGE_NAME = "com.android.phone";
-    private static final String ClASS_NAME = "com.android.phone.WifiCallingSettings";
+    private static final String PACKAGE_NAME = "com.android.settings";
+    private static final String ClASS_NAME = "com.android.settings.wificall.WifiCallingEnhancedSettings";
 
     private WifiCallingNotification(){
     }
