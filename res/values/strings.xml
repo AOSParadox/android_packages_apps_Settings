@@ -3338,6 +3338,10 @@
 
     <!-- [CHAR LIMIT=25] Text shown when there are no default Apps -->
     <string name="no_default_apps">No default Apps.</string>
+    <!-- [CHAR LIMIT=NONE] File protection title. If clicked, the user is taken to a screen for file protection functions -->
+    <string name="file_protection">File protection</string>
+    <!-- [CHAR LIMIT=NONE] File protection summary. If clicked, the user is taken to a screen for file protection functions -->
+    <string name="file_protection_summary">Encrypt files</string>
 
     <!-- [CHAR LIMIT=25] Services settings screen, setting option name for the user to go to the screen to view app storage use -->
     <string name="storageuse_settings_title">Storage use</string>
