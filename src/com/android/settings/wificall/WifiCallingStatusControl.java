@@ -298,7 +298,7 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
         } else if (checkErrorMsg) {
             return false;
         }
-        return false;
+        return true;
     }
 
     private int getStringID() {
