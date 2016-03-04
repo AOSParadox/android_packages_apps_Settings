@@ -84,7 +84,17 @@ public class SimDialogActivity extends Activity {
             case DATA_PICK:
             case CALLS_PICK:
             case SMS_PICK:
-                createDialog(this, dialogType).show();
+                final List<SubscriptionInfo> subInfoList =
+                    SubscriptionManager.from(this).getActiveSubscriptionInfoList();
+                if (subInfoList != null) {
+                    int phCount = subInfoList.size();
+                    Log.d(TAG, "show Dialog dialogType=" + dialogType + ", phCount=" + phCount);
+                    if (phCount > 1) {
+                        createDialog(this, dialogType, subInfoList).show();
+                    } else {
+                        finish();
+                    }
+                }
                 break;
             case PREFERRED_PICK:
                 displayPreferredDialog(extras.getInt(PREFERRED_SIM));
@@ -185,12 +195,10 @@ public class SimDialogActivity extends Activity {
         return null;
     }
 
-    public Dialog createDialog(final Context context, final int id) {
+    public Dialog createDialog(final Context context, final int id,
+            final List<SubscriptionInfo> subInfoList) {
         final ArrayList<String> list = new ArrayList<String>();
-        final SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
         final ArrayList<SubscriptionInfo> smsSubInfoList = new ArrayList<SubscriptionInfo>();
-        final List<SubscriptionInfo> subInfoList =
-            subscriptionManager.getActiveSubscriptionInfoList();
         final int selectableSubInfoLength = subInfoList == null ? 0 : subInfoList.size();
 
         final DialogInterface.OnClickListener selectionListener =
