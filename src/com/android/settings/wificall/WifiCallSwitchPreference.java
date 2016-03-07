@@ -123,7 +123,6 @@ public class WifiCallSwitchPreference extends SwitchPreference {
                             equals(action)) {
                     if (intent != null) updateWFCStatusFromIntent(intent);
                     refreshSwitchSummary(mWFCStatusMsgDisplay);
-                    refreshSwitchEnabled(false);
                 }
 
             }
@@ -265,21 +264,11 @@ public class WifiCallSwitchPreference extends SwitchPreference {
         mIsSwitchClicked = true;
         mState = isChecked() ? WifiCallingStatusControl.WifiCallingValueConstants.ON :
                 WifiCallingStatusControl.WifiCallingValueConstants.OFF;
-        if (isChecked()) {
-            setEnabled(false);
-        }
         getWifiCallingPreference();
         updateWFCStatusFromProp();
         refreshSwitchSummary(mWFCStatusMsgDisplay);
     }
 
-    private void checkWifiCallingCapability(int state) {
-        if(DEBUG) Log.d(TAG, "checkWifiCallingCapability:");
-        if (state == WifiCallingStatusControl.WifiCallingValueConstants.NOT_SUPPORTED) {
-            refreshSwitchEnabled(true);
-            if(DEBUG) Log.e(TAG, "checkWifiCallingCapability: wificalling not supported.");
-        }
-    }
 
     private void syncUserSetting2Modem(int state, int pref) {
         if(DEBUG) Log.d(TAG, "sync user setting to modem: state=" + state + " Preference=" + pref);
@@ -320,17 +309,6 @@ public class WifiCallSwitchPreference extends SwitchPreference {
                 boolean isChecked = (state ==
                         WifiCallingStatusControl.WifiCallingValueConstants.ON);
                 setChecked(isChecked);
-            }
-        });
-    }
-
-    private void refreshSwitchEnabled(final boolean isGreyOut) {
-        if(DEBUG) Log.d(TAG, "refreshSwitchEnabled");
-        if (!ismParentEnabled()) return;
-        mParent.runOnUiThread(new Runnable() {
-            public void run() {
-                if(DEBUG) Log.d (TAG, "new UI thread.");
-                setEnabled(!isGreyOut);
             }
         });
     }
@@ -387,7 +365,6 @@ public class WifiCallSwitchPreference extends SwitchPreference {
     private void onGetWifiCallingPreference(int wifiCallingStatus,
              int wifiCallingPreference) {
          if(DEBUG) Log.d(TAG, "onGetWifiCallingPreference");
-         checkWifiCallingCapability(wifiCallingStatus);
          if (mIsSwitchClicked) {
              if(DEBUG) Log.d (TAG, "mIsSwitchClicked is true.");
              int state = isChecked()? WifiCallingStatusControl.WifiCallingValueConstants.ON :

@@ -90,6 +90,7 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
     private static int mWifiCallPreferred = -1;
     private static int mErrorCode = -1;
     private static boolean mIsE911CallOngoing = false;
+    private static boolean mIsGuardTimerOngoing = false;
     private static PhoneStateListener mPhoneStateListener = new PhoneStateListener(){
         public void onCallStateChanged(int state, String incomingNumber) {
             WifiCallingNotification.updateWFCCallStateChange(mContext, state);
@@ -402,7 +403,7 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
     }
 
     private void updateRadioStatus() {
-        if (!mIsE911CallOngoing) {
+        if (mIsE911CallOngoing) {
             if (DEBUG) Log.d(TAG, "do not change radio during E911 call procedure");
             return;
         }
@@ -410,8 +411,10 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
         if (DEBUG) Log.d(TAG, "isRadioPowerOn = " + isRadioPowerOn);
         if (mWifiCallPreferred == WifiCallingPreference.WIFI_ONLY && mWifiCallTurnOn) {
             if (isRadioPowerOn && !isAirplaneModeOn() && cellularNetworkIsAvailable()) {
-                getTelephonyManager().setRadioPower(false);
-                if (DEBUG) Log.d(TAG, "updateRadioStatus, turn radio off");
+                if (getTelephonyManager() != null) {
+                    getTelephonyManager().setRadioPower(false);
+                    if (DEBUG) Log.d(TAG, "updateRadioStatus, turn radio off");
+                }
             }
         } else {
             if (!isRadioPowerOn && !cellularNetworkIsAvailable() && !isAirplaneModeOn()) {
@@ -472,6 +475,7 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
              mIsE911CallOngoing = false;
              WifiCallingNotification.getIntance().updateWFCStatusChange(mContext, mWifiCallReady);
              updateRadioStatus();
+             mIsGuardTimerOngoing = false;
              return;
         }
         boolean WifiCallStatusChanged = false;
@@ -544,13 +548,14 @@ public class WifiCallingStatusControl extends BroadcastReceiver {
                 WifiCallingNotification.cancelNotification(mContext);
             }
         } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-            if (!mIsE911CallOngoing) {
+            if (!mIsE911CallOngoing && !mIsGuardTimerOngoing) {
                  AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
                  long retryAt = System.currentTimeMillis() + REFRESH_RADIO_TIMER_AFTER_E911;
                  Intent refreshRadioIntent = new Intent(ACTION_WIFI_REFRESH_RADIO);
                  PendingIntent tempIntent =
                          PendingIntent.getBroadcast(ctx, 0, refreshRadioIntent, 0);
                  am.setExact(AlarmManager.RTC, retryAt, tempIntent);
+                 mIsGuardTimerOngoing = true;
             }
         }
     }
