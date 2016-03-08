@@ -175,6 +175,9 @@ public class ProcStatsData {
             proc.evaluateTargetPackage(mPm, mStats, bgTotals, runTotals, sEntryCompare, mUseUss);
             ProcStatsPackageEntry pkg = pkgMap.get(proc.mBestTargetPackage);
             if (pkg == null) {
+                if(proc.mBestTargetPackage == null && proc.mName.equals(Utils.TELEPHONY_PKG)) {
+                    proc.mBestTargetPackage = Utils.TELEPHONY_PKG;
+                }
                 pkg = new ProcStatsPackageEntry(proc.mBestTargetPackage, memTotalTime);
                 pkgMap.put(proc.mBestTargetPackage, pkg);
                 if(pkg.mPackage != null) {

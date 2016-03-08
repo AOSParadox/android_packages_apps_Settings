@@ -120,7 +120,8 @@ public class ProcessStatsDetail extends SettingsPreferenceFragment {
         super.onViewCreated(view, savedInstanceState);
 
         AppHeader.createAppHeader(this,
-                mApp.mUiTargetApp != null ? mApp.mUiTargetApp.loadIcon(mPm) : new ColorDrawable(0),
+                mApp.mUiTargetApp != null ? mApp.mUiTargetApp.loadIcon(mPm) : this.getResources()
+                        .getDrawable(android.R.drawable.sym_def_app_icon, null),
                 mApp.mUiLabel, mApp.mPackage.equals(Utils.OS_PKG) ? null
                         : AppInfoWithHeader.getInfoIntent(this, mApp.mPackage));
     }

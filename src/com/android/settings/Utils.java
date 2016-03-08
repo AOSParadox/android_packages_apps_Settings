@@ -153,6 +153,7 @@ public final class Utils {
     private static final int SECONDS_PER_DAY = 24 * 60 * 60;
 
     public static final String OS_PKG = "os";
+    public static final String TELEPHONY_PKG = "com.qualcomm.telephony";
 
     private static SparseArray<Bitmap> sDarkDefaultUserBitmapCache = new SparseArray<Bitmap>();
 

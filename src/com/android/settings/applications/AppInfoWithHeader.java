@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.android.settings.AppHeader;
+import com.android.settings.Utils;
 
 public abstract class AppInfoWithHeader extends AppInfoBase {
 
@@ -52,6 +53,9 @@ public abstract class AppInfoWithHeader extends AppInfoBase {
             showInfo = false;
         }
         if (intent != null && intent.getBooleanExtra(EXTRA_HIDE_INFO_BUTTON, false)) {
+            showInfo = false;
+        }
+        if(packageName != null && packageName.equals(Utils.TELEPHONY_PKG)) {
             showInfo = false;
         }
         Intent infoIntent = null;
