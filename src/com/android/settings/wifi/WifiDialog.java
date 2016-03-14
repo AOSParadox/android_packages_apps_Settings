@@ -22,9 +22,14 @@ import com.android.settingslib.wifi.AccessPoint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
+import java.lang.reflect.Field;
 
 class WifiDialog extends AlertDialog implements WifiConfigUiBase {
     static final int BUTTON_SUBMIT = DialogInterface.BUTTON_POSITIVE;
@@ -82,6 +87,48 @@ class WifiDialog extends AlertDialog implements WifiConfigUiBase {
 
         if (mHideForgetButton) {
             mController.hideForgetButton();
+        }
+
+      // set title panel background color for AlertDialog.
+        setTitlePanelBackgroundColor();
+      // set bottom panel background color for AlertDialog.
+        setBottomPanelBackgroundColor();
+    }
+
+    private void setTitlePanelBackgroundColor() {
+        try {
+            Field alert = AlertDialog.class.getDeclaredField("mAlert");
+            if (alert != null) {
+                alert.setAccessible(true);
+                Object alertController = alert.get(this);
+                if (alertController != null) {
+                    Field titleView = alertController.getClass()
+                            .getDeclaredField("mTitleView");
+                    titleView.setAccessible(true);
+                    View titleV = (View) titleView.get(alertController);
+                    if (titleV != null) {
+
+                        LinearLayout titlePanelLl = (LinearLayout) titleV
+                                .getParent();
+                        if (titlePanelLl != null) {
+                            titlePanelLl.setBackgroundColor(Color.WHITE);
+                        }
+                    }
+                }
+            }
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setBottomPanelBackgroundColor() {
+        LinearLayout bottomPanelLl = (LinearLayout) getSubmitButton().getParent();
+        if (bottomPanelLl != null) {
+            bottomPanelLl.setBackgroundColor(Color.WHITE);
         }
     }
 
