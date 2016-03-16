@@ -76,6 +76,7 @@ public class TetherSettings extends SettingsPreferenceFragment
     private static final String TETHER_CHOICE = "TETHER_TYPE";
     private static final String TETHERING_HELP = "tethering_help";
     private static final String ACTION_EXTRA = "choice";
+    private static final String ACTION_EXTRA_VALUE = "value";
     private static final String SHAREPREFERENCE_DEFAULT_WIFI = "def_wifiap_set";
     private static final String SHAREPREFERENCE_FIFE_NAME = "MY_PERFS";
     private static final String ACTION_HOTSPOT_CONFIGURE = "Hotspot_PreConfigure";
@@ -609,7 +610,7 @@ public class TetherSettings extends SettingsPreferenceFragment
             mUsbTether.setSummary(R.string.usb_tethering_errored_subtext);
             return;
         }
-        postTurnOn(getActivity(),mTetherChoice);
+        postTurnOn(getActivity(), mTetherChoice, enabled);
         mUsbTether.setSummary("");
     }
 
@@ -767,9 +768,14 @@ public class TetherSettings extends SettingsPreferenceFragment
         return true;
     }
 
-    private boolean postTurnOn(Context ctx, int choice) {
+    private boolean postTurnOn(Context ctx, int choice, boolean bEnable) {
+        if (TETHERING_BLUETOOTH == choice || (!ctx.getResources().getBoolean(
+                R.bool.hotspot_accout_check_enable))) {
+            return false;
+        }
         Intent hotspot_postConfigure_intent = new Intent(ACTION_HOTSPOT_POST_CONFIGURE);
         hotspot_postConfigure_intent.putExtra(ACTION_EXTRA, choice);
+        hotspot_postConfigure_intent.putExtra( ACTION_EXTRA_VALUE , bEnable);
         ctx.startActivity(hotspot_postConfigure_intent);
         return true;
     }
