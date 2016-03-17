@@ -1357,6 +1357,13 @@
         <item>MIDI</item>
     </string-array>
 
+    <!-- Defined the hide accounts' type -->
+    <string-array name="hide_account_list">
+        <item>com.qualcomm.qti.RIDL</item>
+        <item>com.android.localphone</item>
+        <item>com.android.sim</item>
+    </string-array>
+
     <!-- USB configuration values for Developer Settings.
          These are lists of USB functions passed to the USB Manager to change USB configuraton.
          This can be overridden by devices with additional USB configurations.
