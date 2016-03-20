@@ -27,9 +27,11 @@ import com.android.settings.AppProgressPreference;
 public class ProcessStatsPreference extends AppProgressPreference {
 
     private ProcStatsPackageEntry mEntry;
+    private Context mContext;
 
     public ProcessStatsPreference(Context context) {
         super(context, null);
+        mContext = context;
     }
 
     public void init(ProcStatsPackageEntry entry, PackageManager pm, double maxMemory,
@@ -39,7 +41,7 @@ public class ProcessStatsPreference extends AppProgressPreference {
         if (entry.mUiTargetApp != null) {
             setIcon(entry.mUiTargetApp.loadIcon(pm));
         } else {
-            setIcon(new ColorDrawable(0));
+            setIcon(mContext.getResources().getDrawable(android.R.drawable.sym_def_app_icon, null));
         }
         boolean statsForeground = entry.mRunWeight > entry.mBgWeight;
         double amount = avg ? (statsForeground ? entry.mRunWeight : entry.mBgWeight) * weightToRam
