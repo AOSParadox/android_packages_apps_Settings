@@ -7088,4 +7088,9 @@
 
     <!-- Description of feature to change color setting for the display [CHAR LIMIT=NONE] -->
     <string name="picture_color_mode_desc">Use sRGB</string>
+
+   <!-- Slider -->
+   <string name="swap_slider_order_title">Swap slider modes</string>
+   <string name="swap_slider_order_summary">Swap the order of the Alert Slider modes</string>
+
 </resources>

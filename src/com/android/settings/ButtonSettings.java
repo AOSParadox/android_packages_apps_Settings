@@ -31,6 +31,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.service.notification.ZenModeConfig;
 
 import android.util.Log;
 import android.view.IWindowManager;
@@ -51,6 +52,8 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     private static final String KEY_HOME_DOUBLE_TAP = "hardware_keys_home_double_tap";
     private static final String KEY_MENU_PRESS = "hardware_keys_menu_press";
     private static final String KEY_MENU_LONG_PRESS = "hardware_keys_menu_long_press";
+
+    private static final String KEY_SWAP_SLIDER_ORDER = "swap_slider_order";
 
     private static final String CATEGORY_POWER = "power_key";
     private static final String CATEGORY_HOME = "home_key";
@@ -88,6 +91,8 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     private ListPreference mMenuPressAction;
     private ListPreference mMenuLongPressAction;
 
+    private SwitchPreference mSwapSliderOrder;
+
     private PreferenceCategory mNavigationPreferencesCat;
 
     private Handler mHandler;
@@ -117,6 +122,17 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
                 (PreferenceCategory) prefScreen.findPreference(CATEGORY_MENU);
 
         mHandler = new Handler();
+
+        /* Swap Slider order */
+        mSwapSliderOrder = (SwitchPreference) findPreference(KEY_SWAP_SLIDER_ORDER);
+        if (mSwapSliderOrder != null) {
+            if (ZenModeConfig.hasAlertSlider(getActivity().getApplicationContext())) {
+                mSwapSliderOrder.setOnPreferenceChangeListener(this);
+            } else {
+                mSwapSliderOrder = null;
+                removePreference(KEY_SWAP_SLIDER_ORDER);
+            }
+        }
 
         if (hasHomeKey) {
             int defaultLongPressAction = res.getInteger(
@@ -202,6 +218,10 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         } else if (preference == mMenuLongPressAction) {
             handleActionListChange(mMenuLongPressAction, newValue,
                     Settings.System.KEY_MENU_LONG_PRESS_ACTION);
+            return true;
+        } else if (preference == mSwapSliderOrder) {
+            handleActionListChange(mSwapSliderOrder, newValue,
+                    Settings.System.ALERT_SLIDER_ORDER);
             return true;
         }
         return false;
