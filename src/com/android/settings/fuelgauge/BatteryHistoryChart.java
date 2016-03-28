@@ -1132,7 +1132,8 @@ public class BatteryHistoryChart extends View {
             // If there are fewer than 2 time labels, then they are useless.  Just
             // show an axis label giving the entire duration.
             mDurationString = Formatter.formatShortElapsedTime(getContext(),
-                    mEndWallTime - mStartWallTime);
+                            (mEndWallTime - mStartWallTime) > 0 ? (mEndWallTime - mStartWallTime)
+                                    : (mStartWallTime - mEndWallTime));
             mDurationStringWidth = (int)mTextPaint.measureText(mDurationString);
         } else {
             mDurationString = null;
