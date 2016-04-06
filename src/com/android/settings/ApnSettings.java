@@ -63,6 +63,8 @@ import com.android.internal.telephony.uicc.UiccController;
 import android.telephony.TelephonyManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class ApnSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
@@ -121,6 +123,8 @@ public class ApnSettings extends SettingsPreferenceFragment implements
 
     private boolean mAllowAddingApns;
 
+    private HashSet mIccidSet;
+
     private final BroadcastReceiver mMobileStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -161,7 +165,7 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         final int subId = activity.getIntent().getIntExtra(SUB_ID,
                 SubscriptionManager.INVALID_SUBSCRIPTION_ID);
         Log.d(TAG, "onCreate: subId = " + subId);
-
+        fillOperatorIccidset();
         mUm = (UserManager) getSystemService(Context.USER_SERVICE);
 
         mMobileStateFilter = new IntentFilter(
@@ -240,6 +244,23 @@ public class ApnSettings extends SettingsPreferenceFragment implements
         }
     }
 
+    private void fillOperatorIccidset(){
+        mIccidSet = new HashSet<String>();
+        mIccidSet.add("8991840");
+        mIccidSet.add("8991854");
+        mIccidSet.add("8991855");
+        mIccidSet.add("8991856");
+        mIccidSet.add("8991857");
+        mIccidSet.add("8991858");
+        mIccidSet.add("8991859");
+        mIccidSet.add("899186");
+        mIccidSet.add("8991870");
+        mIccidSet.add("8991871");
+        mIccidSet.add("8991872");
+        mIccidSet.add("8991873");
+        mIccidSet.add("8991874");
+    }
+
     private void fillList() {
         boolean isSelectedKeyMatch = false;
         final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -293,6 +314,10 @@ public class ApnSettings extends SettingsPreferenceFragment implements
             if (getResources().getBoolean(R.bool.config_hide_mms_enable)) {
                   where.append( " and type <>\"" + PhoneConstants.APN_TYPE_MMS + "\"");
             }
+        }
+        if (isOperatorIccId()) {
+            where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_EMERGENCY + "\"");
+            where.append(" AND type <>\"" + PhoneConstants.APN_TYPE_IMS + "\"");
         }
         Log.d(TAG, "where---" + where);
 
@@ -377,6 +402,18 @@ public class ApnSettings extends SettingsPreferenceFragment implements
                 apnList.addPreference(preference);
             }
         }
+    }
+
+    private boolean isOperatorIccId(){
+        final String iccid = mSubscriptionInfo == null ? ""
+                : mSubscriptionInfo.getIccId();
+        Iterator<String> itr = mIccidSet.iterator();
+        while (itr.hasNext()) {
+            if (iccid.contains(itr.next())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String getLocalizedName(Context context, Cursor cursor, int index) {
