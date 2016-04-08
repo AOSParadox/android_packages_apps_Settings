@@ -26,6 +26,7 @@ import android.os.UserManager;
 import com.android.settings.R;
 import com.android.settings.TetherSettings;
 
+
 public class UsbBackend {
 
     private static final int MODE_POWER_MASK  = 0x01;
@@ -91,7 +92,13 @@ public class UsbBackend {
             return MODE_DATA_TETHERING;
         }
         if (!mIsUnlocked) {
-            return MODE_DATA_NONE;
+            if (mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_CHARGING)) {
+                //Take this as charging mode
+                return MODE_DATA_NONE;
+            } else {
+                // select none if no found
+                return -1;
+            }
         } else if (mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_MTP)) {
             return MODE_DATA_MTP;
         } else if (mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_PTP)) {
@@ -99,7 +106,8 @@ public class UsbBackend {
         } else if (mUsbManager.isFunctionEnabled(UsbManager.USB_FUNCTION_MIDI)) {
             return MODE_DATA_MIDI;
         }
-        return MODE_DATA_NONE; // ...
+        // select none if no found
+        return -1; // ...
     }
 
     private void setUsbFunction(int mode) {
@@ -122,7 +130,8 @@ public class UsbBackend {
                 mContext.startActivity(intent);
                 break;
             default:
-                mUsbManager.setCurrentFunction(null);
+                //default mode is "charging"
+                mUsbManager.setCurrentFunction(UsbManager.USB_FUNCTION_CHARGING);
                 mUsbManager.setUsbDataUnlocked(false);
                 break;
         }
