@@ -6501,7 +6501,7 @@
    <string name="encrypt_talkback_dialog_message_password">When you enter your password to start this device, accessibility services like <xliff:g id="service" example="TalkBack">%1$s</xliff:g> won\u2019t yet be available.</string>
 
    <string name="data_switch_warning_title">Select Data in SIM%1$s</string>
-   <string name="data_switch_warning_text">Changing data access will stop all LTE services. Do you want to continue?</string>
+   <string name="data_switch_voice_calling_warning_text">You will lose Voice Calling functionality.We do not recommend turning off data. Do you still want to continue?</string>
 
    <!-- Title and summary for SIM Status -->
    <string name="imei_information_title">IMEI information</string>

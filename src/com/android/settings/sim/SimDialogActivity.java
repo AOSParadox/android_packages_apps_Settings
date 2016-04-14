@@ -466,7 +466,7 @@ public class SimDialogActivity extends Activity {
                     SubscriptionManager.getSlotId(subId) + 1);
             alertDlg.setTitle(title);
             String warningString = context.getResources().getString(
-                    R.string.data_switch_warning_text);
+                    R.string.data_switch_voice_calling_warning_text);
             alertDlg.setMessage(warningString);
             alertDlg.setCancelable(false);
 
