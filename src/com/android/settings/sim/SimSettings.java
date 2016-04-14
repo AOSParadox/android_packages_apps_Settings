@@ -128,6 +128,8 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     // If this config set to '1' DDS option would be greyed out on UI.
     // For more info pls refere framework code.
     private static final String CONFIG_DISABLE_DDS_PREFERENCE = "config_disable_dds_preference";
+    private static final String ACTION_OUTGOING_PHONE_ACCOUNT_CHANGED =
+            "codeaurora.intent.action.DEFAULT_PHONE_ACCOUNT_CHANGED";
 
     public SimSettings() {
         super(DISALLOW_CONFIG_SIM);
@@ -156,6 +158,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         SimSelectNotification.cancelNotification(getActivity());
 
         IntentFilter intentFilter = new IntentFilter(ACTION_UICC_MANUAL_PROVISION_STATUS_CHANGED);
+        intentFilter.addAction(ACTION_OUTGOING_PHONE_ACCOUNT_CHANGED);
         mContext.registerReceiver(mReceiver, intentFilter);
     }
 
@@ -998,6 +1001,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                  updateSubscriptions();
                  Log.d(TAG, "Received ACTION_UICC_MANUAL_PROVISION_STATUS_CHANGED on phoneId: "
                          + phoneId + " new sub state " + newProvisionedState);
+            } else if (ACTION_OUTGOING_PHONE_ACCOUNT_CHANGED.equals(action)) {
+                // When default outgoing phone account changed
+                // refresh voice call preference
+                updateCallValues();
             }
         }
     };
