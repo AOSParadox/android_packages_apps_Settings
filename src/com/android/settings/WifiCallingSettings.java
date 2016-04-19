@@ -22,11 +22,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.telephony.PhoneStateListener;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Switch;
@@ -37,6 +40,8 @@ import com.android.ims.ImsManager;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.telephony.imsphone.ImsPhone;
 import com.android.settings.widget.SwitchBar;
+
+import java.util.List;
 
 /**
  * "Wi-Fi Calling settings" screen.  This preference screen lets you
@@ -285,7 +290,22 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
     }
 
     private boolean isWfcModeSupported() {
-        return getActivity().getResources().getBoolean(
-                R.bool.config_wfc_mode_supported);
+        boolean isWfcModeSupported = true;
+        Context context = getActivity();
+        List<SubscriptionInfo> subInfoList =
+                SubscriptionManager.from(context).getActiveSubscriptionInfoList();
+        if (subInfoList != null) {
+            for (SubscriptionInfo sir : subInfoList) {
+                if (SubscriptionManager.isValidSubscriptionId(sir.getSubscriptionId())) {
+                    Resources subRes = SubscriptionManager.getResourcesForSubId(context,
+                            sir.getSubscriptionId());
+                    isWfcModeSupported = subRes.getBoolean(R.bool.config_wfc_mode_supported);
+                    if (!isWfcModeSupported) break;
+                }
+            }
+        } else {
+            Log.e(TAG, "isWfcModeSupported: Invalid SubscriptionInfo");
+        }
+        return isWfcModeSupported;
     }
 }
