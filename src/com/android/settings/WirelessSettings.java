@@ -349,6 +349,13 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
         // Enable link to CMAS app settings depending on the value in config.xml.
         boolean isCellBroadcastAppLinkEnabled = this.getResources().getBoolean(
                 com.android.internal.R.bool.config_cellBroadcastAppLinks);
+
+        boolean isForceHideCBSettingEnabled =  getActivity().getResources().getBoolean(
+                R.bool.config_regional_hide_cell_broadcast_setting);
+        if(isForceHideCBSettingEnabled) {
+            isCellBroadcastAppLinkEnabled =  false;
+        }
+
         try {
             if (isCellBroadcastAppLinkEnabled) {
                 if (mPm.getApplicationEnabledSetting("com.android.cellbroadcastreceiver")
@@ -530,6 +537,13 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
                 // Enable link to CMAS app settings depending on the value in config.xml.
                 boolean isCellBroadcastAppLinkEnabled = context.getResources().getBoolean(
                         com.android.internal.R.bool.config_cellBroadcastAppLinks);
+
+                boolean isForceHideCBSettingEnabled =  context.getResources().getBoolean(
+                        R.bool.config_regional_hide_cell_broadcast_setting);
+                if(isForceHideCBSettingEnabled) {
+                    isCellBroadcastAppLinkEnabled =  false;
+                }
+
                 try {
                     if (isCellBroadcastAppLinkEnabled) {
                         if (pm.getApplicationEnabledSetting("com.android.cellbroadcastreceiver")

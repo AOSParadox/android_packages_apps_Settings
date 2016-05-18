@@ -112,4 +112,7 @@
     <bool name="config_regional_usb_tethering_quick_start_enable">false</bool>
     <bool name="config_regional_hotspot_tether_help_enable">false</bool>
     <bool name="config_show_account_preference" translatable="false">false</bool>
+
+    <!-- Force hide the Emergency broadcast menu -->
+   <bool name="config_regional_hide_cell_broadcast_setting">false</bool>
 </resources>
