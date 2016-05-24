@@ -51,7 +51,13 @@ public class RegulatoryInfoDisplayActivity extends Activity implements
         super.onCreate(savedInstanceState);
         Resources resources = getResources();
 
-        if (!resources.getBoolean(R.bool.config_show_regulatory_info)) {
+        /**
+         * config_show_regulatory_info is to show SAR in "About phone"
+         * config_show_regulatory_info_in_status is to
+         * show SAR in "About phone" - > "Status" for India RJIL
+         */
+        if (!(resources.getBoolean(R.bool.config_show_regulatory_info)
+                || resources.getBoolean(R.bool.config_show_regulatory_info_in_status))) {
             finish();   // no regulatory info to display for this device
         }
 

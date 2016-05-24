@@ -32,8 +32,16 @@
 
     <!-- Whether to show a preference item for the manual in About phone -->
     <bool name="config_show_manual">false</bool>
-    <!-- Whether to show a preference item for regulatory information in About phone -->
+
+    <!--config_show_regulatory_info and config_show_regulatory_info_in_status
+        can NOT be TRUE at the same time -->
+
+    <!-- Whether to show a preference item for regulatory information in "About phone" -->
     <bool name="config_show_regulatory_info">false</bool>
+
+    <!-- Whether to show a preference item for regulatory information
+        in ("About phone" - > "Status") for India RJIL -->
+    <bool name="config_show_regulatory_info_in_status">false</bool>
 
     <!-- Whether to show a preference item for mobile plan -->
     <bool name="config_show_mobile_plan">true</bool>

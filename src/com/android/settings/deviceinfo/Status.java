@@ -35,6 +35,7 @@ import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,6 +62,7 @@ public class Status extends InstrumentedPreferenceActivity {
 
     private static final String KEY_BATTERY_STATUS = "battery_status";
     private static final String KEY_BATTERY_LEVEL = "battery_level";
+    private static final String KEY_REGULATORY_INFO_IN_STATUS = "regulatory_info";
     private static final String KEY_IP_ADDRESS = "wifi_ip_address";
     private static final String KEY_WIFI_MAC_ADDRESS = "wifi_mac_address";
     private static final String KEY_BT_ADDRESS = "bt_address";
@@ -211,6 +213,18 @@ public class Status extends InstrumentedPreferenceActivity {
                 || Utils.isWifiOnly(this)) {
             removePreferenceFromScreen(KEY_SIM_STATUS);
             removePreferenceFromScreen(KEY_IMEI_INFO);
+        }
+
+        // Remove regulatory information
+        // if none present or config_show_regulatory_info_in_status is disabled
+        // same approach with DeviceInfoSettings.java
+        final Intent intent = new Intent(Settings.ACTION_SHOW_REGULATORY_INFO);
+        if (getPackageManager().queryIntentActivities(intent, 0).isEmpty()
+                || !getResources().getBoolean(R.bool.config_show_regulatory_info_in_status)) {
+            Preference pref = findPreference(KEY_REGULATORY_INFO_IN_STATUS);
+            if (pref != null) {
+                getPreferenceScreen().removePreference(pref);
+            }
         }
 
         // Make every pref on this screen copy its data to the clipboard on longpress.
