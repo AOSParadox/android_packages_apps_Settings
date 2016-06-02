@@ -81,8 +81,18 @@ public class AccountSettings extends SettingsPreferenceFragment
     private static final String ADD_ACCOUNT_ACTION = "android.settings.ADD_ACCOUNT_SETTINGS";
     private static final String TAG_CONFIRM_AUTO_SYNC_CHANGE = "confirmAutoSyncChange";
 
+    private static final String EMAIL_PACKAGE_NAME = "com.android.email";
+    private static final String EMAIL_WELCOME_CLASS_NAME
+                                 = "com.android.email.activity.setup.AccountSetupFinal";
+    private static final String EXTRA_FLOW_MODE = "FLOW_MODE";
+    private static final String EXTRA_FLOW_ACCOUNT_TYPE = "FLOW_ACCOUNT_TYPE";
+    private static final String ACCOUNT_MANAGER_TYPE = "com.android.email.pop3";
+
     private static final int ORDER_LAST = 1001;
     private static final int ORDER_NEXT_TO_LAST = 1000;
+
+    private static final int FLOW_MODE_ACCOUNT_MANAGER = 1;
+    private static final int ORDER_LAST_BUT_TWO = 999;
 
     private UserManager mUm;
     private SparseArray<ProfileData> mProfiles = new SparseArray<ProfileData>();
@@ -91,6 +101,8 @@ public class AccountSettings extends SettingsPreferenceFragment
     private Preference mProfileNotAvailablePreference;
     private String[] mAuthorities;
     private int mAuthoritiesCount = 0;
+
+    private boolean mShowOperatorAccount = false;
 
     /**
      * Holds data related to the accounts belonging to one profile.
@@ -104,6 +116,10 @@ public class AccountSettings extends SettingsPreferenceFragment
          * The preference that displays the add account button.
          */
         public Preference addAccountPreference;
+        /**
+         * The preference that displays the add operator account button.
+         */
+        public Preference addOperatorAccountPreference;
         /**
          * The preference that displays the button to remove the managed profile
          */
@@ -132,6 +148,8 @@ public class AccountSettings extends SettingsPreferenceFragment
         if (mAuthorities != null) {
             mAuthoritiesCount = mAuthorities.length;
         }
+        mShowOperatorAccount = getResources()
+                                .getBoolean(R.bool.config_show_account_preference);
         setHasOptionsMenu(true);
     }
 
@@ -208,6 +226,14 @@ public class AccountSettings extends SettingsPreferenceFragment
                 Intent intent = new Intent(ADD_ACCOUNT_ACTION);
                 intent.putExtra(EXTRA_USER, profileData.userInfo.getUserHandle());
                 intent.putExtra(EXTRA_AUTHORITIES, mAuthorities);
+                startActivity(intent);
+                return true;
+            }
+            if (preference == profileData.addOperatorAccountPreference) {
+                Intent intent = new Intent();
+                intent.setClassName(EMAIL_PACKAGE_NAME, EMAIL_WELCOME_CLASS_NAME);
+                intent.putExtra(EXTRA_FLOW_MODE,FLOW_MODE_ACCOUNT_MANAGER);
+                intent.putExtra(EXTRA_FLOW_ACCOUNT_TYPE, ACCOUNT_MANAGER_TYPE);
                 startActivity(intent);
                 return true;
             }
@@ -294,6 +320,12 @@ public class AccountSettings extends SettingsPreferenceFragment
                     userInfo.getUserHandle(), mUm, this);
             if (!mUm.hasUserRestriction(DISALLOW_MODIFY_ACCOUNTS, userInfo.getUserHandle())) {
                 profileData.addAccountPreference = newAddAccountPreference(context);
+                if(mShowOperatorAccount) {
+                    profileData.addOperatorAccountPreference
+                             = newAddOperatorAccountPreference(context);
+                } else {
+                    profileData.addOperatorAccountPreference = null;
+                }
             }
         }
         mProfiles.put(userInfo.id, profileData);
@@ -327,6 +359,14 @@ public class AccountSettings extends SettingsPreferenceFragment
         return getString(R.string.managing_admin, appLabel);
     }
 
+    private Preference newAddOperatorAccountPreference(Context context) {
+        Preference preference = new Preference(context);
+        preference.setTitle(R.string.add_operator_account_label);
+        preference.setIcon(R.drawable.ic_menu_add_dark);
+        preference.setOnPreferenceClickListener(this);
+        preference.setOrder(ORDER_LAST_BUT_TWO);
+        return preference;
+    }
     private void cleanUpPreferences() {
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
@@ -366,6 +406,9 @@ public class AccountSettings extends SettingsPreferenceFragment
             }
             if (profileData.addAccountPreference != null) {
                 profileData.preferenceGroup.addPreference(profileData.addAccountPreference);
+            }
+            if (profileData.addOperatorAccountPreference != null) {
+                profileData.preferenceGroup.addPreference(profileData.addOperatorAccountPreference);
             }
         } else {
             // Put a label instead of the accounts list
