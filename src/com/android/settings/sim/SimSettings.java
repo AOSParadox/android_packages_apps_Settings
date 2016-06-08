@@ -104,6 +104,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
     private PreferenceCategory mSimCards = null;
     private SubscriptionManager mSubscriptionManager;
     private int mNumSlots;
+    private boolean mIsAirplaneModeOn = false;
     private Context mContext;
     private boolean mPrimaryPrefRemoved = false;
 
@@ -150,6 +151,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         addPreferencesFromResource(R.xml.sim_settings);
 
+        mIsAirplaneModeOn = isAirplaneModeOn();
         mPrimarySubSelect = (Preference) findPreference(KEY_PRIMARY_SUB_SELECT);
         mNumSlots = tm.getSimCount();
         mSimCards = (PreferenceCategory)findPreference(SIM_CARD_CATEGORY);
@@ -159,6 +161,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
         IntentFilter intentFilter = new IntentFilter(ACTION_UICC_MANUAL_PROVISION_STATUS_CHANGED);
         intentFilter.addAction(ACTION_OUTGOING_PHONE_ACCOUNT_CHANGED);
+        intentFilter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
         mContext.registerReceiver(mReceiver, intentFilter);
     }
 
@@ -330,6 +333,11 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             }
         }
         simPref.setEnabled(allPhoneAccounts.size() > 1);
+    }
+
+    private boolean isAirplaneModeOn() {
+        return (Settings.Global.getInt(mContext.getContentResolver(),
+                Settings.Global.AIRPLANE_MODE_ON, 0) != 0);
     }
 
     @Override
@@ -525,11 +533,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             return TelephonyManager.getDefault().hasIccCard(mSlotId);
         }
 
-        private boolean isAirplaneModeOn() {
-            return (Settings.Global.getInt(mContext.getContentResolver(),
-                    Settings.Global.AIRPLANE_MODE_ON, 0) != 0);
-        }
-
         private int getProvisionStatus(int slotId) {
             return mUiccProvisionStatus[slotId];
         }
@@ -546,7 +549,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
             // Disable manual provisioning option to user when
             // device is in Airplane mode.
-            if (isAirplaneModeOn() || (!isCurrentSubValid())) {
+            if (mIsAirplaneModeOn || (!isCurrentSubValid())) {
                 mSwitch.setEnabled(false);
             } else {
                 mSwitch.setEnabled(true);
@@ -587,7 +590,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         // Preference screen has a valid SIM and slot index/SubId.
         private boolean isCurrentSubValid() {
             boolean isSubValid = false;
-            if (!isAirplaneModeOn() && hasCard()) {
+            if (!mIsAirplaneModeOn && hasCard()) {
                 SubscriptionInfo sir = mSubscriptionManager.
                         getActiveSubscriptionInfoForSimSlotIndex(mSlotId);
                 if (sir != null ) {
@@ -677,7 +680,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         //    active state.
         // 3. In other cases it sends user request to framework.
         synchronized private void handleUserRequest() {
-            if (isAirplaneModeOn()) {
+            if (mIsAirplaneModeOn) {
                 // do nothing but warning
                 logd("APM is on, EXIT!");
                 showAlertDialog(ERROR_ALERT_DLG_ID, R.string.sim_enabler_airplane_on);
@@ -1005,6 +1008,10 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 // When default outgoing phone account changed
                 // refresh voice call preference
                 updateCallValues();
+            } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
+                mIsAirplaneModeOn = intent.getBooleanExtra("state", false);
+                updateSubscriptions();
+                Log.d(TAG, "Intent received: mIsAirplaneModeOn = " + mIsAirplaneModeOn);
             }
         }
     };
@@ -1108,7 +1115,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                     CONFIG_LTE_SUB_SELECT_MODE, 1) == 0;
             log("updatePrimarySub isManualMode :" + isManualMode);
             mPrimarySubSelect.setEnabled(isManualMode && mSelectableSubInfos.size() > 1 &&
-                    isCallStateIdle());
+                    isCallStateIdle() && !mIsAirplaneModeOn);
         }
     }
 
