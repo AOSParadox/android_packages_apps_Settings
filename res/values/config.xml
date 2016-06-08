@@ -50,6 +50,7 @@
     <!-- Config to whether to show carrier switching after primary sim swapped -->
     <bool name="config_show_carrier_switching_enabled">false</bool>
 
+    <bool name="config_show_dialog_open_wifi_when_tethering_open">false</bool>
 
     <!-- Whether to hide IMS and DUN Apns -->
     <bool name="config_regional_hide_ims_and_dun_apns">false</bool>
