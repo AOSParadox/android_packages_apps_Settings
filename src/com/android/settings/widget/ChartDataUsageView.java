@@ -55,6 +55,8 @@ public class ChartDataUsageView extends ChartView {
     private static final int MSG_UPDATE_AXIS = 100;
     private static final long DELAY_MILLIS = 250;
     private static final String TAG = "DataUsage";
+    // minimum value of drag interval.
+    private static final int INTERVAL_OF_DRAG = 1;
 
     private ChartGridView mGrid;
     private ChartNetworkSeriesView mSeries;
@@ -149,8 +151,8 @@ public class ChartDataUsageView extends ChartView {
         mSweepRight.setClickable(false);
         mSweepRight.setFocusable(false);
 
-        mSweepWarning.setDragInterval(5 * MB_IN_BYTES);
-        mSweepLimit.setDragInterval(5 * MB_IN_BYTES);
+        mSweepWarning.setDragInterval(INTERVAL_OF_DRAG * MB_IN_BYTES);
+        mSweepLimit.setDragInterval(INTERVAL_OF_DRAG * MB_IN_BYTES);
 
         // tell everyone about our axis
         mGrid.init(mHoriz, mVert);

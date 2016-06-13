@@ -2295,7 +2295,11 @@ public class DataUsageSummary extends HighlightingFragment implements Indexable 
             } else {
                 bytesPicker.setMinValue(0);
             }
-            bytesPicker.setValue((int) (limitBytes / MB_IN_BYTES));
+            if (limitBytes <= warningBytes) {
+                bytesPicker.setValue((int) (limitBytes / MB_IN_BYTES) + 1);
+            } else {
+                bytesPicker.setValue((int) (limitBytes / MB_IN_BYTES));
+            }
             bytesPicker.setWrapSelectorWheel(false);
 
             builder.setTitle(R.string.data_usage_limit_editor_title);
