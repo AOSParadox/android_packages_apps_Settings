@@ -23,6 +23,7 @@ import com.android.settings.DateTimeSettings;
 import com.android.settings.DevelopmentSettings;
 import com.android.settings.DeviceInfoSettings;
 import com.android.settings.DisplaySettings;
+import com.android.settings.GesturesSettings;
 import com.android.settings.HomeSettings;
 import com.android.settings.LegalSettings;
 import com.android.settings.PrivacySettings;
@@ -302,6 +303,12 @@ public final class SearchIndexableResources {
                         R.xml.wifi_calling_settings,
                         WifiCallingSettings.class.getName(),
                         R.drawable.ic_settings_wireless));
+        sResMap.put(GesturesSettings.class.getName(),
+                new SearchIndexableResource(
+                        Ranking.getRankForClassName(GesturesSettings.class.getName()),
+                        R.xml.gestures_settings,
+                        GesturesSettings.class.getName(),
+                        R.drawable.ic_settings_gestures));
     }
 
     private SearchIndexableResources() {
