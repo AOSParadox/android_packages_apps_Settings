@@ -31,6 +31,15 @@
                 android:icon="@drawable/ic_settings_wireless"
                 />
 
+        <!-- Tethering & portable hotspot -->
+        <dashboard-tile
+                android:id="@+id/tethering_settings"
+                android:key="tether_settings"
+                android:title="@string/tether_settings_title_all"
+                android:icon="@drawable/ic_settings_tethering"
+                android:fragment="com.android.settings.TetherSettings"
+                />
+
         <!-- Bluetooth -->
         <dashboard-tile
                 android:id="@+id/bluetooth_settings"
@@ -47,6 +56,13 @@
                 android:icon="@drawable/ic_settings_sim"
                 />
 
+        <!-- Call Settings -->
+        <dashboard-tile
+                android:id="@+id/call_settings"
+                android:title="@string/call_settings_title"
+                android:icon="@drawable/ic_settings_call">
+                </dashboard-tile>
+
         <!-- Enable 4G -->
         <dashboard-tile
                android:id="@+id/lte_4g_settings"
@@ -61,6 +77,18 @@
                 android:fragment="com.android.settings.DataUsageSummary"
                 android:icon="@drawable/ic_settings_data_usage"
                 />
+
+        <!-- Mobile Network -->
+        <dashboard-tile
+            android:id="@+id/mobile_network_settings"
+            android:key="mobile_network_settings"
+            android:icon="@drawable/ic_settings_mobile_network"
+            android:title="@string/network_settings_title" >
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetClass="com.android.phone.MobileNetworkSettings"
+                android:targetPackage="com.android.phone" />
+            </dashboard-tile>
 
         <!-- Operator hook -->
         <dashboard-tile
@@ -237,14 +265,24 @@
         android:id="@+id/system_section"
         android:key="@string/category_key_system"
         android:title="@string/header_category_system" >
-	<dashboard-tile
+    <dashboard-tile
                 android:id="@+id/qtifeedback_settings"
                 android:title="@string/qtifeedback_settings_title"
-				android:summary="@string/qtifeedback_settings_subtitle"
+                android:summary="@string/qtifeedback_settings_subtitle"
                 android:icon="@drawable/ic_settings_qti_feedback">
-		<intent android:action="com.qti.smq.snapdragonSettings" />
+        <intent android:action="com.qti.smq.snapdragonSettings" />
         </dashboard-tile>
-	<!-- Date & Time -->
+
+    <!-- System update settings - launches activity -->
+        <dashboard-tile
+                android:id="@+id/system_update_settings"
+                android:title="@string/system_update_settings_list_item_title"
+                android:summary="@string/system_update_settings_list_item_summary"
+                android:icon="@drawable/ic_settings_system_update">
+            <intent android:action="android.settings.SYSTEM_UPDATE_SETTINGS" />
+            </dashboard-tile>
+
+    <!-- Date & Time -->
         <dashboard-tile
                 android:id="@+id/date_time_settings"
                 android:title="@string/date_and_time_settings_title"
@@ -272,6 +310,14 @@
                 android:title="@string/print_settings"
                 android:fragment="com.android.settings.print.PrintSettingsFragment"
                 android:icon="@drawable/ic_settings_print"
+                />
+
+        <!-- Other phone-info and print and accessibility controls -->
+        <dashboard-tile
+                android:id="@+id/other_functions_settings"
+                android:title="@string/radio_controls_title"
+                android:fragment="com.android.settings.OtherDeviceFunctionsSettings"
+                android:icon="@drawable/ic_settings_more"
                 />
 
         <!-- Development -->

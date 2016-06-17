@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,6 +37,7 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -142,6 +144,7 @@ public class SettingsActivity extends Activity
         MenuItem.OnActionExpandListener {
 
     private static final String LOG_TAG = "Settings";
+    private static final String KEY_TETHER_SETTINGS = "tether_settings";
 
     // Constants for state save/restore
     private static final String SAVE_KEY_CATEGORIES = ":settings:categories";
@@ -287,6 +290,7 @@ public class SettingsActivity extends Activity
 
     private static final String[] ENTRY_FRAGMENTS = {
             WirelessSettings.class.getName(),
+            OtherDeviceFunctionsSettings.class.getName(),
             WifiSettings.class.getName(),
             AdvancedWifiSettings.class.getName(),
             SavedAccessPointsWifiSettings.class.getName(),
@@ -1241,6 +1245,7 @@ public class SettingsActivity extends Activity
 
         final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
 
+        boolean isShowSettingsDesign = getResources().getBoolean(R.bool.config_settings_design);
         final int size = target.size();
         for (int i = 0; i < size; i++) {
 
@@ -1316,7 +1321,7 @@ public class SettingsActivity extends Activity
                 } else if (id == R.id.print_settings) {
                     boolean hasPrintingSupport = getPackageManager().hasSystemFeature(
                             PackageManager.FEATURE_PRINTING);
-                    if (!hasPrintingSupport) {
+                    if (!hasPrintingSupport || isShowSettingsDesign) {
                         removeTile = true;
                     }
                 } else if (id == R.id.development_settings) {
@@ -1342,6 +1347,11 @@ public class SettingsActivity extends Activity
                         tile.title = infos.get(0).activityInfo.loadLabel(getPackageManager());
                         tile.intent = intent;
                     }
+
+                } else if (id == R.id.accessibility_settings || id == R.id.about_settings) {
+                        removeTile = isShowSettingsDesign ;
+                } else if (id == R.id.other_functions_settings) {
+                        removeTile = !isShowSettingsDesign;
                 }
 
                 if (UserHandle.MU_ENABLED && UserHandle.myUserId() != 0

@@ -16,16 +16,23 @@
 
 package com.android.settings.dashboard;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -46,6 +53,8 @@ import com.android.settings.InstrumentedFragment;
 import com.android.settings.R;
 import com.android.settings.Lte4GEnabler;
 import com.android.settings.SettingsActivity;
+import com.android.settings.TetherSettings;
+import com.android.settings.Utils;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.telephony.TelephonyIntents;
 
@@ -164,12 +173,24 @@ public class DashboardSummary extends InstrumentedFragment {
         final Resources res = getResources();
 
         mDashboard.removeAllViews();
+        boolean isShowSettingsDesign = getResources().getBoolean(
+            R.bool.config_settings_design);
+        boolean isSupported = false;
+        boolean isRestricted = true;
+        if (isShowSettingsDesign) {
+            UserManager um = (UserManager) context
+                    .getSystemService(Context.USER_SERVICE);
+            ConnectivityManager cm = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            isSupported = cm.isTetheringSupported();
+            isRestricted = um.hasUserRestriction(UserManager.DISALLOW_CONFIG_TETHERING);
+        }
+        Log.d(LOG_TAG, "isShowSettingsDesign: " + isShowSettingsDesign);
 
         List<DashboardCategory> categories =
                 ((SettingsActivity) context).getDashboardCategories(true);
 
         final int count = categories.size();
-
         for (int n = 0; n < count; n++) {
             DashboardCategory category = categories.get(n);
 
@@ -206,10 +227,107 @@ public class DashboardSummary extends InstrumentedFragment {
                     updateTileView(context, res, tile, tileView.getImageView(),
                             tileView.getTitleTextView(), tileView.getSwitch());
 
-                } else {
-                    tileView = new DashboardTileView(context,false);
+                } else if (tile.getTitle(res).equals(
+                        res.getString(R.string.tether_settings_title_all))
+                        ) {
+                    tileView = new DashboardTileView(context, false);
+                    int myUserId = UserHandle.myUserId();
+                    boolean isSecondaryUser = myUserId != UserHandle.USER_OWNER;
+
+                    // Let Tethering gone if it's not allowed or if it's a
+                    // wifi-only device,
+                    // or if the settings are restricted.
+                    if (!isShowSettingsDesign
+                            || !isSupported || isRestricted || isSecondaryUser) {
+                        tileView.setVisibility(View.GONE);
+                    } else {
+                        tileView.setEnabled(!TetherSettings
+                                .isProvisioningNeededButUnavailable(context));
+                        tileView.getTitleTextView()
+                                .setEnabled(
+                                        !TetherSettings
+                                                .isProvisioningNeededButUnavailable(context));
+                    }
                     updateTileView(context, res, tile, tileView.getImageView(),
-                            tileView.getTitleTextView(), tileView.getStatusTextView());
+                            tileView.getTitleTextView(),
+                            tileView.getStatusTextView());
+                } else if (tile.getTitle(res).equals(
+                        res.getString(R.string.network_settings_title))
+                        ) {
+                    tileView = new DashboardTileView(context, false);
+                    int myUserId = UserHandle.myUserId();
+                    boolean isSecondaryUser = myUserId != UserHandle.USER_OWNER;
+
+                    // Let Mobile-Network Settings gone if it's a wifi-only
+                    // device, or if the settings are restricted.
+                    if (!isShowSettingsDesign
+                            || Utils.isWifiOnly(context) || isRestricted
+                            || isSecondaryUser) {
+                        tileView.setVisibility(View.GONE);
+                    }
+                    int isAirplaneMode = Settings.System.getInt(
+                            context.getContentResolver(),
+                            Settings.System.AIRPLANE_MODE_ON, 0);
+                    tileView.setEnabled(!(isAirplaneMode == 1));
+                    tileView.getTitleTextView().setEnabled(
+                            !(isAirplaneMode == 1));
+                    updateTileView(context, res, tile, tileView.getImageView(),
+                            tileView.getTitleTextView(),
+                            tileView.getStatusTextView());
+                } else if (tile
+                        .getTitle(res)
+                        .equals(res
+                                .getString(R.string.system_update_settings_list_item_title))
+                        ) {
+                    Intent intent = tile.intent;
+                    tileView = new DashboardTileView(context, false);
+                    if ((UserHandle.myUserId() == UserHandle.USER_OWNER)
+                            && intent != null && isShowSettingsDesign) {
+                        // Find the activity that is in the system image
+                        PackageManager pm = context.getPackageManager();
+                        List<ResolveInfo> list = pm.queryIntentActivities(
+                                intent, 0);
+                        int listSize = list.size();
+                        for (int j = 0; j < listSize; j++) {
+                            ResolveInfo resolveInfo = list.get(j);
+                            int flags = resolveInfo.activityInfo.applicationInfo.flags;
+                            if ((flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+
+                                // Replace the intent with this specific
+                                // activity
+                                tile.intent = new Intent().setClassName(
+                                        resolveInfo.activityInfo.packageName,
+                                        resolveInfo.activityInfo.name);
+
+                                // Set the preference title to the activity's
+                                // label
+                                tileView.getTitleTextView().setText(
+                                        resolveInfo.loadLabel(pm));
+                            }
+                        }
+                        updateTileView(context, res, tile,
+                                tileView.getImageView(),
+                                tileView.getTitleTextView(),
+                                tileView.getStatusTextView());
+                    } else {
+                        // Set gone for secondary users
+                        tileView.setVisibility(View.GONE);
+                    }
+                } else if (tile.getTitle(res).equals(
+                        res.getString(R.string.call_settings_title))
+                        ) {
+                    tileView = new DashboardTileView(context, false);
+                    if (!isShowSettingsDesign) {
+                        tileView.setVisibility(View.GONE);
+                    }
+                    updateTileView(context, res, tile, tileView.getImageView(),
+                            tileView.getTitleTextView(),
+                            tileView.getStatusTextView());
+                } else {
+                    tileView = new DashboardTileView(context, false);
+                    updateTileView(context, res, tile, tileView.getImageView(),
+                            tileView.getTitleTextView(),
+                            tileView.getStatusTextView());
                 }
                 tileView.setTile(tile);
 

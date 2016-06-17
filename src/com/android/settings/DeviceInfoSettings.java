@@ -184,6 +184,10 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
             // Remove for secondary users
             removePreference(KEY_SYSTEM_UPDATE_SETTINGS);
         }
+        boolean isShowSystemUpdate = getResources().getBoolean(R.bool.config_settings_design);
+        if (isShowSystemUpdate) {
+            removePreference(KEY_SYSTEM_UPDATE_SETTINGS);
+        }
 
         // Read platform settings for additional system update setting
         removePreferenceIfBoolFalse(KEY_UPDATE_SETTING,

@@ -55,6 +55,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.INetworkManagementService;
+import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
@@ -69,6 +70,7 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.Profile;
 import android.provider.ContactsContract.RawContacts;
 import android.service.persistentdata.PersistentDataBlockManager;
+import android.telephony.CarrierConfigManager;
 import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
@@ -1280,4 +1282,25 @@ public final class Utils {
         }
     }
 
+    /**
+     * Trigger client initiated action (send intent) on system update
+     */
+    public static void ciActionOnSysUpdate(Context context, PersistableBundle b) {
+        String intentStr = b.getString(CarrierConfigManager.
+                KEY_CI_ACTION_ON_SYS_UPDATE_INTENT_STRING);
+        if (!TextUtils.isEmpty(intentStr)) {
+            String extra = b.getString(CarrierConfigManager.
+                    KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_STRING);
+            String extraVal = b.getString(CarrierConfigManager.
+                    KEY_CI_ACTION_ON_SYS_UPDATE_EXTRA_VAL_STRING);
+
+            Intent intent = new Intent(intentStr);
+            if (!TextUtils.isEmpty(extra)) {
+                intent.putExtra(extra, extraVal);
+            }
+            Log.d(TAG, "ciActionOnSysUpdate: broadcasting intent " + intentStr +
+                    " with extra " + extra + ", " + extraVal);
+            context.getApplicationContext().sendBroadcast(intent);
+        }
+    }
 }

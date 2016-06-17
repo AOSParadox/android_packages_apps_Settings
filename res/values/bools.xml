@@ -113,6 +113,9 @@
     <!-- whether to show font size dialog config -->
     <bool name="show_font_size_config">false</bool>
 
+    <!-- whether to show settings design -->
+    <bool name="config_settings_design">false</bool>
+
     <!-- Whether to hide ims apn -->
     <bool name="config_hide_ims_apns">false</bool>
 

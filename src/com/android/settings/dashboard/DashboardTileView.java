@@ -19,7 +19,11 @@ package com.android.settings.dashboard;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PersistableBundle;
+import android.telephony.CarrierConfigManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -33,6 +37,7 @@ import com.android.settings.Utils;
 
 public class DashboardTileView extends FrameLayout implements View.OnClickListener {
 
+    private static final String SYSTEM_UPDATE_SETTINGS = "System updates";
     private static final int DEFAULT_COL_SPAN = 1;
 
     private ImageView mImageView;
@@ -117,6 +122,15 @@ public class DashboardTileView extends FrameLayout implements View.OnClickListen
                 ProfileSelectDialog.show(((Activity) getContext()).getFragmentManager(), mTile);
             } else if (numUserHandles == 1) {
                 getContext().startActivityAsUser(mTile.intent, mTile.userHandle.get(0));
+            } else if (mTile.getTitle(getResources()).toString().equals(SYSTEM_UPDATE_SETTINGS)){
+                CarrierConfigManager configManager =
+                        (CarrierConfigManager) getContext().getSystemService(
+                            Context.CARRIER_CONFIG_SERVICE);
+                PersistableBundle b = configManager.getConfig();
+                if (b.getBoolean(CarrierConfigManager.KEY_CI_ACTION_ON_SYS_UPDATE_BOOL)) {
+                    Utils.ciActionOnSysUpdate(getContext(),b);
+                }
+                getContext().startActivity(mTile.intent);
             } else {
                 getContext().startActivity(mTile.intent);
             }
