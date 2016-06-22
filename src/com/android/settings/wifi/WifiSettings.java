@@ -611,7 +611,7 @@ public class WifiSettings extends RestrictedSettingsFragment
     }
 
     private boolean isPasspointWifi(AccessPoint ap) {
-        if (ap != null) {
+        if (ap != null && ap.getConfig() != null) {
             WifiEnterpriseConfig entConfig = ap.getConfig().enterpriseConfig;
             return (entConfig != null)
                 && (entConfig.getEapMethod() != WifiEnterpriseConfig.Eap.NONE);
