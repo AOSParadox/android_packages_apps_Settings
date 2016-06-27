@@ -34,4 +34,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <!-- Customize date format or not -->
     <bool name="config_regional_date_format">false</bool>
 
+    <!-- Whether to show a preference item for battery percentage
+        in ("Battery") for India RJIL -->
+    <bool name="config_show_battery_percentage">false</bool>
 </resources>

@@ -7315,4 +7315,6 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="lte_data_service_enabled">LTE data service enabled </string>
     <string name="app_ops_permiss_name">App network access</string>
     <string name="add_operator_account_label">iTelcel</string>
+    <string name="show_battery_percentage">Show battery percentage</string>
+    <string name="show_battery_percentage_summary">Show battery level percentage inside the status bar</string>
 </resources>
