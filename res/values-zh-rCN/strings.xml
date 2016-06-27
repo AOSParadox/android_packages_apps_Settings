@@ -2969,4 +2969,8 @@
     <string name="qtifeedback_settings_title">硬件反馈</string>
     <string name="qtifeedback_settings_subtitle">Qualcomm Technologies 报告</string>
     <string name="app_ops_permiss_name">应用联网限制</string>
+
+    <!--Schedule power on and off feature -->
+    <string name="timer_switch_settings_title">定时开关机</string>
+
 </resources>
