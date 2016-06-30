@@ -7111,6 +7111,8 @@
     <string name="keywords_gestures">screen touchscreen draw swipe finger</string>
 
     <string name="gestures_double_tap">Double-tap</string>
+    <string name="gestures_draw_c">Draw C</string>
+    <string name="gestures_draw_e">Draw E</string>
     <string name="gestures_draw_v">Draw V</string>
     <string name="gestures_draw_inverse_v">Draw Inverse V</string>
     <string name="gestures_draw_o">Draw O</string>
