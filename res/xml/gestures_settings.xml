@@ -75,6 +75,22 @@
             android:entryValues="@array/gestures_values" />
 
         <ListPreference
+            android:key="draw_c"
+            android:title="@string/gestures_draw_c"
+            android:summary="%s"
+            android:persistent="false"
+            android:entries="@array/gestures_entries"
+            android:entryValues="@array/gestures_values" />
+
+        <ListPreference
+            android:key="draw_e"
+            android:title="@string/gestures_draw_e"
+            android:summary="%s"
+            android:persistent="false"
+            android:entries="@array/gestures_entries"
+            android:entryValues="@array/gestures_values" />
+
+        <ListPreference
             android:key="draw_v"
             android:title="@string/gestures_draw_v"
             android:summary="%s"
