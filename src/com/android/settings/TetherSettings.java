@@ -474,6 +474,7 @@ public class TetherSettings extends SettingsPreferenceFragment
             mUsbTether.setSummary(R.string.usb_tethering_unavailable_subtext);
             mUsbTether.setEnabled(false);
             mUsbTether.setChecked(false);
+            postTurnOn(getActivity(), TETHERING_USB, false);
         }
     }
 
