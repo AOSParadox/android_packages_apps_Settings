@@ -390,7 +390,9 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             intent.putExtra(SimDialogActivity.DIALOG_TYPE_KEY, SimDialogActivity.SMS_PICK);
             context.startActivity(intent);
         } else if (preference == mPrimarySubSelect) {
-            startActivity(mPrimarySubSelect.getIntent());
+            Intent primarySubIntent = mPrimarySubSelect.getIntent();
+            primarySubIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(primarySubIntent);
         }
 
         return true;
