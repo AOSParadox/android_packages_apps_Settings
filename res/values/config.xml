@@ -122,4 +122,9 @@
     <bool name="usb_tethering_show_alert_for_no_sim_card">false</bool>
 
     <bool name="usb_tethering_show_alert_for_first_use">false</bool>
+
+    <!-- KeyDisabler -->
+    <bool name="config_canDisableHardwareKeys">false</bool>
+    <string name="config_KeyDisablerPath" translatable="false">0</string>
+
 </resources>
