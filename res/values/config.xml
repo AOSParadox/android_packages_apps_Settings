@@ -47,4 +47,8 @@
     <!-- DDS Switch setting -->
     <bool name="config_dds_switch_alert_dialog_supported" translatable="false">false</bool>
 
+    <!-- KeyDisabler -->
+    <bool name="config_canDisableHardwareKeys">false</bool>
+    <string name="config_KeyDisablerPath" translatable="false">0</string>
+
 </resources>

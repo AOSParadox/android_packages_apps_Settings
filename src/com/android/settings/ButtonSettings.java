@@ -45,7 +45,10 @@ import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.settings.Utils;
 
-import org.aosparadox.hardware.KeyDisabler;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class ButtonSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
@@ -145,7 +148,9 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         // Only visible on devices that does not have a navigation bar already,
         // and don't even try unless the existing keys can be disabled
         boolean needsNavigationBar = false;
-        if (KeyDisabler.isSupported()) {
+	boolean KeyDisablerSupported = getResources().getBoolean(
+		R.bool.config_canDisableHardwareKeys);
+        if (KeyDisablerSupported) {
             try {
                 IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
                 needsNavigationBar = wm.needsNavigationBar();
@@ -255,6 +260,25 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         return false;
     }
 
+    /**
+     * Writes the given value into the given file
+     *
+     * @return true on success, false on failure
+     */
+    public static boolean writeLine(String fileName, String value) {
+        try {
+            FileOutputStream fos = new FileOutputStream(fileName);
+            fos.write(value.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Could not write to file " + fileName, e);
+            return false;
+        }
+
+        return true;
+    }
+
     private static void writeDisableNavkeysOption(Context context, boolean enabled) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final int defaultBrightness = context.getResources().getInteger(
@@ -262,7 +286,9 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
 
         Settings.System.putInt(context.getContentResolver(),
                 Settings.System.DEV_FORCE_SHOW_NAVBAR, enabled ? 1 : 0);
-        KeyDisabler.setActive(enabled);
+	String KeyDisablerPath = context.getResources().getString(
+		R.string.config_KeyDisablerPath);
+        writeLine(KeyDisablerPath, (enabled ? "0" : "1"));
 
         /* Save/restore button timeouts to disable them in softkey mode */
         Editor editor = prefs.edit();
@@ -318,10 +344,11 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     }
 
     public static void restoreKeyDisabler(Context context) {
-        if (!KeyDisabler.isSupported()) {
+	boolean KeyDisablerSupported = context.getResources().getBoolean(
+			R.bool.config_canDisableHardwareKeys);
+        if (!KeyDisablerSupported) {
             return;
         }
-
         writeDisableNavkeysOption(context, Settings.System.getInt(context.getContentResolver(),
                 Settings.System.DEV_FORCE_SHOW_NAVBAR, 0) != 0);
     }
