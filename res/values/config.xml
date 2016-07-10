@@ -92,4 +92,9 @@
     <bool name="config_hotspot_need_show_activated_dialog">false</bool>
     <bool name="config_keep_hotspot_on_10mins_default">false</bool>
     <bool name="hotspot_show_alert_for_open_security">false</bool>
+
+    <!-- KeyDisabler -->
+    <bool name="config_canDisableHardwareKeys">false</bool>
+    <string name="config_KeyDisablerPath" translatable="false">0</string>
+
 </resources>
