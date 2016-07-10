@@ -120,4 +120,8 @@
 
     <!-- Force hide the Emergency broadcast menu -->
    <bool name="config_regional_hide_cell_broadcast_setting">false</bool>
+
+    <!-- KeyDisabler -->
+    <bool name="config_canDisableHardwareKeys">false</bool>
+    <string name="config_KeyDisablerPath" translatable="false">0</string>
 </resources>
