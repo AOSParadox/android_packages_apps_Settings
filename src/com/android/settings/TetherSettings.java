@@ -229,6 +229,12 @@ public class TetherSettings extends SettingsPreferenceFragment
             }
         }
 
+        final boolean configShowBluetoothAndHelpMenu = getResources().getBoolean(
+                R.bool.config_show_bluetooth_menu);
+        if (configShowBluetoothAndHelpMenu && mBluetoothTether != null) {
+            getPreferenceScreen().removePreference(mBluetoothTether);
+        }
+
         mProvisionApp = getResources().getStringArray(
                 com.android.internal.R.array.config_mobile_hotspot_provision_app);
     }

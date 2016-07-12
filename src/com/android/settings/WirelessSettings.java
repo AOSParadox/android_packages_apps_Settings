@@ -332,6 +332,11 @@ public class WirelessSettings extends SettingsPreferenceFragment implements Inde
         mGlobalProxy.setEnabled(mDPM.getGlobalProxyAdmin() == null);
 
         // Disable Tethering if it's not allowed or if it's a wifi-only device
+        PreferenceScreen tetherSettings = (PreferenceScreen) findPreference(KEY_TETHER_SETTINGS);
+        if (tetherSettings != null) {
+            tetherSettings.setTitle(getResources().getString(R.string.tether_settings_title_all));
+        }
+
         final ConnectivityManager cm =
                 (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (isSecondaryUser || !cm.isTetheringSupported()

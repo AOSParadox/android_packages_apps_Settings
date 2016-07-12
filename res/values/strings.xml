@@ -7122,8 +7122,9 @@
     <string name="hotspot_settings_indication_step1">1. Turn on WLAN on PC/Mobile device.</string>
     <string name="hotspot_settings_indication_step2">2. Find \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d in the list of WLAN networks.</string>
     <string name="hotspot_settings_indication_step3_ssid">3. Select \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d.</string>
-    <string name="hotspot_settings_indication_step3_all">3. Select \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d and Enter \u201d<xliff:g id="ssid_pwd">%s</xliff:g>\u201d in the password field.</string>
+    <string name="hotspot_settings_indication_step3_all">3. Select \u201c<xliff:g id="ssid_name">%s</xliff:g>\u201d and Enter \u201c<xliff:g id="ssid_pwd">%s</xliff:g>\u201d in the password field.</string>
     <string name="hotspot_settings_indication_step4">4. Start using the Internet on PC/Mobile device.</string>
+    <string name="wifi_hotspot_mode_title">Keep Mobile HotSpot on</string>
     <!-- begin for portable wifi hotspot setting -->
     <string name="hotspot_turn_on_hint">To use WLAN hotspot, turn it on.</string>
     <string name="ap_device_name_default">Anonymous</string>
@@ -7329,4 +7330,15 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="add_operator_account_label">iTelcel</string>
     <string name="show_battery_percentage">Show battery percentage</string>
     <string name="show_battery_percentage_summary">Show battery level percentage inside the status bar</string>
+    <!-- Label for the EAP identity of the network by carrier function-->
+    <string name="wifi_eap_identity_carrier_function">Username</string>
+    <string name="wifi_eap_carrier_function_name">CMCC</string>
+    <string name="wifi_call_without_GBA_sim_error_message">Wi-Fi calling must be used on a GBA capable T-Mobile US SIM card is used.</string>
+
+    <string name="collect_diagnostics_title">Collect Diagnostics</string>
+    <string name="collect_diagnostics_summary">Collect diagnostics data for troubleshooting</string>
+    <string name="tethering_settings_summary">Share your device\'s mobile data connection via USB or a Mobile HotSpot</string>
+    <string name="timer_switch_settings_title">Scheduled power on and off</string>
+    <string name="tether_settings_title_all">Tethering &amp; portable hotspot</string>
+    <string name="wifiap_mobile_hotspot_help">Status</string>
 </resources>

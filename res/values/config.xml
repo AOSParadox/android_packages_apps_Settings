@@ -111,6 +111,8 @@
     <bool name="wifi_call_enhanced_setting">false</bool>
     <!-- Config to enable/disable the USB line-->
     <bool name="config_usb_line_enable">false</bool>
+    <!-- Config to show bluetooth menu-->
+    <bool name="config_show_bluetooth_menu">false</bool>
 
     <bool name="config_regional_usb_tethering_quick_start_enable">false</bool>
     <bool name="config_regional_hotspot_tether_help_enable">false</bool>
