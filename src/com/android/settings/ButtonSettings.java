@@ -98,7 +98,7 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     private ListPreference mMenuPressAction;
     private ListPreference mMenuLongPressAction;
 
-    private SwitchPreference mSwapSliderOrder;
+    private CheckBoxPreference mSwapSliderOrder;
 
     private PreferenceCategory mNavigationPreferencesCat;
 
@@ -132,13 +132,13 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         mHandler = new Handler();
 
         /* Swap Slider order */
-        mSwapSliderOrder = (SwitchPreference) findPreference(KEY_SWAP_SLIDER_ORDER);
+        mSwapSliderOrder = (CheckBoxPreference) findPreference(KEY_SWAP_SLIDER_ORDER);
         if (mSwapSliderOrder != null) {
             if (ZenModeConfig.hasAlertSlider(getActivity().getApplicationContext())) {
                 mSwapSliderOrder.setOnPreferenceChangeListener(this);
             } else {
                 mSwapSliderOrder = null;
-                removePreference(KEY_SWAP_SLIDER_ORDER);
+                prefScreen.removePreference(mSwapSliderOrder);
             }
         }
 
