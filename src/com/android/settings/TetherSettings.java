@@ -454,9 +454,6 @@ public class TetherSettings extends SettingsPreferenceFragment
                 boolean isWifiEnabled = wifiManager.isWifiEnabled();
                 Intent intent = new Intent(TetherService.WIFI_STATUS_BEFORE_TETHER_ON);
                 intent.putExtra("isWifiEnabled", isWifiEnabled);
-                IntentFilter filter = new IntentFilter();
-                filter.addAction(TetherService.WIFI_STATUS_BEFORE_TETHER_ON);
-                getActivity().registerReceiver(TetherService.RecordWiFiStatusReceiver, filter);
                 getActivity().sendBroadcast(intent);
             }
 

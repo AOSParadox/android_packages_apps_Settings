@@ -68,6 +68,7 @@ public class TetherService extends Service {
     private boolean mEnableWifiAfterCheck;
     private boolean mInProvisionCheck;
     private ArrayList<Integer> mCurrentTethers;
+    private boolean mUsbEnable;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -82,6 +83,12 @@ public class TetherService extends Service {
                 com.android.internal.R.string.config_mobile_hotspot_provision_response);
         registerReceiver(mReceiver, new IntentFilter(provisionResponse),
                 android.Manifest.permission.CONNECTIVITY_INTERNAL, null);
+        mUsbEnable = getResources().getBoolean(R.bool.config_usb_line_enable);
+        if(mUsbEnable) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WIFI_STATUS_BEFORE_TETHER_ON);
+            registerReceiver(mRecordWiFiStatusReceiver, filter);
+        }
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         mCurrentTethers = stringToTethers(prefs.getString(KEY_TETHERS, ""));
         mCurrentTypeIndex = 0;
@@ -155,8 +162,8 @@ public class TetherService extends Service {
         if (DEBUG) Log.d(TAG, "Destroying TetherService");
         unregisterReceiver(mReceiver);
 
-        if(RecordWiFiStatusReceiver !=null){
-            unregisterReceiver(RecordWiFiStatusReceiver);
+        if(mRecordWiFiStatusReceiver !=null && mUsbEnable) {
+            unregisterReceiver(mRecordWiFiStatusReceiver);
         }
         super.onDestroy();
     }
@@ -320,7 +327,7 @@ public class TetherService extends Service {
         }
     };
 
-    public static BroadcastReceiver RecordWiFiStatusReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mRecordWiFiStatusReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -333,7 +340,7 @@ public class TetherService extends Service {
                         isReopenWiFiForUsbTether = true;
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(UsbManager.ACTION_USB_STATE);
-                        context.registerReceiver(RecordWiFiStatusReceiver, filter);
+                        context.registerReceiver(mRecordWiFiStatusReceiver, filter);
                     }
                 }
             }
