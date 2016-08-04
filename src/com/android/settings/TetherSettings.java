@@ -129,7 +129,11 @@ public class TetherSettings extends SettingsPreferenceFragment
 
     private boolean mUnavailable;
     private BroadcastReceiver mConfigureReceiver;
-    private boolean isUSBTetherChanged = false;
+
+    /* Record the wifi status before usb tether is on */
+    private boolean mUsbEnable = false;
+    private WifiManager mWifiStatusManager;
+    private boolean isWifiEnabled = false;
 
     @Override
     protected int getMetricsCategory() {
@@ -237,6 +241,10 @@ public class TetherSettings extends SettingsPreferenceFragment
 
         mProvisionApp = getResources().getStringArray(
                 com.android.internal.R.array.config_mobile_hotspot_provision_app);
+
+        mUsbEnable = getResources().getBoolean(R.bool.config_usb_line_enable);
+        mWifiStatusManager= (WifiManager) getActivity().getSystemService(
+                Context.WIFI_SERVICE);
     }
 
     @Override
@@ -310,7 +318,12 @@ public class TetherSettings extends SettingsPreferenceFragment
                 updateState();
             } else if (action.equals(UsbManager.ACTION_USB_STATE)) {
                 mUsbConnected = intent.getBooleanExtra(UsbManager.USB_CONNECTED, false);
-                isUSBTetherChanged = true;
+                mMassStorageActive = Environment.MEDIA_SHARED.equals(
+                        Environment.getExternalStorageState());
+                boolean usbAvailable = mUsbConnected && !mMassStorageActive;
+                if(!usbAvailable && mUsbEnable && isWifiEnabled){
+                    postTurnOn(getActivity(), TETHERING_USB, false);
+                }
                 updateState();
             } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 if (mBluetoothEnableForTether) {
@@ -447,16 +460,6 @@ public class TetherSettings extends SettingsPreferenceFragment
             mUsbTether.setSummary(R.string.usb_tethering_active_subtext);
             mUsbTether.setEnabled(true);
             mUsbTether.setChecked(true);
-            boolean usbEnable = getResources().getBoolean(R.bool.config_usb_line_enable);
-            if(isUSBTetherChanged && usbEnable) {
-                WifiManager wifiManager = (WifiManager) getActivity().getSystemService(
-                        Context.WIFI_SERVICE);
-                boolean isWifiEnabled = wifiManager.isWifiEnabled();
-                Intent intent = new Intent(TetherService.WIFI_STATUS_BEFORE_TETHER_ON);
-                intent.putExtra("isWifiEnabled", isWifiEnabled);
-                getActivity().sendBroadcast(intent);
-            }
-
         } else if (usbAvailable) {
             if (usbError == ConnectivityManager.TETHER_ERROR_NO_ERROR) {
                 mUsbTether.setSummary(R.string.usb_tethering_available_subtext);
@@ -477,7 +480,6 @@ public class TetherSettings extends SettingsPreferenceFragment
             mUsbTether.setSummary(R.string.usb_tethering_unavailable_subtext);
             mUsbTether.setEnabled(false);
             mUsbTether.setChecked(false);
-            postTurnOn(getActivity(), TETHERING_USB, false);
         }
     }
 
@@ -640,6 +642,11 @@ public class TetherSettings extends SettingsPreferenceFragment
 
         if (preference == mUsbTether) {
             boolean newState = mUsbTether.isChecked();
+            //get the wifi status
+            isWifiEnabled = mWifiStatusManager.isWifiEnabled();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(UsbManager.ACTION_USB_STATE);
+            getActivity().registerReceiver(mTetherChangeReceiver, filter);
 
             if (newState) {
                 startProvisioningIfNecessary(TETHERING_USB);

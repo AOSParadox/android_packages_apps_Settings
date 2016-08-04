@@ -58,17 +58,11 @@ public class TetherService extends Service {
 
     private static final String PREFS = "tetherPrefs";
     private static final String KEY_TETHERS = "currentTethers";
-    /* Record the wifi status before usb tether is on */
-    public static String WIFI_STATUS_BEFORE_TETHER_ON = "wiFi_status_before_tether_on";
-    private static boolean isReopenWiFiForUsbTether = false;
-    private static boolean mUsbConnected;
-    private static boolean mMassStorageActive;
 
     private int mCurrentTypeIndex;
     private boolean mEnableWifiAfterCheck;
     private boolean mInProvisionCheck;
     private ArrayList<Integer> mCurrentTethers;
-    private boolean mUsbEnable;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -83,12 +77,6 @@ public class TetherService extends Service {
                 com.android.internal.R.string.config_mobile_hotspot_provision_response);
         registerReceiver(mReceiver, new IntentFilter(provisionResponse),
                 android.Manifest.permission.CONNECTIVITY_INTERNAL, null);
-        mUsbEnable = getResources().getBoolean(R.bool.config_usb_line_enable);
-        if(mUsbEnable) {
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(WIFI_STATUS_BEFORE_TETHER_ON);
-            registerReceiver(mRecordWiFiStatusReceiver, filter);
-        }
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         mCurrentTethers = stringToTethers(prefs.getString(KEY_TETHERS, ""));
         mCurrentTypeIndex = 0;
@@ -161,10 +149,6 @@ public class TetherService extends Service {
 
         if (DEBUG) Log.d(TAG, "Destroying TetherService");
         unregisterReceiver(mReceiver);
-
-        if(mRecordWiFiStatusReceiver !=null && mUsbEnable) {
-            unregisterReceiver(mRecordWiFiStatusReceiver);
-        }
         super.onDestroy();
     }
 
@@ -322,40 +306,6 @@ public class TetherService extends Service {
                 } else {
                     // Start the next check in our list.
                     startProvisioning(mCurrentTypeIndex);
-                }
-            }
-        }
-    };
-
-    private final BroadcastReceiver mRecordWiFiStatusReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            /* Record the wifi status before usb tether is on */
-            if (WIFI_STATUS_BEFORE_TETHER_ON.equals(action)) {
-                if(intent.getExtras()!= null) {
-                    boolean isWifiEnabled = intent.getExtras().getBoolean("isWifiEnabled");
-                    if(isWifiEnabled) {
-                        isReopenWiFiForUsbTether = true;
-                        IntentFilter filter = new IntentFilter();
-                        filter.addAction(UsbManager.ACTION_USB_STATE);
-                        context.registerReceiver(mRecordWiFiStatusReceiver, filter);
-                    }
-                }
-            }
-            /* when pull out usb line, the wifi network will be reopen automatic */
-            if (UsbManager.ACTION_USB_STATE.equals(action)) {
-                WifiManager mWifiManager = (WifiManager) context.getSystemService(
-                        Context.WIFI_SERVICE);
-                mUsbConnected = intent.getBooleanExtra(UsbManager.USB_CONNECTED, false);
-                mMassStorageActive = Environment.MEDIA_SHARED.equals(
-                        Environment.getExternalStorageState());
-                boolean usbAvailable = mUsbConnected && !mMassStorageActive;
-                boolean usbEnable = context.getResources().getBoolean(
-                        R.bool.config_usb_line_enable);
-                if(!usbAvailable && usbEnable && isReopenWiFiForUsbTether) {
-                    mWifiManager.setWifiEnabled(true);
                 }
             }
         }
