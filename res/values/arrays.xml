@@ -1414,7 +1414,7 @@
     </string-array>
 
     <!-- supl plmn list that need to be hidden -->
-    <string-array name="hidesupl_plmn_list">
+    <string-array name="hidesupl_plmn_list" translatable="false">
         <item>46001</item>
         <item>46003</item>
         <item>46011</item>
