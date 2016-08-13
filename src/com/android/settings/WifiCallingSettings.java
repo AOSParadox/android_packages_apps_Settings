@@ -62,34 +62,40 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
     private ListPreference mButtonWfcMode;
     private TextView mEmptyView;
 
+    private int[] mCallState = null;
+    private PhoneStateListener[] mPhoneStateListener = null;
+    private int mPhoneCount;
     private boolean mValidListener = false;
 
-    private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+    private PhoneStateListener getPhoneStateListener(int phoneId, int subId) {
         /*
          * Enable/disable controls when in/out of a call and depending on
          * TTY mode and TTY support over VoLTE.
          * @see android.telephony.PhoneStateListener#onCallStateChanged(int,
          * java.lang.String)
          */
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            final SettingsActivity activity = (SettingsActivity) getActivity();
-            boolean isNonTtyOrTtyOnVolteEnabled = ImsManager
-                    .isNonTtyOrTtyOnVolteEnabled(activity);
-            final SwitchBar switchBar = activity.getSwitchBar();
-            boolean isWfcEnabled = switchBar.getSwitch().isChecked()
-                    && isNonTtyOrTtyOnVolteEnabled;
+        final int i = phoneId;
+        mPhoneStateListener[phoneId]  = new PhoneStateListener(subId) {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                final SettingsActivity activity = (SettingsActivity) getActivity();
+                boolean isNonTtyOrTtyOnVolteEnabled = ImsManager
+                        .isNonTtyOrTtyOnVolteEnabled(activity);
+                final SwitchBar switchBar = activity.getSwitchBar();
+                boolean isWfcEnabled = switchBar.getSwitch().isChecked()
+                        && isNonTtyOrTtyOnVolteEnabled;
 
-            switchBar.setEnabled((state == TelephonyManager.CALL_STATE_IDLE)
-                    && isNonTtyOrTtyOnVolteEnabled);
+                mCallState[i] = state;
+                switchBar.setEnabled(isCallStateIdle() && isNonTtyOrTtyOnVolteEnabled);
 
-            Preference pref = getPreferenceScreen().findPreference(BUTTON_WFC_MODE);
-            if (pref != null) {
-                pref.setEnabled(isWfcEnabled
-                        && (state == TelephonyManager.CALL_STATE_IDLE));
+                Preference pref = getPreferenceScreen().findPreference(BUTTON_WFC_MODE);
+                if (pref != null) {
+                    pref.setEnabled(isWfcEnabled && isCallStateIdle());
+                }
             }
-        }
-    };
+        };
+        return mPhoneStateListener[phoneId];
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -166,6 +172,10 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(ImsManager.ACTION_IMS_REGISTRATION_ERROR);
+
+        mPhoneCount = TelephonyManager.getDefault().getPhoneCount();
+        mPhoneStateListener = new PhoneStateListener[mPhoneCount];
+        mCallState = new int[mPhoneCount];
     }
 
     @Override
@@ -175,8 +185,7 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
         final Context context = getActivity();
 
         if (ImsManager.isWfcEnabledByPlatform(context)) {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            tm.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            listen(context);
 
             mSwitchBar.addOnSwitchChangeListener(this);
 
@@ -214,13 +223,42 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
         if (mValidListener) {
             mValidListener = false;
 
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            tm.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            unRegisterPhoneStateListener(context);
 
             mSwitchBar.removeOnSwitchChangeListener(this);
         }
 
         context.unregisterReceiver(mIntentReceiver);
+    }
+
+    private void listen(Context context) {
+        TelephonyManager tm =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        SubscriptionManager subMgr = SubscriptionManager.from(context);
+        for (int i = 0; i < mPhoneCount; i++) {
+            final SubscriptionInfo subInfo = subMgr.getActiveSubscriptionInfoForSimSlotIndex(i);
+
+            if (subInfo == null) {
+                Log.e(TAG, "register for call state change subInfo : " + subInfo);
+                return;
+            }
+
+            int subId = subInfo.getSubscriptionId();
+            Log.d(TAG, "Register for call state change subId : " + subId + " for phone Id: " + i);
+            tm.listen(getPhoneStateListener(i, subId), PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+
+    private void unRegisterPhoneStateListener(Context context) {
+        Log.d(TAG, "unRegister for call state change");
+        TelephonyManager tm =
+               (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        for (int i = 0; i < mPhoneCount; i++) {
+            if (mPhoneStateListener[i] != null) {
+                tm.listen(mPhoneStateListener[i], PhoneStateListener.LISTEN_NONE);
+                mPhoneStateListener[i] = null;
+            }
+        }
     }
 
     /**
@@ -307,5 +345,16 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
             Log.e(TAG, "isWfcModeSupported: Invalid SubscriptionInfo");
         }
         return isWfcModeSupported;
+    }
+
+    private boolean isCallStateIdle() {
+        boolean callStateIdle = true;
+        for (int i = 0; i < mCallState.length; i++) {
+            if (TelephonyManager.CALL_STATE_IDLE != mCallState[i]) {
+                callStateIdle = false;
+            }
+        }
+        Log.d(TAG, "isCallStateIdle " + callStateIdle);
+        return callStateIdle;
     }
 }
