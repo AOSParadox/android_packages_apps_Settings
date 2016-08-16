@@ -31,6 +31,7 @@ import android.hardware.fingerprint.Fingerprint;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.preference.ListPreference;
@@ -97,6 +98,7 @@ public class SecuritySettings extends SettingsPreferenceFragment
     private static final String KEY_CREDENTIAL_STORAGE_TYPE = "credential_storage_type";
     private static final String KEY_RESET_CREDENTIALS = "credentials_reset";
     private static final String KEY_CREDENTIALS_INSTALL = "credentials_install";
+    private static final String KEY_FILE_PROTECTION = "file_protection";
     private static final String KEY_TOGGLE_INSTALL_APPLICATIONS = "toggle_install_applications";
     private static final String KEY_POWER_INSTANTLY_LOCKS = "power_button_instantly_locks";
     private static final String KEY_CREDENTIALS_MANAGER = "credentials_management";
@@ -318,7 +320,12 @@ public class SecuritySettings extends SettingsPreferenceFragment
                 || um.hasUserRestriction(UserManager.DISALLOW_INSTALL_APPS)) {
             mToggleAppInstallation.setEnabled(false);
         }
-
+        if (!isStrictOpEnable()) {
+            Preference fileProtection = findPreference(KEY_FILE_PROTECTION);
+            if (deviceAdminCategory != null) {
+                deviceAdminCategory.removePreference(fileProtection);
+            }
+        }
         // Advanced Security features
         PreferenceGroup advancedCategory =
                 (PreferenceGroup)root.findPreference(KEY_ADVANCED_SECURITY);
@@ -436,6 +443,10 @@ public class SecuritySettings extends SettingsPreferenceFragment
             }
         }
         return false;
+    }
+
+    private static boolean isStrictOpEnable() {
+        return SystemProperties.getBoolean("persist.sys.strict_op_enable", false);
     }
 
     private static ArrayList<TrustAgentComponentInfo> getActiveTrustAgents(

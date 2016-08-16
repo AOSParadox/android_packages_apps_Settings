@@ -1412,6 +1412,8 @@
     <string name="app_ops_running" msgid="7706949900637284122">"正在运行"</string>
     <string name="app_ops_never_used" msgid="9114608022906887802">"（从未使用）"</string>
     <string name="no_default_apps" msgid="2915315663141025400">"没有任何默认应用。"</string>
+    <string name="file_protection">文件保护</string>
+    <string name="file_protection_summary">加密文件</string>
     <string name="storageuse_settings_title" msgid="5657014373502630403">"存储空间使用情况"</string>
     <string name="storageuse_settings_summary" msgid="3748286507165697834">"查看应用使用的存储空间"</string>
     <string name="runningservices_settings_title" msgid="8097287939865165213">"正在运行的服务"</string>
