@@ -44,6 +44,13 @@
             android:key="touch_sounds"
             android:title="@string/touch_sounds_title" />
 
+    <!-- Screenshot tone -->
+    <SwitchPreference
+            android:key="screenshot_sound"
+            android:title="@string/screenshot_sound_title"
+            android:summary="@string/screenshot_sound_summary"
+            android:defaultValue="true" />
+ 
     <!-- Vibrate on touch -->
     <SwitchPreference
             android:key="vibrate_on_touch"
