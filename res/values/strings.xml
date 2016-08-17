@@ -6151,6 +6151,10 @@
     <!-- Sound & notification > Other sounds: Title for the option enabling touch sounds. [CHAR LIMIT=30] -->
     <string name="touch_sounds_title">Touch sounds</string>
 
+    <!-- Sound & notification > Other sounds: Title for the option disabling Screenshot sound -->
+    <string name="screenshot_sound_title">Screenshot sound</string>
+    <string name="screenshot_sound_summary">Plays sound effect when screenshot is taken</string>
+
     <!-- Sound & notification > Other sounds: Title for the option enabling haptic feedback on touch. [CHAR LIMIT=30] -->
     <string name="vibrate_on_touch_title">Vibrate on touch</string>
 
