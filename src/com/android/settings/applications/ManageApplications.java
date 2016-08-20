@@ -184,9 +184,6 @@ public class ManageApplications extends InstrumentedFragment
     // whether showing substratum overlays.
     private boolean mShowSubstratum;
 
-    // whether showing substratum overlays.
-    private boolean mShowSubstratum;
-
     private ApplicationsState mApplicationsState;
 
     public int mListType;
