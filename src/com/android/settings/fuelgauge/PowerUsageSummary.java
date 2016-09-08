@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelFormatException;
 import android.os.Process;
 import android.os.UserHandle;
 import android.preference.Preference;
@@ -31,6 +32,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -295,7 +297,12 @@ public class PowerUsageSummary extends PowerUsageBase {
     }
 
     protected void refreshStats() {
-        super.refreshStats();
+        try {
+            super.refreshStats();
+        } catch (ParcelFormatException e) {
+            Log.d(TAG, "ParcelFormatException: " + e.getMessage());
+        }
+
         updatePreference(mHistPref);
         mAppListGroup.removeAll();
         mAppListGroup.setOrderingAsAdded(false);
