@@ -45,6 +45,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryStats;
 import android.os.Bundle;
+import android.os.ParcelFormatException;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
@@ -886,8 +887,14 @@ public class InstalledAppDetails extends AppInfoBase
         @Override
         protected Void doInBackground(Void... params) {
             mBatteryHelper.create((Bundle) null);
-            mBatteryHelper.refreshStats(BatteryStats.STATS_SINCE_CHARGED,
+
+            try {
+                mBatteryHelper.refreshStats(BatteryStats.STATS_SINCE_CHARGED,
                     mUserManager.getUserProfiles());
+            } catch (ParcelFormatException e) {
+                Log.d(LOG_TAG, "ParcelFormatException: " + e.getMessage());
+            }
+
             List<BatterySipper> usageList = mBatteryHelper.getUsageList();
             final int N = usageList.size();
             for (int i = 0; i < N; i++) {
