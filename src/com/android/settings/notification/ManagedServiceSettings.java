@@ -127,12 +127,13 @@ public abstract class ManagedServiceSettings extends SettingsPreferenceFragment 
             if (mServiceListing.isEnabled(service)) {
                 return true; // already enabled
             }
-            // show a scary dialog
-            new ScaryWarningDialogFragment()
-                    .setServiceInfo(service, title)
-                    .show(getFragmentManager(), "dialog");
+            ScaryWarningDialog.show(ManagedServiceSettings.this, service, title,
+                                   mConfig.warningDialogTitle, mConfig.warningDialogSummary);
             return false;
         }
+    }
+    public void setServiceListingStatus(ComponentName service, boolean enable) {
+        mServiceListing.setEnabled(service, enable);
     }
 
     public class ScaryWarningDialogFragment extends DialogFragment {
