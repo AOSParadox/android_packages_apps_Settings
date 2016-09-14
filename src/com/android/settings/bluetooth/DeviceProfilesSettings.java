@@ -340,6 +340,18 @@ public final class DeviceProfilesSettings extends DialogFragment implements
         for (LocalBluetoothProfile profile : mCachedDevice.getRemovedProfiles()) {
             CheckBox profilePref = findProfile(profile.toString());
             if (profilePref != null) {
+                if (profile instanceof PbapServerProfile) {
+                    final int pbapPermission = mCachedDevice.getPhonebookPermissionChoice();
+                    Log.d(TAG, "refreshProfiles: pbapPermission = " + pbapPermission);
+                    if (pbapPermission != CachedBluetoothDevice.ACCESS_UNKNOWN)
+                        continue;
+                }
+                if (profile instanceof MapProfile) {
+                    final int mapPermission = mCachedDevice.getMessagePermissionChoice();
+                    Log.d(TAG, "refreshProfiles: mapPermission = " + mapPermission);
+                    if (mapPermission != CachedBluetoothDevice.ACCESS_UNKNOWN)
+                        continue;
+                }
                 Log.d(TAG, "Removing " + profile.toString() + " from profile list");
                 mProfileContainer.removeView(profilePref);
             }
