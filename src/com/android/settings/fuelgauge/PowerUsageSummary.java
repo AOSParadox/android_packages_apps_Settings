@@ -299,11 +299,11 @@ public class PowerUsageSummary extends PowerUsageBase {
     protected void refreshStats() {
         try {
             super.refreshStats();
+            updatePreference(mHistPref);
         } catch (ParcelFormatException e) {
             Log.d(TAG, "ParcelFormatException: " + e.getMessage());
         }
 
-        updatePreference(mHistPref);
         mAppListGroup.removeAll();
         mAppListGroup.setOrderingAsAdded(false);
         boolean addedSome = false;
