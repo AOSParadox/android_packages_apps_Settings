@@ -300,100 +300,104 @@ public class PowerUsageSummary extends PowerUsageBase {
         try {
             super.refreshStats();
             updatePreference(mHistPref);
+
+            mAppListGroup.removeAll();
+            mAppListGroup.setOrderingAsAdded(false);
+            boolean addedSome = false;
+
+            final PowerProfile powerProfile = mStatsHelper.getPowerProfile();
+            final BatteryStats stats = mStatsHelper.getStats();
+            final double averagePower =
+                    powerProfile.getAveragePower(PowerProfile.POWER_SCREEN_FULL);
+
+            TypedValue value = new TypedValue();
+            getContext().getTheme()
+                    .resolveAttribute(android.R.attr.colorControlNormal, value, true);
+            int colorControl = getContext().getColor(value.resourceId);
+
+            if (averagePower >= MIN_AVERAGE_POWER_THRESHOLD_MILLI_AMP || USE_FAKE_DATA) {
+                final List<BatterySipper> usageList = getCoalescedUsageList(
+                        USE_FAKE_DATA ? getFakeStats() : mStatsHelper.getUsageList());
+
+                final int dischargeAmount = USE_FAKE_DATA ? 5000
+                        : stats != null ? stats.getDischargeAmount(mStatsType) : 0;
+                final int numSippers = usageList.size();
+                for (int i = 0; i < numSippers; i++) {
+                    final BatterySipper sipper = usageList.get(i);
+                    if ((sipper.totalPowerMah * SECONDS_IN_HOUR) < MIN_POWER_THRESHOLD_MILLI_AMP) {
+                        continue;
+                    }
+                    double totalPower = USE_FAKE_DATA ? 4000 : mStatsHelper.getTotalPower();
+                    final double percentOfTotal =
+                            ((sipper.totalPowerMah / totalPower) * dischargeAmount);
+                    if (((int) (percentOfTotal + .5)) < 1) {
+                        continue;
+                    }
+                    if (sipper.drainType == BatterySipper.DrainType.OVERCOUNTED) {
+                        // Don't show over-counted unless it is at least 2/3 the size of
+                        // the largest real entry, and its percent of total is more significant
+                        if (sipper.totalPowerMah < ((mStatsHelper.getMaxRealPower()*2)/3)) {
+                            continue;
+                        }
+                        if (percentOfTotal < 10) {
+                            continue;
+                        }
+                        if ("user".equals(Build.TYPE)) {
+                            continue;
+                        }
+                    }
+                    if (sipper.drainType == BatterySipper.DrainType.UNACCOUNTED) {
+                        // Don't show over-counted unless it is at least 1/2 the size of
+                        // the largest real entry, and its percent of total is more significant
+                        if (sipper.totalPowerMah < (mStatsHelper.getMaxRealPower()/2)) {
+                            continue;
+                        }
+                        if (percentOfTotal < 5) {
+                            continue;
+                        }
+                        if ("user".equals(Build.TYPE)) {
+                            continue;
+                        }
+                    }
+                    final UserHandle userHandle =
+                            new UserHandle(UserHandle.getUserId(sipper.getUid()));
+                    final BatteryEntry entry =
+                            new BatteryEntry(getActivity(), mHandler, mUm, sipper);
+                    final Drawable badgedIcon = mUm.getBadgedIconForUser(entry.getIcon(),
+                            userHandle);
+                    final CharSequence contentDescription =
+                            mUm.getBadgedLabelForUser(entry.getLabel(), userHandle);
+                    final PowerGaugePreference pref = new PowerGaugePreference(getActivity(),
+                            badgedIcon, contentDescription, entry);
+
+                    final double percentOfMax = (sipper.totalPowerMah * 100)
+                            / mStatsHelper.getMaxPower();
+                    sipper.percent = percentOfTotal;
+                    pref.setTitle(entry.getLabel());
+                    pref.setOrder(i + 1);
+                    pref.setPercent(percentOfMax, percentOfTotal);
+                    if (sipper.uidObj != null) {
+                        pref.setKey(Integer.toString(sipper.uidObj.getUid()));
+                    }
+                    if ((sipper.drainType != DrainType.APP || sipper.uidObj.getUid() == 0)
+                             && sipper.drainType != DrainType.USER) {
+                        pref.setTint(colorControl);
+                    }
+                    addedSome = true;
+                    mAppListGroup.addPreference(pref);
+                    if (mAppListGroup.getPreferenceCount() > (MAX_ITEMS_TO_LIST + 1)) {
+                        break;
+                    }
+                }
+            }
+            if (!addedSome) {
+                addNotAvailableMessage();
+            }
+
+            BatteryEntry.startRequestQueue();
         } catch (ParcelFormatException e) {
             Log.d(TAG, "ParcelFormatException: " + e.getMessage());
         }
-
-        mAppListGroup.removeAll();
-        mAppListGroup.setOrderingAsAdded(false);
-        boolean addedSome = false;
-
-        final PowerProfile powerProfile = mStatsHelper.getPowerProfile();
-        final BatteryStats stats = mStatsHelper.getStats();
-        final double averagePower = powerProfile.getAveragePower(PowerProfile.POWER_SCREEN_FULL);
-
-        TypedValue value = new TypedValue();
-        getContext().getTheme().resolveAttribute(android.R.attr.colorControlNormal, value, true);
-        int colorControl = getContext().getColor(value.resourceId);
-
-        if (averagePower >= MIN_AVERAGE_POWER_THRESHOLD_MILLI_AMP || USE_FAKE_DATA) {
-            final List<BatterySipper> usageList = getCoalescedUsageList(
-                    USE_FAKE_DATA ? getFakeStats() : mStatsHelper.getUsageList());
-
-            final int dischargeAmount = USE_FAKE_DATA ? 5000
-                    : stats != null ? stats.getDischargeAmount(mStatsType) : 0;
-            final int numSippers = usageList.size();
-            for (int i = 0; i < numSippers; i++) {
-                final BatterySipper sipper = usageList.get(i);
-                if ((sipper.totalPowerMah * SECONDS_IN_HOUR) < MIN_POWER_THRESHOLD_MILLI_AMP) {
-                    continue;
-                }
-                double totalPower = USE_FAKE_DATA ? 4000 : mStatsHelper.getTotalPower();
-                final double percentOfTotal =
-                        ((sipper.totalPowerMah / totalPower) * dischargeAmount);
-                if (((int) (percentOfTotal + .5)) < 1) {
-                    continue;
-                }
-                if (sipper.drainType == BatterySipper.DrainType.OVERCOUNTED) {
-                    // Don't show over-counted unless it is at least 2/3 the size of
-                    // the largest real entry, and its percent of total is more significant
-                    if (sipper.totalPowerMah < ((mStatsHelper.getMaxRealPower()*2)/3)) {
-                        continue;
-                    }
-                    if (percentOfTotal < 10) {
-                        continue;
-                    }
-                    if ("user".equals(Build.TYPE)) {
-                        continue;
-                    }
-                }
-                if (sipper.drainType == BatterySipper.DrainType.UNACCOUNTED) {
-                    // Don't show over-counted unless it is at least 1/2 the size of
-                    // the largest real entry, and its percent of total is more significant
-                    if (sipper.totalPowerMah < (mStatsHelper.getMaxRealPower()/2)) {
-                        continue;
-                    }
-                    if (percentOfTotal < 5) {
-                        continue;
-                    }
-                    if ("user".equals(Build.TYPE)) {
-                        continue;
-                    }
-                }
-                final UserHandle userHandle = new UserHandle(UserHandle.getUserId(sipper.getUid()));
-                final BatteryEntry entry = new BatteryEntry(getActivity(), mHandler, mUm, sipper);
-                final Drawable badgedIcon = mUm.getBadgedIconForUser(entry.getIcon(),
-                        userHandle);
-                final CharSequence contentDescription = mUm.getBadgedLabelForUser(entry.getLabel(),
-                        userHandle);
-                final PowerGaugePreference pref = new PowerGaugePreference(getActivity(),
-                        badgedIcon, contentDescription, entry);
-
-                final double percentOfMax = (sipper.totalPowerMah * 100)
-                        / mStatsHelper.getMaxPower();
-                sipper.percent = percentOfTotal;
-                pref.setTitle(entry.getLabel());
-                pref.setOrder(i + 1);
-                pref.setPercent(percentOfMax, percentOfTotal);
-                if (sipper.uidObj != null) {
-                    pref.setKey(Integer.toString(sipper.uidObj.getUid()));
-                }
-                if ((sipper.drainType != DrainType.APP || sipper.uidObj.getUid() == 0)
-                         && sipper.drainType != DrainType.USER) {
-                    pref.setTint(colorControl);
-                }
-                addedSome = true;
-                mAppListGroup.addPreference(pref);
-                if (mAppListGroup.getPreferenceCount() > (MAX_ITEMS_TO_LIST + 1)) {
-                    break;
-                }
-            }
-        }
-        if (!addedSome) {
-            addNotAvailableMessage();
-        }
-
-        BatteryEntry.startRequestQueue();
     }
 
     private static List<BatterySipper> getFakeStats() {
