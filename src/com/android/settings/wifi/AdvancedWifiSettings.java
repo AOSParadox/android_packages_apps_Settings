@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.net.DhcpInfo;
 import android.net.NetworkScoreManager;
 import android.net.NetworkScorerAppManager;
@@ -30,6 +31,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.UserHandle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -62,6 +64,7 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
     private static final String KEY_FREQUENCY_BAND = "frequency_band";
     private static final String KEY_NOTIFY_OPEN_NETWORKS = "notify_open_networks";
     private static final String KEY_ENABLE_HS2 = "enable_hs2";
+    private static final String KEY_ENABLE_HS2_REL1 = "enable_hs2_rel1";
     private static final String KEY_SLEEP_POLICY = "sleep_policy";
     private static final String KEY_INSTALL_CREDENTIALS = "install_credentials";
     private static final String KEY_WIFI_ASSISTANT = "wifi_assistant";
@@ -97,12 +100,14 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
 
     private static final String KEY_CONNECT_NOTIFY = "notify_ap_connected";
     private static final String NOTIFY_USER_CONNECT = "notify_user_when_connect_cmcc";
+    private static final String IS_USER_DISABLE_HS2_REL1 = "is_user_disable_hs2_rel1";
 
     private static final int NOTIFY_USER = 0;
     private static final int DO_NOT_NOTIFY_USER = -1;
 
     private CheckBoxPreference mAutoConnectEnablePref;
     private CheckBoxPreference mCellularToWlanHintPref;
+    private SwitchPreference mEnableHs2Rel1;
     private ListPreference mCellularToWlanPref;
     private WifiManager mWifiManager;
     private NetworkScoreManager mNetworkScoreManager;
@@ -116,6 +121,16 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
             if (action.equals(WifiManager.LINK_CONFIGURATION_CHANGED_ACTION) ||
                 action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                 refreshWifiInfo();
+            }
+        }
+    };
+
+    private ContentObserver mPasspointObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            if (mEnableHs2Rel1 != null) {
+                mEnableHs2Rel1.setChecked(Settings.Global.getInt(getContentResolver(),
+                      Settings.Global.WIFI_HOTSPOT2_REL1_ENABLED, 0) == 1);
             }
         }
     };
@@ -147,6 +162,11 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
         super.onResume();
         initPreferences();
         getActivity().registerReceiver(mReceiver, mFilter);
+        if(getResources().getBoolean(R.bool.config_wifi_hotspot2_enabled_Rel1)) {
+            getActivity().getContentResolver().registerContentObserver(
+                Settings.Global.getUriFor(Settings.Global.WIFI_HOTSPOT2_REL1_ENABLED), false,
+                mPasspointObserver);
+        }
         refreshWifiInfo();
     }
 
@@ -154,6 +174,9 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(mReceiver);
+        if(getResources().getBoolean(R.bool.config_wifi_hotspot2_enabled_Rel1)) {
+            getActivity().getContentResolver().unregisterContentObserver(mPasspointObserver);
+        }
     }
 
     private void initPreferences() {
@@ -163,6 +186,7 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
                 Settings.Global.WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON, 0) == 1);
         notifyOpenNetworks.setEnabled(mWifiManager.isWifiEnabled());
 
+        final Context context = getActivity();
         SwitchPreference enableHs2 =
             (SwitchPreference) findPreference(KEY_ENABLE_HS2);
         if (enableHs2 != null) {
@@ -176,6 +200,20 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
             }
         }
 
+        mEnableHs2Rel1 = (SwitchPreference) findPreference(KEY_ENABLE_HS2_REL1);
+        mEnableHs2Rel1.setEnabled(mWifiManager.isWifiEnabled());
+        if (mEnableHs2Rel1 != null && getResources().getBoolean(
+                com.android.internal.R.bool.config_wifi_hotspot2_enabled) &&
+            getResources().getBoolean(R.bool.config_wifi_hotspot2_enabled_Rel1)) {
+            // Hotspot option should only be enabled when wifi is enabled.
+            // If wifi is disabled, add network and remove network will not work
+            mEnableHs2Rel1.setChecked(Settings.Global.getInt(getContentResolver(),
+                      Settings.Global.WIFI_HOTSPOT2_REL1_ENABLED, 0) == 1);
+
+        } else {
+            getPreferenceScreen().removePreference(mEnableHs2Rel1);
+        }
+
         Intent intent = new Intent(Credentials.INSTALL_AS_USER_ACTION);
         intent.setClassName("com.android.certinstaller",
                 "com.android.certinstaller.CertInstallerMain");
@@ -183,7 +221,6 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
         Preference pref = findPreference(KEY_INSTALL_CREDENTIALS);
         pref.setIntent(intent);
 
-        final Context context = getActivity();
         mWifiAssistantPreference = (AppListSwitchPreference) findPreference(KEY_WIFI_ASSISTANT);
         Collection<NetworkScorerAppData> scorers =
                 NetworkScorerAppManager.getAllValidScorers(context);
@@ -420,6 +457,15 @@ public class AdvancedWifiSettings extends SettingsPreferenceFragment
             Global.putInt(getContentResolver(),
                     Settings.Global.WIFI_HOTSPOT2_ENABLED,
                     ((SwitchPreference) preference).isChecked() ? 1 : 0);
+        } else if (KEY_ENABLE_HS2_REL1.equals(key)) {
+            Global.putInt(getContentResolver(),
+                    Settings.Global.WIFI_HOTSPOT2_REL1_ENABLED,
+                    ((SwitchPreference) preference).isChecked() ? 1 : 0);
+            Global.putInt(getContentResolver(),
+                    IS_USER_DISABLE_HS2_REL1,
+                    ((SwitchPreference) preference).isChecked() ? 1 : 0);
+            Intent i = new Intent("com.android.settings.action.USER_TAP_PASSPOINT");
+            getActivity().sendBroadcast(i);
         } else {
             return super.onPreferenceTreeClick(screen, preference);
         }
