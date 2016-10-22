@@ -2747,6 +2747,40 @@
                 android:value="true" />
         </activity>
 
+	<!-- Gestures -->
+        <activity android:name="Settings$GesturesSettingsActivity"
+                android:label="@string/gestures_settings_title"
+                android:icon="@drawable/ic_settings_gestures"
+                android:exported="true"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.GesturesSettings" />
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
+
+	<!-- Button -->
+        <activity android:name="Settings$ButtonSettingsActivity"
+                android:label="@string/button_pref_title"
+                android:icon="@drawable/ic_settings_buttons"
+                android:exported="true"
+                android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.ButtonSettings" />
+            <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"
+                android:value="true" />
+        </activity>
+
         <!-- Keep compatibility with old shortcuts. -->
         <activity android:name="Settings$SoundSettingsActivity"
                 android:label="@string/sound_settings"
