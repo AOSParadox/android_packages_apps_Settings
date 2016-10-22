@@ -101,8 +101,7 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     private CheckBoxPreference mDisableNavigationKeys;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 
         addPreferencesFromResource(R.xml.button_settings);
 

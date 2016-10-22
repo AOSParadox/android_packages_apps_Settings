@@ -120,8 +120,7 @@ public class GesturesSettings extends SettingsPreferenceFragment implements
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.gestures_settings);
 
         for (String gestureKey : mGesturesKeyCodes.keySet()) {
