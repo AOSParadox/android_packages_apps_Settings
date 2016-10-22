@@ -21,6 +21,7 @@ import com.android.settings.DateTimeSettings;
 import com.android.settings.DevelopmentSettings;
 import com.android.settings.DeviceInfoSettings;
 import com.android.settings.DisplaySettings;
+import com.android.settings.ButtonSettings;
 import com.android.settings.GesturesSettings;
 import com.android.settings.LegalSettings;
 import com.android.settings.PrivacySettings;
@@ -325,6 +326,12 @@ public final class SearchIndexableResources {
                         R.xml.gestures_settings,
                         GesturesSettings.class.getName(),
                         R.drawable.ic_settings_gestures));
+        sResMap.put(ButtonSettings.class.getName(),
+                new SearchIndexableResource(
+                        Ranking.getRankForClassName(ButtonSettings.class.getName()),
+                        R.xml.button_settings,
+                        ButtonSettings.class.getName(),
+                        R.drawable.ic_settings_buttons));
     }
 
     private SearchIndexableResources() {
