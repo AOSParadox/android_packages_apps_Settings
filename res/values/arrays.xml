@@ -1365,11 +1365,12 @@
         <item>MIDI</item>
     </string-array>
 
-    <!-- Defined the hide accounts' type -->
-    <string-array name="hide_account_list">
-        <item>com.qualcomm.qti.RIDL</item>
-        <item>com.android.localphone</item>
-        <item>com.android.sim</item>
+    <!-- Defined the show accounts' type -->
+    <string-array name="show_account_list">
+        <item>com.google</item>
+        <item>com.android.email.pop3</item>
+        <item>com.android.email.imap</item>
+        <item>com.android.exchange</item>
     </string-array>
 
     <!-- USB configuration values for Developer Settings.
