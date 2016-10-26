@@ -19,9 +19,9 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
-import com.android.settingslib.drawer.SettingsDrawerActivity;
+import com.android.settings.SettingsActivity;
 
-public class GesturesSettingsActivity extends SettingsDrawerActivity {
+public class GesturesSettingsActivity extends SettingsActivity {
 
     private static final String TAG = "GesturesSettingsActivity";
 
