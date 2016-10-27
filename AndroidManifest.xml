@@ -2748,7 +2748,7 @@
         </activity>
 
 	<!-- Gestures -->
-        <activity android:name="GesturesSettingsActivity"
+        <activity android:name="GesturesSettings"
                 android:label="@string/gestures_settings_title"
                 android:icon="@drawable/ic_settings_gestures"
                 android:exported="true"
