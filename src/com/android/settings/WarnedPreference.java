@@ -77,6 +77,7 @@ public class WarnedPreference extends Preference implements RadioGroup.OnChecked
         mFontDialogView = inflater.inflate(R.layout.font_dialog, null);
         mSharedPreferenceFontChoose = mContext.getSharedPreferences(FILE_FONT_CHOOSE,
                 Activity.MODE_PRIVATE);
+        mSpFontEditor = mSharedPreferenceFontChoose.edit();
     }
 
     @Override
@@ -146,7 +147,6 @@ public class WarnedPreference extends Preference implements RadioGroup.OnChecked
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int radioButtonId = group.getCheckedRadioButtonId();
         RadioButton rb = (RadioButton) mFontDialogView.findViewById(checkedId);
-        mSpFontEditor = mSharedPreferenceFontChoose.edit();
 
         boolean isChecked = mContext.getSharedPreferences(DisplaySettings.FILE_FONT_WARING,
                 Activity.MODE_PRIVATE).getBoolean(DisplaySettings.KEY_IS_CHECKED, false);
