@@ -81,6 +81,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
     private static final String QGP_VERSION_PATH = "/persist/speccfg/qgpversion";
     private static final String KEY_PAR_VERSION = "par_version";
     private static final String KEY_PAR_BRANCH = "par_branch";
+    private static final String KEY_CM_UPDATES = "cm_updates";
 
     static final int TAPS_TO_BE_A_DEVELOPER = 7;
 
@@ -534,6 +535,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
                 // TODO: system update needs to be fixed for non-owner user b/22760654
                 if (!um.isAdminUser()) {
                     keys.add(KEY_SYSTEM_UPDATE_SETTINGS);
+                    keys.add(KEY_CM_UPDATES);
                 }
                 if (!context.getResources().getBoolean(
                         R.bool.config_additional_system_update_setting_enable)) {
