@@ -24,6 +24,7 @@ import android.net.wifi.WifiConfiguration.AuthAlgorithm;
 import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -65,6 +66,8 @@ public class WifiApDialog extends AlertDialog implements View.OnClickListener,
     private Context mContext;
 
     private static final String TAG = "WifiApDialog";
+
+    private boolean isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
 
     public WifiApDialog(Context context, DialogInterface.OnClickListener listener,
             WifiConfiguration wifiConfig) {
@@ -154,16 +157,26 @@ public class WifiApDialog extends AlertDialog implements View.OnClickListener,
         context.getString(R.string.wifi_cancel), mListener);
 
         if (mWifiConfig != null) {
-            mSsid.setText(mWifiConfig.SSID);
+            if(isEoGREDisabled ) {
+                mSsid.setText(mWifiConfig.SSID);
+            } else {
+                mSsid.setText(mContext.getString(R.string.wifi_tether_configure_eogre_ssid_default));
+                mSsid.setEnabled(false);
+            }
             if (mWifiConfig.apBand == 0) {
                mBandIndex = 0;
             } else {
                mBandIndex = 1;
             }
 
-            mSecurity.setSelection(mSecurityTypeIndex);
-            if (mSecurityTypeIndex == WPA2_INDEX) {
-                mPassword.setText(mWifiConfig.preSharedKey);
+            if(isEoGREDisabled ) {
+                mSecurity.setSelection(mSecurityTypeIndex);
+                if (mSecurityTypeIndex == WPA2_INDEX) {
+                    mPassword.setText(mWifiConfig.preSharedKey);
+                }
+            } else {
+                mSecurity.setSelection(OPEN_INDEX);
+                mSecurity.setEnabled(false);
             }
         }
 

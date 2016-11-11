@@ -447,6 +447,11 @@
                 <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name="Settings$TetherSettingsActivity"
                 android:label="@string/tether_settings_title_all"

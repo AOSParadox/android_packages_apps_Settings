@@ -26,8 +26,9 @@ import android.net.wifi.WifiManager;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
+import android.os.SystemProperties;
 import android.os.UserHandle;
-
+import android.util.Log;
 import com.android.settings.HotspotPreference;
 import com.android.settings.R;
 import com.android.settingslib.TetherUtil;
@@ -50,6 +51,7 @@ public class WifiApEnabler {
     private boolean mEnabling = false;
     private static final String ACTION_HOTSPOT_POST_CONFIGURE = "Hotspot_PostConfigure";
     private static final String ACTION_EXTRA = "choice";
+    private boolean isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -157,8 +159,15 @@ public class WifiApEnabler {
     }
 
     public void updateConfigSummary(WifiConfiguration wifiConfig) {
-        String s = mContext.getString(
+        String s ;
+
+        isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
+        if (isEoGREDisabled)
+            s = mContext.getString(
                 com.android.internal.R.string.wifi_tether_configure_ssid_default);
+        else
+            s = mContext.getString(R.string.wifi_tether_configure_eogre_ssid_default);
+
         mSwitch.setSummary(String.format(
                     mContext.getString(R.string.wifi_tether_enabled_subtext),
                     (wifiConfig == null) ? s : wifiConfig.SSID));

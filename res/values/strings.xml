@@ -1777,6 +1777,8 @@
     <string name="wifi_tether_configure_subtext"><xliff:g id="network_ssid">%1$s</xliff:g> <xliff:g id="network_security">%2$s</xliff:g> portable Wi\u2011Fi hotspot</string>
     <!-- Default access point SSID used for tethering -->
     <string name="wifi_tether_configure_ssid_default">AndroidHotspot</string>
+    <!-- Default access point SSID used for eogre tethering -->
+    <string name="wifi_tether_configure_eogre_ssid_default">Jionet</string>
 
     <!-- Do not translate. Used for diagnostic screens, precise translation is not necessary
          Wi-Fi Testing on the diagnostic screen-->
@@ -1863,6 +1865,8 @@
 
     <!-- Wireless networks, item title to go into the WFC settings [CHAR LIMIT=30] -->
     <string name="wifi_calling_settings_title">Wi-Fi calling</string>
+    <!-- Hotspot settings. Text displayed when other tethering modes are enabled during eogre -->
+    <string name="turn_off_portable_wifi">Please turn off Portable Wi\u2011Fi hotspot</string>
     <!-- WFC mode [CHAR LIMIT=30] -->
     <string name="wifi_calling_mode_title">Calling preference</string>
     <!-- WFC mode dialog [CHAR LIMIT=30] -->
@@ -7368,4 +7372,5 @@ ation on your phone or online at https://my.t-mobile.com under Manage > Plans an
     <string name="choose_font_Large">Large</string>
     <string name="choose_font_VeryLarge">VeryLarge</string>
 
+    <string name="turn_on_data_msg">Please turn on data</string>
 </resources>
