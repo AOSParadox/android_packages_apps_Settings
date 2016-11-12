@@ -18,10 +18,11 @@ package com.android.settings;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
 import android.provider.SearchIndexableResource;
 import android.provider.Settings;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.widget.Switch;
 
 import com.android.settings.search.BaseSearchIndexProvider;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GesturesSettings extends SettingsPreferenceFragment implements
-        Preference.OnPreferenceChangeListener, Indexable {
+        OnPreferenceChangeListener, Indexable {
 
     private static final String TAG = "GesturesSettings";
 
@@ -120,7 +121,8 @@ public class GesturesSettings extends SettingsPreferenceFragment implements
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.gestures_settings);
 
         for (String gestureKey : mGesturesKeyCodes.keySet()) {
@@ -183,10 +185,10 @@ public class GesturesSettings extends SettingsPreferenceFragment implements
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object objValue) {
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
         Settings.System.putInt(getContentResolver(),
                 mGesturesSettings.get(preference.getKey()),
-                Integer.parseInt((String) objValue));
+                Integer.parseInt((String) newValue));
         return true;
     }
 
@@ -251,30 +253,28 @@ public class GesturesSettings extends SettingsPreferenceFragment implements
     /**
      * For Search.
      */
-    public static final SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
-        new BaseSearchIndexProvider() {
+    public static final SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER
+            = new BaseSearchIndexProvider() {
+        @Override
+        public List<SearchIndexableResource> getXmlResourcesToIndex(
+                Context context, boolean enabled) {
+            final SearchIndexableResource sir =
+                    new SearchIndexableResource(context);
+            sir.xmlResId = R.xml.gestures_settings;
+            return Arrays.asList(sir);
+        }
 
-            @Override
-            public List<SearchIndexableResource> getXmlResourcesToIndex(
-                    Context context, boolean enabled) {
-                final SearchIndexableResource sir =
-                        new SearchIndexableResource(context);
-                sir.xmlResId = R.xml.gestures_settings;
-                return Arrays.asList(sir);
-            }
-
-            @Override
-            public List<String> getNonIndexableKeys(Context context) {
-                final List<String> keys = new ArrayList<String>();
-                for (String gestureKey : mGesturesKeyCodes.keySet()) {
-                    if (context.getResources().getInteger(mGesturesKeyCodes
-                            .get(gestureKey)) == 0) {
-                        keys.add(gestureKey);
-                    }
+        @Override
+        public List<String> getNonIndexableKeys(Context context) {
+            final List<String> keys = new ArrayList<String>();
+            for (String gestureKey : mGesturesKeyCodes.keySet()) {
+                if (context.getResources().getInteger(mGesturesKeyCodes
+                        .get(gestureKey)) == 0) {
+                    keys.add(gestureKey);
                 }
-                return keys;
             }
+            return keys;
+        }
 
-        };
-
+    };
 }
