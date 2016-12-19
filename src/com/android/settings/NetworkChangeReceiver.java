@@ -43,7 +43,7 @@ import static android.net.ConnectivityManager.TYPE_MOBILE;
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
     private WifiManager mWifiManager;
-    private boolean isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
+    private boolean isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre",true);
     private String APP_TAG = "NetworkChangeReceiver";
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -63,7 +63,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                 Log.i(APP_TAG, "Mobile - CONNECTED");
             } else {
                 Log.i(APP_TAG, "Mobile - DISCONNECTED");
-                if (mWifiManager.getWifiApState() == WifiManager.WIFI_AP_STATE_ENABLED && !isEoGREDisabled)
+                if (mWifiManager.getWifiApState() == WifiManager.WIFI_AP_STATE_ENABLED
+                        && !isEoGREDisabled)
                     mWifiManager.setWifiApEnabled(null, false);
             }
        }

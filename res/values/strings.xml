@@ -1866,7 +1866,7 @@
     <!-- Wireless networks, item title to go into the WFC settings [CHAR LIMIT=30] -->
     <string name="wifi_calling_settings_title">Wi-Fi calling</string>
     <!-- Hotspot settings. Text displayed when other tethering modes are enabled during eogre -->
-    <string name="turn_off_portable_wifi">Please turn off Portable Wi\u2011Fi hotspot</string>
+    <string name="turn_off_eogre">Please turn off eogre</string>
     <!-- WFC mode [CHAR LIMIT=30] -->
     <string name="wifi_calling_mode_title">Calling preference</string>
     <!-- WFC mode dialog [CHAR LIMIT=30] -->

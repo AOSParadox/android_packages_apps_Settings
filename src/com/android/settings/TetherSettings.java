@@ -269,15 +269,16 @@ public class TetherSettings extends SettingsPreferenceFragment
             return;
         }
         if (mWifiConfig == null) {
-            final String s ;
-            if (isEoGREDisabled)
-                 s = activity.getString(
+            final String ssid ;
+            if (isEoGREDisabled) {
+                ssid = activity.getString(
                     com.android.internal.R.string.wifi_tether_configure_ssid_default);
-            else
-                 s = activity.getString(R.string.wifi_tether_configure_eogre_ssid_default);
+            } else {
+                ssid = activity.getString(R.string.wifi_tether_configure_eogre_ssid_default);
+            }
 
             mCreateNetwork.setSummary(String.format(activity.getString(CONFIG_SUBTEXT),
-                    s, mSecurityType[WifiApDialog.OPEN_INDEX]));
+                    ssid, mSecurityType[WifiApDialog.OPEN_INDEX]));
         } else {
             int index = WifiApDialog.getSecurityTypeIndex(mWifiConfig);
             mCreateNetwork.setSummary(String.format(activity.getString(CONFIG_SUBTEXT),
@@ -544,6 +545,7 @@ public class TetherSettings extends SettingsPreferenceFragment
 
     public boolean onPreferenceChange(Preference preference, Object value) {
         boolean enable = (Boolean) value;
+        isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
         if (enable) {
              if (!isEoGREDisabled && !isMobileDataEnabled(getActivity().getApplicationContext()))
                  Toast.makeText(getActivity(),R.string.turn_on_data_msg,
@@ -664,20 +666,17 @@ public class TetherSettings extends SettingsPreferenceFragment
     public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {
         ConnectivityManager cm =
                 (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
         if (preference == mUsbTether) {
-            int wifiState = mWifiManager.getWifiApState();
-
-            if (wifiState == WifiManager.WIFI_AP_STATE_ENABLED &&  isEoGREDisabled == false) {
+            if (isEoGREDisabled == false) {
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(
-                                R.string.turn_off_portable_wifi),
+                                R.string.turn_off_eogre),
                         Toast.LENGTH_SHORT).show();
                 mUsbTether.setChecked(false);
                 return true;
             }
-
 
             boolean newState = mUsbTether.isChecked();
             //get the wifi status
@@ -696,13 +695,11 @@ public class TetherSettings extends SettingsPreferenceFragment
             }
         } else if (preference == mBluetoothTether) {
             boolean bluetoothTetherState = mBluetoothTether.isChecked();
-
-            int wifiState = mWifiManager.getWifiApState();
-            if (wifiState == WifiManager.WIFI_AP_STATE_ENABLED &&  isEoGREDisabled == false) {
+            if (isEoGREDisabled == false) {
                 Toast.makeText(
                         getActivity(),
                         getResources().getString(
-                                R.string.turn_off_portable_wifi),
+                                R.string.turn_off_eogre),
                         Toast.LENGTH_SHORT).show();
                 mBluetoothTether.setChecked(false);
                 return true;
