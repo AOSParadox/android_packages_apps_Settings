@@ -20,6 +20,7 @@ import static com.android.settings.dashboard.DashboardTile.TILE_ID_UNDEFINED;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -1213,7 +1214,8 @@ public class SettingsActivity extends Activity
                             }
 
                             // Show the SIM Cards setting if there are more than 2 SIMs installed.
-                            if(tile.id != R.id.sim_settings || Utils.showSimCardTile(context)){
+                            if(tile.id != R.id.sim_settings || (Utils.showSimCardTile(context) &&
+                                    (ActivityManager.getCurrentUser() == UserHandle.USER_OWNER))){
                                 category.addTile(tile);
                             }
 
