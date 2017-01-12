@@ -37,8 +37,7 @@ public class AppStateWriteSettingsBridge extends AppStateAppOpsBridge {
     private static final String PM_CHANGE_NETWORK_STATE = Manifest.permission.CHANGE_NETWORK_STATE;
     // CHANGE_NETWORK_STATE is now merged with WRITE_SETTINGS
     private static final String[] PM_PERMISSIONS = {
-            PM_WRITE_SETTINGS,
-            PM_CHANGE_NETWORK_STATE
+            PM_WRITE_SETTINGS
     };
 
     public AppStateWriteSettingsBridge(Context context, ApplicationsState appState, Callback
