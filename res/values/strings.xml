@@ -1779,6 +1779,12 @@
     <string name="wifi_tether_configure_ssid_default">AndroidHotspot</string>
     <!-- Default access point SSID used for eogre tethering -->
     <string name="wifi_tether_configure_eogre_ssid_default">Jionet</string>
+    <!-- EoGRE error dialog title -->
+    <string name="eogre_tethering_warning_dialog_title">JioNet hotspot</string>
+    <!-- EoGRE error message for wrong  APN protocol -->
+    <string name="eogre_tethering_warning_dialog_text">To enable JioNet hotspot, please change APN protocol to IPv4/IPv6 and try again</string>
+    <!-- EoGRE warnging message for  APN protocol change -->
+    <string name="error_eogre_wrong_apn_text">JioNet hotspot may not work if you change APN protocol. Do you want to continue?</string>
 
     <!-- Do not translate. Used for diagnostic screens, precise translation is not necessary
          Wi-Fi Testing on the diagnostic screen-->

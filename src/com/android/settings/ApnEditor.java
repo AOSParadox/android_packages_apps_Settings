@@ -20,17 +20,21 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.provider.Telephony;
 import android.telephony.ServiceState;
@@ -48,7 +52,7 @@ import java.util.Set;
 
 public class ApnEditor extends InstrumentedPreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-                    Preference.OnPreferenceChangeListener {
+                    Preference.OnPreferenceChangeListener ,Preference.OnPreferenceClickListener{
 
     private final static String TAG = ApnEditor.class.getSimpleName();
 
@@ -102,6 +106,7 @@ public class ApnEditor extends InstrumentedPreferenceActivity
     private int mBearerInitialVal = 0;
     private String mMvnoTypeStr;
     private String mMvnoMatchDataStr;
+    private boolean mDisableEogreHotspot = false;
 
     /**
      * Standard projection for the interesting columns of a normal note.
@@ -186,6 +191,7 @@ public class ApnEditor extends InstrumentedPreferenceActivity
 
         mProtocol = (ListPreference) findPreference(KEY_PROTOCOL);
         mProtocol.setOnPreferenceChangeListener(this);
+        mProtocol.setOnPreferenceClickListener(this);
 
         mRoamingProtocol = (ListPreference) findPreference(KEY_ROAMING_PROTOCOL);
         mRoamingProtocol.setOnPreferenceChangeListener(this);
@@ -511,6 +517,28 @@ public class ApnEditor extends InstrumentedPreferenceActivity
             }
         }
     }
+    public boolean onPreferenceClick(Preference preference)
+    {
+        if (!SystemProperties.getBoolean("persist.sys.disable_eogre", true)) {
+            final ListPreference list = ((ListPreference)preference);
+            list.getDialog().hide();
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle(R.string.eogre_tethering_warning_dialog_title);
+            alert.setMessage(R.string.error_eogre_wrong_apn_text);
+            alert.setPositiveButton(R.string.yes,new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog,int id) {
+                     list.getDialog().show();
+                 }
+            });
+            alert.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog,int id) {
+                     dialog.cancel();
+                 }
+            });
+            alert.show();
+        }
+        return true;
+     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         String key = preference.getKey();
@@ -528,6 +556,9 @@ public class ApnEditor extends InstrumentedPreferenceActivity
             String protocol = protocolDescription((String) newValue, mProtocol);
             if (protocol == null) {
                 return false;
+            }
+            if (!(mProtocol.getValue().equals((String) newValue))) {
+                mDisableEogreHotspot = true;
             }
             mProtocol.setValue((String) newValue);
             mProtocol.setSummary(protocol);
@@ -642,6 +673,12 @@ public class ApnEditor extends InstrumentedPreferenceActivity
             return false;
         }
 
+        if (!SystemProperties.getBoolean("persist.sys.disable_eogre", true) &&
+                   (mDisableEogreHotspot)) {
+            WifiManager mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+            mWifiManager.setWifiApEnabled(null, false);
+            mDisableEogreHotspot = false;
+        }
         if (!mCursor.moveToFirst()) {
             Log.w(TAG,
                     "Could not go to the first row in the Cursor when saving data.");

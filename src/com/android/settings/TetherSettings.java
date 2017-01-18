@@ -37,6 +37,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.hardware.usb.UsbManager;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiConfiguration.AuthAlgorithm;
@@ -62,9 +63,12 @@ import com.android.settings.wifi.WifiApEnabler;
 import com.android.settingslib.TetherUtil;
 
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-
 
 /*
  * Displays preferences for Tethering.
@@ -547,11 +551,23 @@ public class TetherSettings extends SettingsPreferenceFragment
         boolean enable = (Boolean) value;
         isEoGREDisabled = SystemProperties.getBoolean("persist.sys.disable_eogre", true);
         if (enable) {
-             if (!isEoGREDisabled && !isMobileDataEnabled(getActivity().getApplicationContext()))
-                 Toast.makeText(getActivity(),R.string.turn_on_data_msg,
-                        Toast.LENGTH_SHORT).show();
-             else
+             if (!isEoGREDisabled) {
+                 if (!isMobileDataEnabled(getActivity().getApplicationContext())) {
+                     Toast.makeText(getActivity(),R.string.turn_on_data_msg,
+                             Toast.LENGTH_SHORT).show();
+                 } else if (!checkForServerIPVersionMismatch(getActivity()
+                                .getApplicationContext())) {
+                     AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                     alert.setTitle(R.string.eogre_tethering_warning_dialog_title);
+                     alert.setMessage(R.string.eogre_tethering_warning_dialog_text);
+                     alert.setPositiveButton(R.string.okay, null);
+                     alert.show();
+                 } else {
+                     startProvisioningIfNecessary(TETHERING_WIFI);
+                 }
+             } else {
                  startProvisioningIfNecessary(TETHERING_WIFI);
+             }
         } else {
             if (TetherUtil.isProvisioningNeeded(getActivity())) {
                 TetherService.cancelRecheckAlarmIfNecessary(getActivity(), TETHERING_WIFI);
@@ -569,6 +585,34 @@ public class TetherSettings extends SettingsPreferenceFragment
         } else {
             return false;
         }
+    }
+
+    static boolean checkForServerIPVersionMismatch(Context context) {
+        ConnectivityManager mConnectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (mConnectivityManager != null) {
+            if (mConnectivityManager.getMobileDataEnabled()) {
+                LinkProperties mLinkProperties =
+                        mConnectivityManager.getLinkProperties(ConnectivityManager.TYPE_MOBILE);
+                String mServerIpProp = SystemProperties.get("persist.sys.eogre.serverip");
+                if (mLinkProperties == null || mServerIpProp.equals("")) {
+                    return false;
+                }
+                InetAddress mInetServerIP = null;
+                try {
+                    mInetServerIP = InetAddress.getByName(mServerIpProp);
+                } catch (UnknownHostException e) {
+                    return false;
+                }
+                if (mInetServerIP instanceof Inet6Address) {
+                    return  mLinkProperties.hasIPv6DefaultRoute();
+                }
+                else if (mInetServerIP instanceof Inet4Address) {
+                    return  mLinkProperties.hasIPv4DefaultRoute();
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean isProvisioningNeededButUnavailable(Context context) {
