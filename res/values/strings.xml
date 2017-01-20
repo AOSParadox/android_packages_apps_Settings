@@ -7989,7 +7989,7 @@
     <string name="automatic_storage_manager_activation_warning">Your storage is now being managed by the storage manager</string>
 
     <!-- Gestures Settings -->
-    <string name="gestures_tp_settings_title">Gestures</string>
+    <string name="gestures_tp_settings_title">Touchscreen Gestures</string>
     <string name="keywords_tp_gestures">screen touchscreen draw swipe finger</string>
 
     <string name="gestures_double_tap">Double-tap</string>
