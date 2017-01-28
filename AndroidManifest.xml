@@ -2896,7 +2896,7 @@
                 android:targetActivity="Settings$GesturesSettingsActivity">
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
                 android:value="com.android.settings.GesturesSettings" />
-
+        </activity-alias>
 
         <!-- Keep compatibility with old shortcuts. -->
         <activity android:name="Settings$SoundSettingsActivity"
