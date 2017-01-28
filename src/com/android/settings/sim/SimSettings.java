@@ -362,4 +362,3 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         return callStateIdle;
     }
 }
-s
