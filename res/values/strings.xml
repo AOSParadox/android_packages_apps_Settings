@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2007 The Android Open Source Project
-	       (C) 2017 The LineageOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -8027,18 +8026,4 @@
     <string name="disable_navkeys_title">Enable on-screen nav bar</string>
     <string name="disable_navkeys_summary">Enable on-screen navigation bar and disable hardware buttons</string>
 
-    <!-- Status bar - Network Traffic -->
-    <string name="network_traffic_settings_title">Network traffic monitor</string>
-    <string name="network_traffic_settings_summary">Shows current amount of network traffic in the status bar</string>
-
-    <string name="network_traffic_mode_title">Display mode</string>
-    <string name="network_traffic_refresh_interval_title">Update interval</string>
-    <string name="network_traffic_mode_disable">Disabled</string>
-    <string name="network_traffic_mode_up">Outgoing</string>
-    <string name="network_traffic_mode_down">Incoming</string>
-    <string name="network_traffic_mode_all">Outgoing and incoming</string>
-    <string name="network_traffic_autohide">Auto hide</string>
-    <string name="network_traffic_autohide_summary">Hide the traffic monitor when there is no activity</string>
-    <string name="network_traffic_autohide_threshold_title">Inactivity threshold</string>
-    <string name="network_traffic_autohide_threshold_summary">The traffic display will be hidden if there\'s less than <xliff:g id="value">%1$s</xliff:g> <xliff:g id="unit" example="kB">%2$s</xliff:g>/s of traffic</string>
 </resources>
