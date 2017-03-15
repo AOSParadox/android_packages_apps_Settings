@@ -106,6 +106,7 @@ public class ManagerPasspointReceiver extends BroadcastReceiver {
 
         int[] subIds = null;
         String imsiNum = null;
+        String realm = null;
         boolean isLoaded = false;
         if (slotId != -1) {
             isLoaded = (TelephonyManager.SIM_STATE_READY == telManager.getSimState(slotId));
@@ -122,6 +123,9 @@ public class ManagerPasspointReceiver extends BroadcastReceiver {
             forgetNetwork(config);
             return;
         }
+
+        if (imsiNum != null && imsiNum.length() > 6)
+            realm = "wlan.mnc" + imsiNum.substring(3,6) + ".mcc" + imsiNum.substring(0,3) + ".3gppnetwork.org";
 
         if (config == null) {
             // Add a new passpoint network
@@ -142,6 +146,7 @@ public class ManagerPasspointReceiver extends BroadcastReceiver {
                 wifiConfig.enterpriseConfig.setEapMethod(WifiEnterpriseConfig.Eap.AKA_PRIME);
 
             wifiConfig.enterpriseConfig.setPlmn(imsiNum);
+            wifiConfig.enterpriseConfig.setRealm(realm);
             wifiConfig.SIMNum = slotId + 1;
 
             int netId = mWifiManager.addNetwork(wifiConfig);
@@ -156,6 +161,7 @@ public class ManagerPasspointReceiver extends BroadcastReceiver {
         } else {
             // if passpoint config already present, update it.
             config.enterpriseConfig.setPlmn(imsiNum);
+            config.enterpriseConfig.setRealm(realm);
             config.SSID = null;
             config.SIMNum = slotId + 1;
             mWifiManager.updateNetwork(config);
