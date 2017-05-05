@@ -15,15 +15,50 @@
  */
 package com.android.settings.wifi;
 
+import android.app.StatusBarManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v14.preference.PreferenceFragment;
+import android.view.WindowManager;
 
 import com.android.settings.ButtonBarHandler;
 import com.android.settings.R;
 import com.android.settings.SettingsActivity;
 import com.android.settings.wifi.p2p.WifiP2pSettings;
 
+
 public class WifiPickerActivity extends SettingsActivity implements ButtonBarHandler {
+    private StatusBarManager mStatusBarManager;
+
+    @Override
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+        if (WifiSettings.isDeviceSubsidyLocked(this)) {
+            WindowManager.LayoutParams lp = this
+                .getWindow().getAttributes();
+            lp.flags |= WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
+
+            mStatusBarManager = (StatusBarManager)
+                this.getSystemService(Context.STATUS_BAR_SERVICE);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (null != mStatusBarManager && WifiSettings.isDeviceSubsidyLocked(this)) {
+            mStatusBarManager.disable(StatusBarManager.DISABLE_EXPAND);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (null != mStatusBarManager && WifiSettings.isDeviceSubsidyLocked(this)) {
+            mStatusBarManager.disable(StatusBarManager.DISABLE_NONE);
+        }
+    }
 
     @Override
     public Intent getIntent() {
