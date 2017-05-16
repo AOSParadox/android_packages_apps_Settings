@@ -39,6 +39,7 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
@@ -52,6 +53,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
@@ -110,6 +112,9 @@ public class WifiSettings extends RestrictedSettingsFragment
     /* package */ static final int WPS_PBC_DIALOG_ID = 2;
     private static final int WPS_PIN_DIALOG_ID = 3;
     private static final int WRITE_NFC_DIALOG_ID = 6;
+
+    public static final int SUBSIDY_DEVICE_LOCKED = 101;
+    public static final int SUBSIDY_AP_LOCKED = 102;
 
     // Instance state keys
     private static final String SAVE_DIALOG_MODE = "dialog_mode";
@@ -336,7 +341,7 @@ public class WifiSettings extends RestrictedSettingsFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // If the user is not allowed to configure wifi, do not show the menu.
-        if (isUiRestricted()) return;
+        if (isUiRestricted() || isDeviceSubsidyLocked(getActivity())) return;
 
         addOptionsMenuItems(menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -608,6 +613,12 @@ public class WifiSettings extends RestrictedSettingsFragment
                 } else {
                     mDialog = new WifiDialog(getActivity(), this, ap, mDialogMode,
                             /* no hide submit/connect */ false);
+                }
+                if (isDeviceSubsidyLocked(getActivity())) {
+                    mDialog.getWindow().setSoftInputMode(WindowManager
+                        .LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    mDialog.getWindow().addFlags(WindowManager
+                        .LayoutParams.FLAG_SHOW_WHEN_LOCKED);
                 }
                 return mDialog;
             case WPS_PBC_DIALOG_ID:
@@ -1076,4 +1087,16 @@ public class WifiSettings extends RestrictedSettingsFragment
             return new SummaryProvider(activity, summaryLoader);
         }
     };
+
+    public static boolean isDeviceSubsidyLocked(Context context) {
+        int state = -1;
+        try {
+            state = Settings.Secure.getInt(context.getContentResolver(),
+                "subsidy_status", -1);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while read subsidy lock state " + e);
+        }
+        return (SystemProperties.getInt("ro.radio.subsidylock", 0) == 1)
+            && (state == SUBSIDY_DEVICE_LOCKED || state == SUBSIDY_AP_LOCKED);
+    }
 }
