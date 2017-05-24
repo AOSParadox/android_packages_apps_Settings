@@ -105,6 +105,10 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
                 final SettingsActivity activity = (SettingsActivity) getActivity();
+                if (activity == null) {
+                   Log.e(TAG,"onCallStateChanged activity is null");
+                   return;
+                }
                 boolean isNonTtyOrTtyOnVolteEnabled = ImsManager
                         .isNonTtyOrTtyOnVolteEnabled(activity);
                 final SwitchBar switchBar = activity.getSwitchBar();
@@ -113,7 +117,7 @@ public class WifiCallingSettings extends SettingsPreferenceFragment
 
                 mCallState[i] = state;
                 switchBar.setEnabled(isCallStateIdle() && isNonTtyOrTtyOnVolteEnabled);
-        
+
                 boolean isWfcModeEditable = true;
                 boolean isWfcRoamingModeEditable = false;
                 final CarrierConfigManager configManager = (CarrierConfigManager)
